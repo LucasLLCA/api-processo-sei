@@ -1,0 +1,23 @@
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+DB_CONFIG = {
+    "host": os.getenv("DB_HOST"),
+    "port": os.getenv("DB_PORT"),
+    "user": os.getenv("DB_USER"),
+    "password": os.getenv("DB_PASSWORD"),
+    "dbname": os.getenv("DB_NAME")
+}
+
+SEI_CREDENTIALS = {
+    "usuario": os.getenv("SEAD_USUARIO"),
+    "senha": os.getenv("SEAD_SENHA"),
+    "orgao": os.getenv("SEAD_ORGAO")
+}
+
+OPENAI_CONFIG = {
+    "api_key": os.getenv("OPENAI_API_KEY"),
+    "base_url": os.getenv("OPENAI_BASE_URL")
+}

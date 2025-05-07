@@ -1,7 +1,53 @@
+# Ambiente virtual
 venv/
 .env
+*.env
+.env.*
+
+# Arquivos Python compilados
 __pycache__/
-*.pyc
+*.py[cod]
 *.pyo
 *.pyd
+
+# Arquivos temporários e de log
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# Arquivos de IDEs e editores
+.vscode/
 .idea/
+*.sublime-project
+*.sublime-workspace
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
+
+# Arquivos de testes e cache
+.coverage
+.tox/
+.pytest_cache/
+nosetests.xml
+coverage.xml
+htmlcov/
+.cache/
+
+# Arquivos criados em tempo de execução
+*.sqlite3
+*.db
+*.html
+*.md
+
+# Arquivos do Uvicorn
+*.pid
+
+# Documentos ou dumps
+*.dump
+*.log.*
+
+# Arquivos Markdown gerados
+*.converted.md
