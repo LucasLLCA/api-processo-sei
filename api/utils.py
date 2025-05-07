@@ -1,6 +1,5 @@
 import os
 import re
-import logging
 
 def converte_documentos_para_markdown(caminho_arquivo: str):
     if not os.path.isfile(caminho_arquivo):
@@ -16,3 +15,10 @@ def converte_documentos_para_markdown(caminho_arquivo: str):
         f.write(texto_limpo)
 
     return caminho_md
+
+def ler_arquivo_md(caminho_md: str) -> str:
+    if not caminho_md or not os.path.isfile(caminho_md):
+        return ""
+    with open(caminho_md, "r", encoding="utf-8") as f:
+        return f.read()
+

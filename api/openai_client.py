@@ -8,22 +8,20 @@ client = OpenAI(
     base_url=OPENAI_CONFIG["base_url"]
 )
 
-def enviar_para_ia(caminho_arquivo_md: str) -> dict:
-    if not os.path.isfile(caminho_arquivo_md):
-        raise HTTPException(status_code=400, detail="Arquivo não encontrado")
-
-    with open(caminho_arquivo_md, "r", encoding="utf-8") as f:
-        conteudo = f.read()
-
+def enviar_para_ia_conteudo(conteudo_md: str) -> dict:
+    if not conteudo_md.strip():
+        return {"status": "erro", "resposta_ia": "Conteúdo Markdown vazio"}
+    
     try:
         resposta = client.chat.completions.create(
             model="Qwen3-30B-A3B",
             messages=[
-                {"role": "system", "content": "Você é um assistente jurídico que lê documentos Markdown e resume seu conteúdo."},
-                {"role": "user", "content": f"Leia o documento abaixo e diga do que se trata:\n\n{conteudo}"}
+                {"role": "system", "content": "Você é um assistente jurídico especializado..."},
+                {"role": "user", "content": f"Leia cuidadosamente o documento Markdown abaixo e produza um relatório detalhado...\n\nDocumento:\n\n{conteudo_md}"}
             ],
             temperature=0.7,
         )
         return {"status": "ok", "resposta_ia": resposta.choices[0].message.content.strip()}
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Erro ao consultar IA: {str(e)}")

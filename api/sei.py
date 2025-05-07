@@ -1,13 +1,15 @@
 import re
 import requests
-import logging
 from fastapi import HTTPException
 from .db import get_db_connection
 from .models import Processo
 from .config import SEI_CREDENTIALS
+from functools import lru_cache
+from .utils import converte_documentos_para_markdown
 
 BASE_URL = "https://api.sead.pi.gov.br/sei/v1"
 
+@lru_cache(maxsize=1)
 def obter_token():
     response = requests.post(f"{BASE_URL}/orgaos/usuarios/login", json={
         "Usuario": SEI_CREDENTIALS["usuario"],
@@ -80,17 +82,25 @@ def baixar_documento(token, id_unidade, documento_formatado):
     headers = {"accept": "application/json", "token": f'"{token}"'}
     params = {"protocolo_documento": documento_formatado}
     response = requests.get(url, headers=headers, params=params)
+
     if response.status_code != 200:
+        print("Erro ao baixar documento:", response.status_code)
         return None
 
     content_disposition = response.headers.get("content-disposition", "")
     match = re.search(r'filename="(.+)"', content_disposition)
-    filename = match.group(1) if match else "arquivo_baixado.html"
+    filename = match.group(1) if match else f"documento_{documento_formatado}.html"
 
     with open(filename, "wb") as f:
         f.write(response.content)
 
-    from .utils import converte_documentos_para_markdown
-    if filename.lower().endswith(".html"):
-        return converte_documentos_para_markdown(filename)
-    return None
+    print("Arquivo baixado:", filename)
+
+    if filename.lower().endswith(".html") or filename.lower().endswith(".htm"):
+        caminho_md = converte_documentos_para_markdown(filename)
+        print("Markdown gerado:", caminho_md)
+        return caminho_md
+    else:
+        print("Arquivo não é HTML, não convertido:", filename)
+        return None
+    
