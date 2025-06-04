@@ -5,6 +5,7 @@ from .routes import router
 import logging
 import sys
 from datetime import datetime
+import traceback
 
 # Configuração do logging
 logging.basicConfig(
@@ -33,10 +34,25 @@ async def log_requests(request: Request, call_next):
         logger.info(f"Request: {request.method} {request.url.path} - Status: {response.status_code} - Tempo: {process_time:.2f}s")
         return response
     except Exception as e:
-        logger.error(f"Erro na requisição {request.method} {request.url.path}: {str(e)}", exc_info=True)
+        error_msg = f"""
+        ===== ERRO DETECTADO =====
+        Método: {request.method}
+        URL: {request.url.path}
+        Erro: {str(e)}
+        Tipo do Erro: {type(e).__name__}
+        Stack Trace:
+        {traceback.format_exc()}
+        =========================
+        """
+        print(error_msg)  # Print direto no console
+        logger.error(error_msg)
         return JSONResponse(
             status_code=500,
-            content={"detail": "Erro interno do servidor"}
+            content={
+                "detail": "Erro interno do servidor",
+                "error": str(e),
+                "type": type(e).__name__
+            }
         )
 
 app.add_middleware(
