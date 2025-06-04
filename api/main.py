@@ -2,6 +2,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from .routes import router
+from .models import ErrorDetail, ErrorType
 
 
 app = FastAPI(
@@ -10,6 +11,17 @@ app = FastAPI(
     version="1.0.0"
 )
 
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    error_detail = ErrorDetail(
+        type=ErrorType.PROCESSING_ERROR,
+        message="Erro interno do servidor",
+        details={"error": str(exc)}
+    )
+    return JSONResponse(
+        status_code=500,
+        content={"status": "error", "error": error_detail.dict()}
+    )
 
 app.add_middleware(
     CORSMiddleware,
