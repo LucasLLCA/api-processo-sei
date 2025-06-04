@@ -25,11 +25,7 @@ async def global_exception_handler(request: Request, exc: Exception):
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://visualizadorprocessos.sei.sead.pi.gov.br",
-        "https://api.sei.agentes.sead.pi.gov.br",
-        "https://api.sobdemanda.mandu.piaui.pro"
-    ],
+    allow_origins=["*"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
