@@ -10,7 +10,10 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://visualizadorprocessos.sei.sead.pi.gov.br"],
+    allow_origins=[
+        "http://visualizadorprocessos.sei.sead.pi.gov.br",
+        "https://api.sei.agentes.sead.pi.gov.br"
+    ],
     allow_methods=["*"],
     allow_headers=["*"],
 )
