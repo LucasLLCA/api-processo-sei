@@ -10,7 +10,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:9002"],
+    allow_origins=["http://visualizadorprocessos.sei.sead.pi.gov.br"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
