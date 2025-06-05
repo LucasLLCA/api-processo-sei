@@ -23,12 +23,6 @@ async def global_exception_handler(request: Request, exc: Exception):
         content={"status": "error", "error": error_detail.dict()}
     )
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # Permite todas as origens
-    allow_methods=["*"],  # Permite todos os métodos
-    allow_headers=["*"],  # Permite todos os headers
-)
 
 app.include_router(router)
 
