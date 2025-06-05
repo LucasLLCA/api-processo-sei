@@ -5,6 +5,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+print(f"[DEBUG] OPENAI_BASE_URL: {os.getenv('OPENAI_BASE_URL')}")
+print(f"[DEBUG] OPENAI_API_KEY está configurada: {'Sim' if os.getenv('OPENAI_API_KEY') else 'Não'}")
+
 client = OpenAI(
     base_url=os.getenv("OPENAI_BASE_URL"),
     api_key=os.getenv("OPENAI_API_KEY")
@@ -16,6 +19,7 @@ def enviar_para_ia_conteudo(conteudo_md: str) -> dict:
         return {"status": "erro", "resposta_ia": "Conteúdo Markdown vazio"}
     
     try:
+        print(f"[DEBUG] Tentando enviar conteúdo para IA. Tamanho do conteúdo: {len(conteudo_md)} caracteres")
         resposta = client.chat.completions.create(
             model="Qwen/Qwen3-30B-A3B",
             messages=[
@@ -24,9 +28,11 @@ def enviar_para_ia_conteudo(conteudo_md: str) -> dict:
             ],
             temperature=0.7,
         )
+        print("[DEBUG] Resposta da IA recebida com sucesso")
         return {"status": "ok", "resposta_ia": resposta.choices[0].message.content.strip()}
 
     except Exception as e:
+        print(f"[ERRO] Falha ao consultar IA: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Erro ao consultar IA: {str(e)}")
     
 
@@ -35,6 +41,7 @@ def enviar_para_ia_conteudo_md(conteudo_md: str) -> dict:
         return {"status": "erro", "resposta_ia": "Conteúdo Markdown vazio"}
     
     try:
+        print(f"[DEBUG] Tentando enviar conteúdo para IA (MD). Tamanho do conteúdo: {len(conteudo_md)} caracteres")
         resposta = client.chat.completions.create(
             model="Qwen/Qwen3-30B-A3B",
             messages=[
@@ -50,7 +57,9 @@ def enviar_para_ia_conteudo_md(conteudo_md: str) -> dict:
             ],
             temperature=0.7,
         )
+        print("[DEBUG] Resposta da IA (MD) recebida com sucesso")
         return {"status": "ok", "resposta_ia": resposta.choices[0].message.content.strip()}
 
     except Exception as e:
+        print(f"[ERRO] Falha ao consultar IA (MD): {str(e)}")
         raise HTTPException(status_code=500, detail=f"Erro ao consultar IA: {str(e)}")

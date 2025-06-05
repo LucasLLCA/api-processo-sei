@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from .routes import router
 from .models import ErrorDetail, ErrorType
+from .openai_client import client
 
 app = FastAPI(
     title="API Processo SEI",
@@ -24,6 +25,22 @@ app.add_middleware(
 @app.get("/")
 def health_check():
     return {"status": "ok"}
+
+@app.get("/test-ia")
+async def test_ia():
+    try:
+        # Tenta fazer uma requisição simples para a API da IA
+        resposta = client.chat.completions.create(
+            model="Qwen/Qwen3-30B-A3B",
+            messages=[
+                {"role": "system", "content": "Você é um assistente de teste."},
+                {"role": "user", "content": "Responda apenas com 'Teste OK'"}
+            ],
+            temperature=0.7,
+        )
+        return {"status": "ok", "message": resposta.choices[0].message.content.strip()}
+    except Exception as e:
+        return {"status": "erro", "message": str(e)}
 
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
