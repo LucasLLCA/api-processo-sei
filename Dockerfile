@@ -14,7 +14,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Expor a porta que a API vai usar
-EXPOSE 8535
+EXPOSE 8443
 
 # Comando para executar a aplicação
-CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8535"]
+CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8443"]

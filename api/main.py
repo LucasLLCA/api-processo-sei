@@ -15,7 +15,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "https://visualizadorprocessos.sei.sead.pi.gov.br",
-        "https://api.sobdemanda.mandu.piaui.pro"
+        "https://api.sobdemanda.mandu.piaui.pro",
+        "https://api.sei.agentes.sead.pi.gov.br"
     ],
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
