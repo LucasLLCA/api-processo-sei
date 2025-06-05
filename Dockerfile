@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 8535
 
 # Comando para executar a aplicação
-CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8535"]
+CMD ["uvicorn", "api.main:app", "--port", "8535"]
