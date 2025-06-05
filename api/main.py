@@ -4,11 +4,18 @@ from fastapi.responses import JSONResponse
 from .routes import router
 from .models import ErrorDetail, ErrorType
 
-
 app = FastAPI(
     title="API Processo SEI",
     description="API para consulta e análise de processos do SEI utilizando FastAPI e OpenAI",
     version="1.0.0"
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 @app.exception_handler(Exception)
