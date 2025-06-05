@@ -3,29 +3,36 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from .routes import router
 from .models import ErrorDetail, ErrorType
+from .config import get_settings
 from .openai_client import client
 
+# Obtém as configurações
+settings = get_settings()
+
+# Cria a aplicação FastAPI
 app = FastAPI(
-    title="API Processo SEI",
-    description="API para consulta e análise de processos do SEI utilizando FastAPI e OpenAI",
-    version="1.0.0"
+    title=settings.API_TITLE,
+    description=settings.API_DESCRIPTION,
+    version=settings.API_VERSION
 )
 
+# Configura o CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "https://visualizadorprocessos.sei.sead.pi.gov.br",
-        "https://api.sobdemanda.mandu.piaui.pro",
-        "https://api.sei.agentes.sead.pi.gov.br"
-    ],
+    allow_origins=settings.CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
+# Endpoint de health check
 @app.get("/")
 def health_check():
-    return {"status": "ok"}
+    return {
+        "status": "ok",
+        "version": settings.API_VERSION,
+        "environment": "production"
+    }
 
 @app.get("/test-ia")
 async def test_ia():
@@ -43,6 +50,7 @@ async def test_ia():
     except Exception as e:
         return {"status": "erro", "message": str(e)}
 
+# Handler global de exceções
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
     error_detail = ErrorDetail(
@@ -55,7 +63,6 @@ async def global_exception_handler(request: Request, exc: Exception):
         content={"status": "error", "error": error_detail.dict()}
     )
 
-
+# Inclui as rotas
 app.include_router(router)
-
 
