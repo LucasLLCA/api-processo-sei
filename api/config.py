@@ -14,7 +14,8 @@ class Settings(BaseSettings):
     CORS_ORIGINS: List[str] = [
         "https://visualizadorprocessos.sei.sead.pi.gov.br",
         "https://api.sobdemanda.mandu.piaui.pro",
-        "https://api.sei.agentes.sead.pi.gov.br"
+        "https://api.sei.agentes.sead.pi.gov.br",
+        "http://localhost:9002"
     ]
 
     # Configurações do Banco de Dados
