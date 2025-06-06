@@ -1,9 +1,6 @@
 # Usar uma imagem base do Python
 FROM python:3.11-slim
 
-# Definir variáveis de ambiente
-ENV PORT=8443
-
 # Definir o diretório de trabalho
 WORKDIR /app
 
@@ -17,7 +14,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Expor a porta que a API vai usar
-EXPOSE 8443
+EXPOSE 8535
 
 # Comando para executar a aplicação
-CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8443"]
+CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8535"]
