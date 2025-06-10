@@ -41,24 +41,22 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: str
     OPENAI_MODEL: str = "Qwen/Qwen3-30B-A3B"
 
-    class Config:
-        env_file = ".env"
-        case_sensitive = True
+    @property
+    def DB_CONFIG(self):
+        return {
+            "host": self.DB_HOST,
+            "port": self.DB_PORT,
+            "user": self.DB_USER,
+            "password": self.DB_PASSWORD,
+            "dbname": self.DB_NAME
+        }
+    
+    @property
+    def DB_CONFIG(self):
+        return {
+            "usuario": self.SEAD_USUARIO,
+            "senha": self.SEAD_SENHA,
+            "orgao": self.SEAD_ORGAO
+        }
 
 settings = Settings()
-
-# Configurações do banco de dados
-DB_CONFIG = {
-    "host": get_settings().DB_HOST,
-    "port": get_settings().DB_PORT,
-    "user": get_settings().DB_USER,
-    "password": get_settings().DB_PASSWORD,
-    "dbname": get_settings().DB_NAME
-}
-
-# Credenciais do SEI
-SEI_CREDENTIALS = {
-    "usuario": get_settings().SEAD_USUARIO,
-    "senha": get_settings().SEAD_SENHA,
-    "orgao": get_settings().SEAD_ORGAO
-}
