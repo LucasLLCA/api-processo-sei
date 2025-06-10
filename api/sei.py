@@ -3,19 +3,17 @@ import requests
 from fastapi import HTTPException
 from .db import get_db_connection
 from .models import Processo, ErrorDetail, ErrorType
-from .config import SEI_CREDENTIALS
 from functools import lru_cache
 from .utils import converte_documentos_para_markdown
-
-BASE_URL = "https://api.sead.pi.gov.br/sei/v1"
+from .config import settings
 
 @lru_cache(maxsize=1)
 def obter_token():
     try:
-        response = requests.post(f"{BASE_URL}/orgaos/usuarios/login", json={
-            "Usuario": SEI_CREDENTIALS["usuario"],
-            "Senha": SEI_CREDENTIALS["senha"],
-            "Orgao": SEI_CREDENTIALS["orgao"]
+        response = requests.post(f"{settings.SEI_BASE_URL}/orgaos/usuarios/login", json={
+            "Usuario": settings.SEAD_USUARIO,
+            "Senha": settings.SEAD_SENHA,
+            "Orgao": settings.SEAD_ORGAO
         })
         if response.status_code != 200:
             raise HTTPException(
@@ -79,7 +77,7 @@ def buscar_processo(numero: str) -> Processo:
 
 def listar_documentos(token, protocolo, id_unidade):
     try:
-        url = f"{BASE_URL}/unidades/{id_unidade}/procedimentos/documentos"
+        url = f"{settings.SEI_BASE_URL}/unidades/{id_unidade}/procedimentos/documentos"
         params = {
             "protocolo_procedimento": protocolo,
             "pagina": 1,
@@ -109,7 +107,7 @@ def listar_documentos(token, protocolo, id_unidade):
 
 def listar_tarefa(token, protocolo, id_unidade):
     try:
-        url = f"{BASE_URL}/unidades/{id_unidade}/procedimentos/andamentos"
+        url = f"{settings.SEI_BASE_URL}/unidades/{id_unidade}/procedimentos/andamentos"
         params = {
             "protocolo_procedimento": protocolo,
             "sinal_atributos": "N",
@@ -140,7 +138,7 @@ def listar_tarefa(token, protocolo, id_unidade):
 
 def consultar_documento(token, id_unidade, documento_formatado):
     try:
-        url = f"{BASE_URL}/unidades/{id_unidade}/documentos"
+        url = f"{settings.SEI_BASE_URL}/unidades/{id_unidade}/documentos"
         params = {"protocolo_documento": documento_formatado, "sinal_completo": "N"}
         headers = {"accept": "application/json", "token": f'"{token}"'}
         response = requests.get(url, headers=headers, params=params)
@@ -166,7 +164,7 @@ def consultar_documento(token, id_unidade, documento_formatado):
 
 def baixar_documento(token, id_unidade, documento_formatado):
     try:
-        url = f"{BASE_URL}/unidades/{id_unidade}/documentos/baixar"
+        url = f"{settings.SEI_BASE_URL}/unidades/{id_unidade}/documentos/baixar"
         headers = {"accept": "application/json", "token": f'"{token}"'}
         params = {"protocolo_documento": documento_formatado}
         response = requests.get(url, headers=headers, params=params)
