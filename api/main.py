@@ -3,11 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from .routes import router
 from .models import ErrorDetail, ErrorType
-from .config import get_settings
+from .config import settings
 from .openai_client import client
-
-# Obtém as configurações
-settings = get_settings()
 
 # Cria a aplicação FastAPI
 app = FastAPI(
