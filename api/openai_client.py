@@ -1,16 +1,14 @@
 import os
 from openai import OpenAI
 from fastapi import HTTPException
-from dotenv import load_dotenv
+from .config import settings
 
-load_dotenv()
-
-print(f"[DEBUG] OPENAI_BASE_URL: {os.getenv('OPENAI_BASE_URL')}")
-print(f"[DEBUG] OPENAI_API_KEY está configurada: {'Sim' if os.getenv('OPENAI_API_KEY') else 'Não'}")
+print(f"[DEBUG] OPENAI_BASE_URL: {settings.OPENAI_BASE_URL}")
+print(f"[DEBUG] OPENAI_API_KEY está configurada: {settings.OPENAI_API_KEY}")
 
 client = OpenAI(
-    base_url=os.getenv("OPENAI_BASE_URL"),
-    api_key=os.getenv("OPENAI_API_KEY")
+    base_url=settings.OPENAI_BASE_URL,
+    api_key=settings.OPENAI_API_KEY)
 )
 
 
@@ -21,7 +19,7 @@ def enviar_para_ia_conteudo(conteudo_md: str) -> dict:
     try:
         print(f"[DEBUG] Tentando enviar conteúdo para IA. Tamanho do conteúdo: {len(conteudo_md)} caracteres")
         resposta = client.chat.completions.create(
-            model="Qwen/Qwen3-30B-A3B",
+            model=settings.OPENAI_MODEL,
             messages=[
                 {"role": "system", "content": "Você é um assistente jurídico especializado..."},
                 {"role": "user", "content": f"Leia cuidadosamente o documento Markdown abaixo e produza um relatório detalhado...\n\nDocumento:\n\n{conteudo_md}"}
@@ -43,7 +41,7 @@ def enviar_para_ia_conteudo_md(conteudo_md: str) -> dict:
     try:
         print(f"[DEBUG] Tentando enviar conteúdo para IA (MD). Tamanho do conteúdo: {len(conteudo_md)} caracteres")
         resposta = client.chat.completions.create(
-            model="Qwen/Qwen3-30B-A3B",
+            model=settings.OPENAI_MODEL,
             messages=[
                 {"role": "system", "content": "Você é um assistente jurídico especializado em analisar processos administrativos. Sua tarefa é produzir um resumo claro e conciso em dois parágrafos, integrando as informações dos documentos de forma coerente."},
                 {"role": "user", "content": f"""Analise os documentos abaixo e produza um resumo em dois parágrafos que integre as informações de forma coerente:
