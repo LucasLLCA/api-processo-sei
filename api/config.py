@@ -3,6 +3,12 @@ from functools import lru_cache
 from typing import List
 
 class Settings(BaseSettings):
+    model_config = {
+        "env_file": ".env",
+        "env_file_encoding": "utf-8",
+        "extra": "ignore"
+    }
+    
     # Configurações da API
     API_TITLE: str = "API Processo SEI"
     API_DESCRIPTION: str = "API para consulta e análise de processos do SEI utilizando FastAPI e OpenAI"
