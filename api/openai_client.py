@@ -8,7 +8,7 @@ print(f"[DEBUG] OPENAI_API_KEY está configurada: {settings.OPENAI_API_KEY}")
 
 client = OpenAI(
     base_url=settings.OPENAI_BASE_URL,
-    api_key=settings.OPENAI_API_KEY)
+    api_key=settings.OPENAI_API_KEY
 )
 
 
