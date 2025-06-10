@@ -50,13 +50,5 @@ class Settings(BaseSettings):
             "password": self.DB_PASSWORD,
             "dbname": self.DB_NAME
         }
-    
-    @property
-    def DB_CONFIG(self):
-        return {
-            "usuario": self.SEAD_USUARIO,
-            "senha": self.SEAD_SENHA,
-            "orgao": self.SEAD_ORGAO
-        }
 
 settings = Settings()
