@@ -36,7 +36,7 @@ async def test_ia():
     try:
         # Tenta fazer uma requisição simples para a API da IA
         resposta = client.chat.completions.create(
-            model="Qwen/Qwen3-30B-A3B",
+            model=settings.OPENAI_MODEL,
             messages=[
                 {"role": "system", "content": "Você é um assistente de teste."},
                 {"role": "user", "content": "Responda apenas com 'Teste OK'"}
