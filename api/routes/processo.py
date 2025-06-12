@@ -242,4 +242,18 @@ async def resumo_completo(numero_processo: str):
                 message="Erro ao processar o resumo completo do processo",
                 details={"error": str(e), "numero_processo": numero_processo}
             ).dict()
-        ) 
+        )
+    
+@router.get("/resumo-documento/{documento_formatado}", response_model=Retorno)
+async def resumo_documento(documento_formatado: str):
+    """
+    Retorna uma análise completa de um documento.
+    
+    Args:
+        numero_documento (str): Número do documento associado um processo no SEI
+        
+    Returns:
+        Retorno: Objeto contendo o status e resumo completo do documento
+    """
+
+    

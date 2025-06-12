@@ -6,23 +6,25 @@ from .models import ErrorDetail, ErrorType
 from .config import settings
 from .openai_client import client
 
-# Cria a aplicação FastAPI
 app = FastAPI(
     title=settings.API_TITLE,
     description=settings.API_DESCRIPTION,
     version=settings.API_VERSION
 )
 
-# Configura o CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "https://visualizadorprocessos.sei.sead.pi.gov.br",
+        "https://api.sobdemanda.mandu.piaui.pro",
+        "https://api.sei.agentes.sead.pi.gov.br",
+        "http://localhost:9002"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Endpoint de health check
 @app.get("/")
 def health_check():
     return {
@@ -47,7 +49,6 @@ async def test_ia():
     except Exception as e:
         return {"status": "erro", "message": str(e)}
 
-# Handler global de exceções
 @app.exception_handler(Exception)
 async def global_exception_handler(request: Request, exc: Exception):
     error_detail = ErrorDetail(
@@ -60,6 +61,5 @@ async def global_exception_handler(request: Request, exc: Exception):
         content={"status": "error", "error": error_detail.dict()}
     )
 
-# Inclui as rotas
 app.include_router(router)
 

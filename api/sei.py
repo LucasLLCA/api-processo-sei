@@ -81,7 +81,7 @@ def listar_documentos(token, protocolo, id_unidade):
         params = {
             "protocolo_procedimento": protocolo,
             "pagina": 1,
-            "quantidade": 10
+            "quantidade": 1
         }
         headers = {"accept": "application/json", "token": f'"{token}"'}
         response = requests.get(url, headers=headers, params=params)
@@ -93,7 +93,19 @@ def listar_documentos(token, protocolo, id_unidade):
                     message="Falha ao listar documentos no SEI",
                     details={"status_code": response.status_code, "response": response.text}
                 ).dict()
-            )
+            )    
+        total_itens = response.json().get("Info", {}).get("TotalItens", 0)
+        params["quantidade"] = total_itens
+        response = requests.get(url, headers=headers, params=params)
+        if response.status_code != 200:
+            raise HTTPException(
+                status_code=500,
+                detail=ErrorDetail(
+                    type=ErrorType.EXTERNAL_SERVICE_ERROR,
+                    message="Falha ao listar documentos no SEI",
+                    details={"status_code": response.status_code, "response": response.text}
+                ).dict()
+            )  
         return response.json().get("Documentos", [])
     except requests.RequestException as e:
         raise HTTPException(
