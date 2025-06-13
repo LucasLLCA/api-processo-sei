@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from ..sei import listar_documentos, listar_tarefa, consultar_documento, baixar_documento
-from ..openai_client import enviar_para_ia_conteudo, enviar_para_ia_conteudo_md
+from ..openai_client import enviar_para_ia_conteudo, enviar_para_ia_conteudo_md, enviar_documento_ia_conteudo
 from ..utils import ler_arquivo_md
 from ..models import ErrorDetail, ErrorType, Retorno
 from concurrent.futures import ThreadPoolExecutor
@@ -278,7 +278,7 @@ async def resumo_documento(documento_formatado: str, token: str, id_unidade: str
             )
 
         conteudo = ler_arquivo_md(md)
-        resposta_ia = enviar_para_ia_conteudo(conteudo)
+        resposta_ia = enviar_documento_ia_conteudo(conteudo)
 
         return Retorno(
             status="ok",

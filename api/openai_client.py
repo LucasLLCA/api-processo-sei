@@ -61,3 +61,24 @@ def enviar_para_ia_conteudo_md(conteudo_md: str) -> dict:
     except Exception as e:
         print(f"[ERRO] Falha ao consultar IA (MD): {str(e)}")
         raise HTTPException(status_code=500, detail=f"Erro ao consultar IA: {str(e)}")
+
+def enviar_documento_ia_conteudo(conteudo_md: str) -> dict:
+    if not conteudo_md.strip():
+        return {"status": "erro", "resposta_ia": "Conteúdo Markdown vazio"}
+    
+    try:
+        print(f"[DEBUG] Tentando enviar conteúdo para IA. Tamanho do conteúdo: {len(conteudo_md)} caracteres")
+        resposta = client.chat.completions.create(
+            model=settings.OPENAI_MODEL,
+            messages=[
+                {"role": "system", "content": "Você é um assistente jurídico especializado..."},
+                {"role": "user", "content": f"Leia cuidadosamente o documento Markdown abaixo e produza um resumo de maximo 300 caracteres...\n\nDocumento:\n\n{conteudo_md}"}
+            ],
+            temperature=0.7,
+        )
+        print("[DEBUG] Resposta da IA recebida com sucesso")
+        return {"status": "ok", "resposta_ia": resposta.choices[0].message.content.strip()}
+
+    except Exception as e:
+        print(f"[ERRO] Falha ao consultar IA: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erro ao consultar IA: {str(e)}")
