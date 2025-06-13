@@ -18,7 +18,8 @@ app.add_middleware(
         "https://visualizadorprocessos.sei.sead.pi.gov.br",
         "https://api.sobdemanda.mandu.piaui.pro",
         "https://api.sei.agentes.sead.pi.gov.br",
-        "http://localhost:9002"
+        "http://localhost:9002",
+        "http://localhost:3000"
     ],
     allow_credentials=True,
     allow_methods=["*"],
