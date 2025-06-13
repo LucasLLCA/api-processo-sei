@@ -37,7 +37,6 @@ def health_check():
 @app.get("/test-ia")
 async def test_ia():
     try:
-        # Tenta fazer uma requisição simples para a API da IA
         resposta = client.chat.completions.create(
             model=settings.OPENAI_MODEL,
             messages=[
