@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from ..sei import obter_token, buscar_processo, listar_documentos, listar_tarefa, consultar_documento, baixar_documento
+from ..sei import listar_documentos, listar_tarefa, consultar_documento, baixar_documento
 from ..openai_client import enviar_para_ia_conteudo, enviar_para_ia_conteudo_md
 from ..utils import ler_arquivo_md
 from ..models import ErrorDetail, ErrorType, Retorno
@@ -8,21 +8,21 @@ from concurrent.futures import ThreadPoolExecutor
 router = APIRouter()
 
 @router.get("/andamento/{numero_processo}", response_model=Retorno)
-async def andamento(numero_processo: str):
+async def andamento(numero_processo: str, token: str, id_unidade: str):
     """
     Retorna o andamento atual do processo e um resumo do último documento.
     
     Args:
         numero_processo (str): Número do processo no SEI
+        token (str): Token de autenticação do SEI
+        id_unidade (str): ID da unidade no SEI
         
     Returns:
         Retorno: Objeto contendo o status, andamento e resumo do último documento
     """
     try:
-        token = obter_token()
-        processo = buscar_processo(numero_processo)
-        documentos = listar_documentos(token, processo.protocolo, processo.id_unidade)
-        andamentos = listar_tarefa(token, processo.protocolo, processo.id_unidade)
+        documentos = listar_documentos(token, numero_processo, id_unidade)
+        andamentos = listar_tarefa(token, numero_processo, id_unidade)
 
         if not documentos:
             raise HTTPException(
@@ -37,8 +37,8 @@ async def andamento(numero_processo: str):
         ultimo = documentos[-1]
 
         with ThreadPoolExecutor() as executor:
-            fut_doc_ultimo = executor.submit(consultar_documento, token, processo.id_unidade, ultimo["DocumentoFormatado"])
-            fut_md_ultimo = executor.submit(baixar_documento, token, processo.id_unidade, ultimo["DocumentoFormatado"])
+            fut_doc_ultimo = executor.submit(consultar_documento, token, id_unidade, ultimo["DocumentoFormatado"])
+            fut_md_ultimo = executor.submit(baixar_documento, token, id_unidade, ultimo["DocumentoFormatado"])
 
             doc_ultimo = fut_doc_ultimo.result()
             md_ultimo = fut_md_ultimo.result()
@@ -64,20 +64,20 @@ async def andamento(numero_processo: str):
         )
 
 @router.get("/resumo/{numero_processo}", response_model=Retorno)
-async def resumo(numero_processo: str):
+async def resumo(numero_processo: str, token: str, id_unidade: str):
     """
     Retorna um resumo do processo, incluindo o primeiro e último documento.
     
     Args:
         numero_processo (str): Número do processo no SEI
+        token (str): Token de autenticação do SEI
+        id_unidade (str): ID da unidade no SEI
         
     Returns:
         Retorno: Objeto contendo o status e resumo do processo
     """
     try:
-        token = obter_token()
-        processo = buscar_processo(numero_processo)
-        documentos = listar_documentos(token, processo.protocolo, processo.id_unidade)
+        documentos = listar_documentos(token, numero_processo, id_unidade)
 
         if not documentos:
             raise HTTPException(
@@ -93,10 +93,10 @@ async def resumo(numero_processo: str):
         ultimo = documentos[-1]
 
         with ThreadPoolExecutor() as executor:
-            fut_doc_primeiro = executor.submit(consultar_documento, token, processo.id_unidade, primeiro["DocumentoFormatado"])
-            fut_doc_ultimo = executor.submit(consultar_documento, token, processo.id_unidade, ultimo["DocumentoFormatado"])
-            fut_md_primeiro = executor.submit(baixar_documento, token, processo.id_unidade, primeiro["DocumentoFormatado"])
-            fut_md_ultimo = executor.submit(baixar_documento, token, processo.id_unidade, ultimo["DocumentoFormatado"])
+            fut_doc_primeiro = executor.submit(consultar_documento, token, id_unidade, primeiro["DocumentoFormatado"])
+            fut_doc_ultimo = executor.submit(consultar_documento, token, id_unidade, ultimo["DocumentoFormatado"])
+            fut_md_primeiro = executor.submit(baixar_documento, token, id_unidade, primeiro["DocumentoFormatado"])
+            fut_md_ultimo = executor.submit(baixar_documento, token, id_unidade, ultimo["DocumentoFormatado"])
 
             doc_primeiro = fut_doc_primeiro.result()
             doc_ultimo = fut_doc_ultimo.result()
@@ -109,7 +109,10 @@ async def resumo(numero_processo: str):
         return Retorno(
             status="ok",
             resumo={
-                "processo": processo.dict(),
+                "processo": {
+                    "numero": numero_processo,
+                    "id_unidade": id_unidade
+                },
                 "primeiro_documento": doc_primeiro,
                 "resumo_primeiro": resposta_ia_primeiro,
                 "ultimo_documento": doc_ultimo,
@@ -130,20 +133,20 @@ async def resumo(numero_processo: str):
         )
 
 @router.get("/resumo-completo/{numero_processo}", response_model=Retorno)
-async def resumo_completo(numero_processo: str):
+async def resumo_completo(numero_processo: str, token: str, id_unidade: str):
     """
     Retorna uma análise completa do processo, combinando o primeiro e último documento.
     
     Args:
         numero_processo (str): Número do processo no SEI
+        token (str): Token de autenticação do SEI
+        id_unidade (str): ID da unidade no SEI
         
     Returns:
         Retorno: Objeto contendo o status e resumo completo do processo
     """
     try:
-        token = obter_token()
-        processo = buscar_processo(numero_processo)
-        documentos = listar_documentos(token, processo.protocolo, processo.id_unidade)
+        documentos = listar_documentos(token, numero_processo, id_unidade)
 
         if not documentos:
             raise HTTPException(
@@ -163,10 +166,10 @@ async def resumo_completo(numero_processo: str):
             print(f"[DEBUG] Primeiro documento: {primeiro['DocumentoFormatado']}")
             print(f"[DEBUG] Último documento: {ultimo['DocumentoFormatado']}")
             
-            fut_doc_primeiro = executor.submit(consultar_documento, token, processo.id_unidade, primeiro["DocumentoFormatado"])
-            fut_doc_ultimo = executor.submit(consultar_documento, token, processo.id_unidade, ultimo["DocumentoFormatado"])
-            fut_md_primeiro = executor.submit(baixar_documento, token, processo.id_unidade, primeiro["DocumentoFormatado"])
-            fut_md_ultimo = executor.submit(baixar_documento, token, processo.id_unidade, ultimo["DocumentoFormatado"])
+            fut_doc_primeiro = executor.submit(consultar_documento, token, id_unidade, primeiro["DocumentoFormatado"])
+            fut_doc_ultimo = executor.submit(consultar_documento, token, id_unidade, ultimo["DocumentoFormatado"])
+            fut_md_primeiro = executor.submit(baixar_documento, token, id_unidade, primeiro["DocumentoFormatado"])
+            fut_md_ultimo = executor.submit(baixar_documento, token, id_unidade, ultimo["DocumentoFormatado"])
 
             try:
                 doc_primeiro = fut_doc_primeiro.result()
@@ -225,7 +228,10 @@ async def resumo_completo(numero_processo: str):
         return Retorno(
             status="ok",
             resumo={
-                "processo": processo.dict(),
+                "processo": {
+                    "numero": numero_processo,
+                    "id_unidade": id_unidade
+                },
                 "primeiro_documento": doc_primeiro,
                 "ultimo_documento": doc_ultimo,
                 "resumo_combinado": resposta_ia_combinada
@@ -243,17 +249,54 @@ async def resumo_completo(numero_processo: str):
                 details={"error": str(e), "numero_processo": numero_processo}
             ).dict()
         )
-    
+
 @router.get("/resumo-documento/{documento_formatado}", response_model=Retorno)
-async def resumo_documento(documento_formatado: str):
+async def resumo_documento(documento_formatado: str, token: str, id_unidade: str):
     """
     Retorna uma análise completa de um documento.
     
     Args:
-        numero_documento (str): Número do documento associado um processo no SEI
+        documento_formatado (str): Número do documento formatado
+        token (str): Token de autenticação do SEI
+        id_unidade (str): ID da unidade no SEI
         
     Returns:
         Retorno: Objeto contendo o status e resumo completo do documento
     """
+    try:
+        doc = consultar_documento(token, id_unidade, documento_formatado)
+        md = baixar_documento(token, id_unidade, documento_formatado)
 
+        if not md:
+            raise HTTPException(
+                status_code=404,
+                detail=ErrorDetail(
+                    type=ErrorType.NOT_FOUND,
+                    message="Documento não encontrado ou não é um documento HTML",
+                    details={"documento_formatado": documento_formatado}
+                ).dict()
+            )
+
+        conteudo = ler_arquivo_md(md)
+        resposta_ia = enviar_para_ia_conteudo(conteudo)
+
+        return Retorno(
+            status="ok",
+            resumo={
+                "documento": doc,
+                "resumo": resposta_ia
+            }
+        )
+
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=ErrorDetail(
+                type=ErrorType.PROCESSING_ERROR,
+                message="Erro ao processar o resumo do documento",
+                details={"error": str(e), "documento_formatado": documento_formatado}
+            ).dict()
+        )
     
