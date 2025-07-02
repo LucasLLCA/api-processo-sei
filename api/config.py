@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     API_PORT: int = 8443
     API_HOST: str = "0.0.0.0"
 
-    SEI_BASE_URL: str = "https://api.sead.pi.gov.br/sei/v1"
+    SEI_BASE_URL: str = "https://api.sei.pi.gov.br/v1"
 
     OPENAI_BASE_URL: str
     OPENAI_API_KEY: str
