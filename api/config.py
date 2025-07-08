@@ -16,8 +16,8 @@ class Settings(BaseSettings):
 
     SEI_BASE_URL: str = "https://api.sei.pi.gov.br/v1"
 
-    OPENAI_BASE_URL: str
-    OPENAI_API_KEY: str
+    OPENAI_BASE_URL: str = "https://api.sobdemanda.mandu.piaui.pro"
+    OPENAI_API_KEY: str = "sk-Thp8OzZ_6U3tHoDStt8qYg"
     OPENAI_MODEL: str = "Qwen/Qwen3-30B-A3B"
 
 settings = Settings()
