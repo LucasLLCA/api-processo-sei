@@ -45,6 +45,9 @@ async def test_ia():
             ],
             temperature=0.7,
         )
+        print(resposta)  # Log da resposta para depuração
+        if not resposta.choices or len(resposta.choices) == 0:
+            raise ValueError("Resposta vazia do modelo OpenAI")
         return {"status": "ok", "message": resposta.choices[0].message.content.strip()}
     except Exception as e:
         return {"status": "erro", "message": str(e)}
