@@ -15,8 +15,8 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://visualizadorprocessos.sei.sead.pi.gov.br",
-        "https://api.sobdemanda.mandu.piaui.pro",
+        "https://visualizadorprocessos.sei.sead.pi.gov.br/",
+        "https://api.sobdemanda.mandu.piaui.pro/v1",
         "https://api.sei.agentes.sead.pi.gov.br",
         "http://localhost:9002",
         "http://localhost:3000"
@@ -65,4 +65,3 @@ async def global_exception_handler(request: Request, exc: Exception):
     )
 
 app.include_router(router)
-
