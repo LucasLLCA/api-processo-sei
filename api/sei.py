@@ -1,8 +1,11 @@
 import re
 import requests
+import io
 from fastapi import HTTPException
+from minio import Minio
+from minio.error import S3Error
 from .models import Processo, ErrorDetail, ErrorType
-from .utils import converte_documentos_para_markdown
+from .utils import converte_html_para_markdown_memoria
 from .config import settings
 
 def listar_documentos(token: str, protocolo: str, id_unidade: str):
@@ -104,7 +107,7 @@ def consultar_documento(token: str, id_unidade: str, documento_formatado: str):
             ).dict()
         )
 
-def baixar_documento(token: str, id_unidade: str, documento_formatado: str):
+def baixar_documento(token: str, id_unidade: str, documento_formatado: str, numero_processo: str = None):
     try:
         url = f"{settings.SEI_BASE_URL}/unidades/{id_unidade}/documentos/baixar"
         headers = {"accept": "application/json", "token": f'"{token}"'}
@@ -125,12 +128,82 @@ def baixar_documento(token: str, id_unidade: str, documento_formatado: str):
         match = re.search(r'filename="(.+)"', content_disposition)
         filename = match.group(1) if match else f"documento_{documento_formatado}.html"
 
-        with open(filename, "wb") as f:
-            f.write(response.content)
+        # Inicializar cliente MinIO
+        minio_client = Minio(
+            settings.MINIO_ENDPOINT,
+            access_key=settings.MINIO_ACCESS_KEY,
+            secret_key=settings.MINIO_SECRET_KEY,
+            secure=True
+        )
 
+        # Definir estrutura de pastas no MinIO
+        processo_folder = numero_processo if numero_processo else "sem_processo"
+        html_object_name = f"{processo_folder}/{filename}"
+        
+        # Verificar se o arquivo HTML já existe no MinIO
+        try:
+            minio_client.stat_object(settings.MINIO_BUCKET, html_object_name)
+            print(f"[DEBUG] Arquivo HTML já existe no MinIO: {html_object_name}")
+            html_exists = True
+        except S3Error:
+            html_exists = False
+
+        # Se o arquivo HTML não existe, salvar no MinIO
+        if not html_exists:
+            try:
+                html_data = io.BytesIO(response.content)
+                minio_client.put_object(
+                    settings.MINIO_BUCKET,
+                    html_object_name,
+                    html_data,
+                    len(response.content),
+                    content_type="text/html"
+                )
+                print(f"[DEBUG] Arquivo HTML salvo no MinIO: {html_object_name}")
+            except S3Error as e:
+                print(f"[ERRO] Falha ao salvar HTML no MinIO: {str(e)}")
+                raise HTTPException(
+                    status_code=500,
+                    detail=ErrorDetail(
+                        type=ErrorType.PROCESSING_ERROR,
+                        message="Erro ao salvar documento HTML no MinIO",
+                        details={"error": str(e)}
+                    ).dict()
+                )
+
+        # Processar documento para Markdown se for HTML
         if filename.lower().endswith(".html") or filename.lower().endswith(".htm"):
-            caminho_md = converte_documentos_para_markdown(filename)
-            return caminho_md
+            md_filename = filename.rsplit('.', 1)[0] + '.md'
+            md_object_name = f"{processo_folder}/{md_filename}"
+            
+            # Verificar se o arquivo MD já existe no MinIO
+            try:
+                minio_client.stat_object(settings.MINIO_BUCKET, md_object_name)
+                print(f"[DEBUG] Arquivo MD já existe no MinIO: {md_object_name}")
+                # Retornar o caminho do objeto no MinIO
+                return md_object_name
+            except S3Error:
+                # Arquivo MD não existe, precisa converter e salvar
+                try:
+                    # Converter HTML para Markdown diretamente em memória
+                    html_content = response.content.decode('utf-8')
+                    md_content = converte_html_para_markdown_memoria(html_content)
+                    
+                    # Salvar o MD no MinIO
+                    md_data = io.BytesIO(md_content.encode('utf-8'))
+                    minio_client.put_object(
+                        settings.MINIO_BUCKET,
+                        md_object_name,
+                        md_data,
+                        len(md_content.encode('utf-8')),
+                        content_type="text/markdown"
+                    )
+                    print(f"[DEBUG] Arquivo MD convertido e salvo no MinIO: {md_object_name}")
+                    # Retornar o caminho do objeto no MinIO
+                    return md_object_name
+                except Exception as e:
+                    print(f"[ERRO] Falha na conversão HTML->MD: {str(e)}")
+                    return None
         else:
             return None
     except requests.RequestException as e:
@@ -151,4 +224,3 @@ def baixar_documento(token: str, id_unidade: str, documento_formatado: str):
                 details={"error": str(e)}
             ).dict()
         )
-    

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from ..sei import listar_documentos, listar_tarefa, consultar_documento, baixar_documento
 from ..openai_client import enviar_para_ia_conteudo, enviar_para_ia_conteudo_md, enviar_documento_ia_conteudo
-from ..utils import ler_arquivo_md
+from ..utils import ler_arquivo_md_minio
 from ..models import ErrorDetail, ErrorType, Retorno
 from concurrent.futures import ThreadPoolExecutor
 
@@ -38,12 +38,12 @@ async def andamento(numero_processo: str, token: str, id_unidade: str):
 
         with ThreadPoolExecutor() as executor:
             fut_doc_ultimo = executor.submit(consultar_documento, token, id_unidade, ultimo["DocumentoFormatado"])
-            fut_md_ultimo = executor.submit(baixar_documento, token, id_unidade, ultimo["DocumentoFormatado"])
+            fut_md_ultimo = executor.submit(baixar_documento, token, id_unidade, ultimo["DocumentoFormatado"], numero_processo)
 
             doc_ultimo = fut_doc_ultimo.result()
             md_ultimo = fut_md_ultimo.result()
 
-            resposta_ia_ultimo = enviar_para_ia_conteudo(ler_arquivo_md(md_ultimo)) if md_ultimo else {}
+            resposta_ia_ultimo = enviar_para_ia_conteudo(ler_arquivo_md_minio(md_ultimo)) if md_ultimo else {}
 
         return Retorno(
             status="ok",
@@ -95,16 +95,16 @@ async def resumo(numero_processo: str, token: str, id_unidade: str):
         with ThreadPoolExecutor() as executor:
             fut_doc_primeiro = executor.submit(consultar_documento, token, id_unidade, primeiro["DocumentoFormatado"])
             fut_doc_ultimo = executor.submit(consultar_documento, token, id_unidade, ultimo["DocumentoFormatado"])
-            fut_md_primeiro = executor.submit(baixar_documento, token, id_unidade, primeiro["DocumentoFormatado"])
-            fut_md_ultimo = executor.submit(baixar_documento, token, id_unidade, ultimo["DocumentoFormatado"])
+            fut_md_primeiro = executor.submit(baixar_documento, token, id_unidade, primeiro["DocumentoFormatado"], numero_processo)
+            fut_md_ultimo = executor.submit(baixar_documento, token, id_unidade, ultimo["DocumentoFormatado"], numero_processo)
 
             doc_primeiro = fut_doc_primeiro.result()
             doc_ultimo = fut_doc_ultimo.result()
             md_primeiro = fut_md_primeiro.result()
             md_ultimo = fut_md_ultimo.result()
 
-            resposta_ia_primeiro = enviar_para_ia_conteudo(ler_arquivo_md(md_primeiro)) if md_primeiro else {}
-            resposta_ia_ultimo = enviar_para_ia_conteudo(ler_arquivo_md(md_ultimo)) if md_ultimo else {}
+            resposta_ia_primeiro = enviar_para_ia_conteudo(ler_arquivo_md_minio(md_primeiro)) if md_primeiro else {}
+            resposta_ia_ultimo = enviar_para_ia_conteudo(ler_arquivo_md_minio(md_ultimo)) if md_ultimo else {}
 
         return Retorno(
             status="ok",
@@ -168,8 +168,8 @@ async def resumo_completo(numero_processo: str, token: str, id_unidade: str):
             
             fut_doc_primeiro = executor.submit(consultar_documento, token, id_unidade, primeiro["DocumentoFormatado"])
             fut_doc_ultimo = executor.submit(consultar_documento, token, id_unidade, ultimo["DocumentoFormatado"])
-            fut_md_primeiro = executor.submit(baixar_documento, token, id_unidade, primeiro["DocumentoFormatado"])
-            fut_md_ultimo = executor.submit(baixar_documento, token, id_unidade, ultimo["DocumentoFormatado"])
+            fut_md_primeiro = executor.submit(baixar_documento, token, id_unidade, primeiro["DocumentoFormatado"], numero_processo)
+            fut_md_ultimo = executor.submit(baixar_documento, token, id_unidade, ultimo["DocumentoFormatado"], numero_processo)
 
             try:
                 doc_primeiro = fut_doc_primeiro.result()
@@ -202,7 +202,7 @@ async def resumo_completo(numero_processo: str, token: str, id_unidade: str):
             conteudo_combinado = ""
             if md_primeiro:
                 try:
-                    conteudo_primeiro = ler_arquivo_md(md_primeiro)
+                    conteudo_primeiro = ler_arquivo_md_minio(md_primeiro)
                     print(f"[DEBUG] Conteúdo do primeiro documento lido: {len(conteudo_primeiro)} caracteres")
                     conteudo_combinado += f"PRIMEIRO DOCUMENTO:\n{conteudo_primeiro}\n\n"
                 except Exception as e:
@@ -210,7 +210,7 @@ async def resumo_completo(numero_processo: str, token: str, id_unidade: str):
 
             if md_ultimo:
                 try:
-                    conteudo_ultimo = ler_arquivo_md(md_ultimo)
+                    conteudo_ultimo = ler_arquivo_md_minio(md_ultimo)
                     print(f"[DEBUG] Conteúdo do último documento lido: {len(conteudo_ultimo)} caracteres")
                     conteudo_combinado += f"ÚLTIMO DOCUMENTO:\n{conteudo_ultimo}"
                 except Exception as e:
@@ -277,7 +277,7 @@ async def resumo_documento(documento_formatado: str, token: str, id_unidade: str
                 ).dict()
             )
 
-        conteudo = ler_arquivo_md(md)
+        conteudo = ler_arquivo_md_minio(md)
         resposta_ia = enviar_documento_ia_conteudo(conteudo)
 
         return Retorno(
