@@ -58,9 +58,15 @@ def ler_arquivo_md_minio(object_name: str) -> str:
         
         return content
     except S3Error as e:
-        print(f"[ERRO] Falha ao ler arquivo MD do MinIO: {str(e)}")
+        print(f"[WARN] Falha ao ler arquivo MD do MinIO: {str(e)}")
+        # Se o object_name é um conteúdo MD direto (fallback)
+        if object_name and not object_name.startswith('sem_processo/') and not '/' in object_name:
+            return object_name
         return ""
     except Exception as e:
-        print(f"[ERRO] Erro inesperado ao ler arquivo MD do MinIO: {str(e)}")
+        print(f"[WARN] MinIO inacessível (leitura MD): {str(e)}")
+        # Se o object_name é um conteúdo MD direto (fallback)
+        if object_name and not object_name.startswith('sem_processo/') and not '/' in object_name:
+            return object_name
         return ""
 

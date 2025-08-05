@@ -351,6 +351,9 @@ def baixar_documento(token: str, id_unidade: str, documento_formatado: str, nume
             html_exists = True
         except S3Error:
             html_exists = False
+        except Exception as e:
+            print(f"[WARN] MinIO inacessível (verificação HTML): {str(e)}")
+            html_exists = False
 
         # Se o arquivo HTML não existe, salvar no MinIO
         if not html_exists:
@@ -365,15 +368,11 @@ def baixar_documento(token: str, id_unidade: str, documento_formatado: str, nume
                 )
                 print(f"[DEBUG] Arquivo HTML salvo no MinIO: {html_object_name}")
             except S3Error as e:
-                print(f"[ERRO] Falha ao salvar HTML no MinIO: {str(e)}")
-                raise HTTPException(
-                    status_code=500,
-                    detail=ErrorDetail(
-                        type=ErrorType.PROCESSING_ERROR,
-                        message="Erro ao salvar documento HTML no MinIO",
-                        details={"error": str(e)}
-                    ).dict()
-                )
+                print(f"[WARN] Falha ao salvar HTML no MinIO: {str(e)}")
+                # Continua sem salvar no MinIO
+            except Exception as e:
+                print(f"[WARN] MinIO inacessível (salvamento HTML): {str(e)}")
+                # Continua sem salvar no MinIO
 
         # Processar documento para Markdown se for HTML
         if filename.lower().endswith(".html") or filename.lower().endswith(".htm"):
@@ -388,12 +387,20 @@ def baixar_documento(token: str, id_unidade: str, documento_formatado: str, nume
                 return md_object_name
             except S3Error:
                 # Arquivo MD não existe, precisa converter e salvar
+                pass
+            except Exception as e:
+                print(f"[WARN] MinIO inacessível (verificação MD): {str(e)}")
+                # Continua para conversão local sem MinIO
+                pass
+            
+            # Se chegou aqui, o arquivo MD não existe no MinIO ou MinIO está inacessível
+            try:
+                # Converter HTML para Markdown diretamente em memória
+                html_content = response.content.decode('utf-8')
+                md_content = converte_html_para_markdown_memoria(html_content)
+                
+                # Tentar salvar o MD no MinIO
                 try:
-                    # Converter HTML para Markdown diretamente em memória
-                    html_content = response.content.decode('utf-8')
-                    md_content = converte_html_para_markdown_memoria(html_content)
-                    
-                    # Salvar o MD no MinIO
                     md_data = io.BytesIO(md_content.encode('utf-8'))
                     minio_client.put_object(
                         settings.MINIO_BUCKET,
@@ -405,9 +412,13 @@ def baixar_documento(token: str, id_unidade: str, documento_formatado: str, nume
                     print(f"[DEBUG] Arquivo MD convertido e salvo no MinIO: {md_object_name}")
                     # Retornar o caminho do objeto no MinIO
                     return md_object_name
-                except Exception as e:
-                    print(f"[ERRO] Falha na conversão HTML->MD: {str(e)}")
-                    return None
+                except Exception as minio_error:
+                    print(f"[WARN] MinIO inacessível (salvamento MD): {str(minio_error)}")
+                    # Retorna o conteúdo convertido em memória
+                    return md_content
+            except Exception as e:
+                print(f"[ERRO] Falha na conversão HTML->MD: {str(e)}")
+                return None
         else:
             return None
     except requests.RequestException as e:
