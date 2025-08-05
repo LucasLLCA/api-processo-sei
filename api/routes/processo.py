@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException
 from ..sei import listar_documentos, listar_tarefa, consultar_documento, baixar_documento
 from ..openai_client import enviar_para_ia_conteudo, enviar_para_ia_conteudo_md, enviar_documento_ia_conteudo
-from ..utils import ler_arquivo_md_minio
+from ..utils import ler_arquivo_md_minio, ler_conteudo_md
 from ..models import ErrorDetail, ErrorType, Retorno
 from concurrent.futures import ThreadPoolExecutor
 
@@ -43,7 +43,7 @@ async def andamento(numero_processo: str, token: str, id_unidade: str):
             doc_ultimo = fut_doc_ultimo.result()
             md_ultimo = fut_md_ultimo.result()
 
-            resposta_ia_ultimo = enviar_para_ia_conteudo(ler_arquivo_md_minio(md_ultimo)) if md_ultimo else {}
+            resposta_ia_ultimo = enviar_para_ia_conteudo(ler_conteudo_md(md_ultimo)) if md_ultimo else {}
 
         return Retorno(
             status="ok",
@@ -103,8 +103,8 @@ async def resumo(numero_processo: str, token: str, id_unidade: str):
             md_primeiro = fut_md_primeiro.result()
             md_ultimo = fut_md_ultimo.result()
 
-            resposta_ia_primeiro = enviar_para_ia_conteudo(ler_arquivo_md_minio(md_primeiro)) if md_primeiro else {}
-            resposta_ia_ultimo = enviar_para_ia_conteudo(ler_arquivo_md_minio(md_ultimo)) if md_ultimo else {}
+            resposta_ia_primeiro = enviar_para_ia_conteudo(ler_conteudo_md(md_primeiro)) if md_primeiro else {}
+            resposta_ia_ultimo = enviar_para_ia_conteudo(ler_conteudo_md(md_ultimo)) if md_ultimo else {}
 
         return Retorno(
             status="ok",
@@ -202,7 +202,7 @@ async def resumo_completo(numero_processo: str, token: str, id_unidade: str):
             conteudo_combinado = ""
             if md_primeiro:
                 try:
-                    conteudo_primeiro = ler_arquivo_md_minio(md_primeiro)
+                    conteudo_primeiro = ler_conteudo_md(md_primeiro)
                     print(f"[DEBUG] Conteúdo do primeiro documento lido: {len(conteudo_primeiro)} caracteres")
                     conteudo_combinado += f"PRIMEIRO DOCUMENTO:\n{conteudo_primeiro}\n\n"
                 except Exception as e:
@@ -210,7 +210,7 @@ async def resumo_completo(numero_processo: str, token: str, id_unidade: str):
 
             if md_ultimo:
                 try:
-                    conteudo_ultimo = ler_arquivo_md_minio(md_ultimo)
+                    conteudo_ultimo = ler_conteudo_md(md_ultimo)
                     print(f"[DEBUG] Conteúdo do último documento lido: {len(conteudo_ultimo)} caracteres")
                     conteudo_combinado += f"ÚLTIMO DOCUMENTO:\n{conteudo_ultimo}"
                 except Exception as e:
@@ -267,17 +267,25 @@ async def resumo_documento(documento_formatado: str, token: str, id_unidade: str
         doc = consultar_documento(token, id_unidade, documento_formatado)
         md = baixar_documento(token, id_unidade, documento_formatado)
 
-        if not md:
+        conteudo = ""
+        if md:
+            # Conseguiu baixar e processar o documento
+            conteudo = ler_conteudo_md(md)
+        else:
+            # Fallback: documento não é HTML ou houve erro no processamento
+            # Tenta usar os dados básicos do documento consultado para a IA
+            print(f"[WARN] Documento {documento_formatado} não retornou conteúdo MD, usando dados básicos")
+        
+        if not conteudo:
             raise HTTPException(
                 status_code=404,
                 detail=ErrorDetail(
                     type=ErrorType.NOT_FOUND,
-                    message="Documento não encontrado ou não é um documento HTML",
+                    message="Documento não encontrado ou não foi possível processar o conteúdo",
                     details={"documento_formatado": documento_formatado}
                 ).dict()
             )
 
-        conteudo = ler_arquivo_md_minio(md)
         resposta_ia = enviar_documento_ia_conteudo(conteudo)
 
         return Retorno(

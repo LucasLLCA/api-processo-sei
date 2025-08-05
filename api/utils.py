@@ -32,6 +32,25 @@ def ler_arquivo_md(caminho_md: str) -> str:
     with open(caminho_md, "r", encoding="utf-8") as f:
         return f.read()
 
+def ler_conteudo_md(md_data: str) -> str:
+    """
+    Lê conteúdo MD - pode ser um caminho do MinIO ou conteúdo direto
+    """
+    if not md_data:
+        return ""
+    
+    # Se contém caracteres que indicam ser um caminho (/ ou extensão)
+    if '/' in md_data or md_data.endswith('.md'):
+        return ler_arquivo_md_minio(md_data)
+    
+    # Se parece ser conteúdo MD direto, retorna diretamente
+    if len(md_data) > 100 or '\n' in md_data:
+        print(f"[DEBUG] Usando conteúdo MD direto: {len(md_data)} caracteres")
+        return md_data
+    
+    # Como fallback, tenta ler do MinIO
+    return ler_arquivo_md_minio(md_data)
+
 def ler_arquivo_md_minio(object_name: str) -> str:
     """
     Lê arquivo MD diretamente do MinIO
@@ -59,14 +78,8 @@ def ler_arquivo_md_minio(object_name: str) -> str:
         return content
     except S3Error as e:
         print(f"[WARN] Falha ao ler arquivo MD do MinIO: {str(e)}")
-        # Se o object_name é um conteúdo MD direto (fallback)
-        if object_name and not object_name.startswith('sem_processo/') and not '/' in object_name:
-            return object_name
         return ""
     except Exception as e:
         print(f"[WARN] MinIO inacessível (leitura MD): {str(e)}")
-        # Se o object_name é um conteúdo MD direto (fallback)
-        if object_name and not object_name.startswith('sem_processo/') and not '/' in object_name:
-            return object_name
         return ""
 
