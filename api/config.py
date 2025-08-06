@@ -20,7 +20,7 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: str = "sk-Thp8OzZ_6U3tHoDStt8qYg"
     OPENAI_MODEL: str = "Qwen/Qwen3-30B-A3B"
 
-    MINIO_ENDPOINT: str = "minio-pc88ws4wgwswgso8ggcckcsc.sendvers.pro"
+    MINIO_ENDPOINT: str = "http://minio-pc88ws4wgwswgso8ggcckcsc.sendvers.pro"
     MINIO_ACCESS_KEY: str = "tZH9U78VVEfrOen77sz4"
     MINIO_SECRET_KEY: str = "QubbFU5AFjYfiQO2og5CULG4rDZLvhBvzAlZNIwI"
     MINIO_BUCKET: str = "documentos-sei"
