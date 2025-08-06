@@ -7,7 +7,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from fastapi import HTTPException
 from minio import Minio
 from minio.error import S3Error
-from .models import Processo, ErrorDetail, ErrorType
+from .models import ErrorDetail, ErrorType
 from .utils import converte_html_para_markdown_memoria
 from .config import settings
 
@@ -336,8 +336,7 @@ def baixar_documento(token: str, id_unidade: str, documento_formatado: str, nume
         minio_client = Minio(
             settings.MINIO_ENDPOINT,
             access_key=settings.MINIO_ACCESS_KEY,
-            secret_key=settings.MINIO_SECRET_KEY,
-            secure=False
+            secret_key=settings.MINIO_SECRET_KEY
         )
 
         # Definir estrutura de pastas no MinIO
