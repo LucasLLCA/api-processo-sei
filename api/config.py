@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     API_TITLE: str = "API Processo SEI"
     API_DESCRIPTION: str = "API para consulta e análise de processos do SEI utilizando FastAPI e OpenAI"
     API_VERSION: str = "1.0.0"
-    API_PORT: int = 8443
+    API_PORT: int = 8535
     API_HOST: str = "0.0.0.0"
 
     SEI_BASE_URL: str = "https://api.sei.pi.gov.br/v1"
