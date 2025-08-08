@@ -16,11 +16,21 @@ def _get_minio_client():
     """
     Cria e retorna um cliente MinIO
     """
+    import urllib3
+    
+    # Desabilitar warnings de SSL não verificado
+    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
+    
     return Minio(
         settings.MINIO_ENDPOINT,
         access_key=settings.MINIO_ACCESS_KEY,
         secret_key=settings.MINIO_SECRET_KEY,
-        secure=True
+        secure=True,
+        http_client=urllib3.PoolManager(
+            cert_reqs='CERT_NONE',
+            ca_cert_dir=None,
+            ca_certs=None
+        )
     )
 
 def _verificar_objeto_exists(bucket: str, key: str):
