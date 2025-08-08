@@ -45,7 +45,7 @@ def ler_arquivo_md_minio(object_name: str) -> str:
             settings.MINIO_ENDPOINT,
             access_key=settings.MINIO_ACCESS_KEY,
             secret_key=settings.MINIO_SECRET_KEY,
-            secure=False
+            secure=True
         )
         
         # Baixar o objeto do MinIO

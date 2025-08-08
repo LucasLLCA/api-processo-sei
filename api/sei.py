@@ -337,7 +337,7 @@ def baixar_documento(token: str, id_unidade: str, documento_formatado: str, nume
             settings.MINIO_ENDPOINT,
             access_key=settings.MINIO_ACCESS_KEY,
             secret_key=settings.MINIO_SECRET_KEY,
-            secure=False
+            secure=True
         )
 
         # Definir estrutura de pastas no MinIO
