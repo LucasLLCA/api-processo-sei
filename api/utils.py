@@ -14,16 +14,25 @@ def _get_minio_client():
     # Desabilitar warnings de SSL não verificado
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
     
+    # Configurar proxy se necessário (descomente e configure se houver proxy corporativo)
+    # proxy_url = "http://proxy.empresa.com:8080"
+    # http_client = urllib3.ProxyManager(
+    #     proxy_url,
+    #     cert_reqs='CERT_NONE'
+    # )
+    
+    http_client = urllib3.PoolManager(
+        cert_reqs='CERT_NONE',
+        ca_cert_dir=None,
+        ca_certs=None
+    )
+    
     return Minio(
         settings.MINIO_ENDPOINT,
         access_key=settings.MINIO_ACCESS_KEY,
         secret_key=settings.MINIO_SECRET_KEY,
         secure=True,
-        http_client=urllib3.PoolManager(
-            cert_reqs='CERT_NONE',
-            ca_cert_dir=None,
-            ca_certs=None
-        )
+        http_client=http_client
     )
 
 def _ler_objeto_minio(bucket: str, key: str):
