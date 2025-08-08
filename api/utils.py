@@ -40,7 +40,7 @@ def _ler_objeto_minio(bucket: str, key: str, access_key: str, secret_key: str, e
         auth = _gerar_assinatura_aws('GET', bucket, key, headers, access_key, secret_key)
         headers['authorization'] = auth
         
-        response = requests.get(url, headers=headers, timeout=30)
+        response = requests.get(url, headers=headers, timeout=30, verify=False)
         if response.status_code == 200:
             return response.content.decode('utf-8')
         else:

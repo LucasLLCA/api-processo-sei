@@ -47,7 +47,7 @@ def _verificar_objeto_exists(bucket: str, key: str):
                                    settings.MINIO_ACCESS_KEY, settings.MINIO_SECRET_KEY)
         headers['authorization'] = auth
         
-        response = requests.head(url, headers=headers, timeout=10)
+        response = requests.head(url, headers=headers, timeout=10, verify=False)
         return response.status_code == 200
     except Exception as e:
         print(f"[WARN] Erro ao verificar objeto {key}: {str(e)}")
@@ -69,8 +69,8 @@ def _salvar_objeto_minio(bucket: str, key: str, content: bytes, content_type: st
         auth = _gerar_assinatura_aws('PUT', bucket, key, headers,
                                    settings.MINIO_ACCESS_KEY, settings.MINIO_SECRET_KEY)
         headers['authorization'] = auth
-        
-        response = requests.put(url, headers=headers, data=content, timeout=30)
+
+        response = requests.put(url, headers=headers, data=content, timeout=30, verify=False)
         return response.status_code == 200
     except Exception as e:
         print(f"[WARN] Erro ao salvar objeto {key}: {str(e)}")
