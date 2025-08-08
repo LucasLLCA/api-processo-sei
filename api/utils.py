@@ -1,8 +1,54 @@
 import os
 import re
 import io
-from minio import Minio
-from minio.error import S3Error
+import hashlib
+import hmac
+import base64
+import requests
+from datetime import datetime
+
+def _gerar_assinatura_aws(method: str, bucket: str, key: str, headers: dict, access_key: str, secret_key: str):
+    """
+    Gera assinatura AWS v2 para requisições S3/MinIO
+    """
+    # String to sign
+    headers_to_sign = {}
+    for header_name, header_value in headers.items():
+        if header_name.lower().startswith('x-amz-'):
+            headers_to_sign[header_name.lower()] = header_value
+    
+    canonical_headers = ''.join(f"{k}:{v}\n" for k, v in sorted(headers_to_sign.items()))
+    
+    string_to_sign = f"{method}\n\n{headers.get('content-type', '')}\n{headers.get('date', '')}\n{canonical_headers}/{bucket}/{key}"
+    
+    # Gerar assinatura
+    signature = base64.b64encode(
+        hmac.new(secret_key.encode(), string_to_sign.encode(), hashlib.sha1).digest()
+    ).decode()
+    
+    return f"AWS {access_key}:{signature}"
+
+def _ler_objeto_minio(bucket: str, key: str, access_key: str, secret_key: str, endpoint: str):
+    """
+    Lê um objeto do MinIO usando GET
+    """
+    try:
+        url = f"http://{endpoint}/{bucket}/{key}"
+        date = datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT')
+        headers = {'date': date}
+        
+        auth = _gerar_assinatura_aws('GET', bucket, key, headers, access_key, secret_key)
+        headers['authorization'] = auth
+        
+        response = requests.get(url, headers=headers, timeout=30)
+        if response.status_code == 200:
+            return response.content.decode('utf-8')
+        else:
+            print(f"[WARN] Erro ao ler objeto {key}: HTTP {response.status_code}")
+            return ""
+    except Exception as e:
+        print(f"[WARN] Erro ao ler objeto {key}: {str(e)}")
+        return ""
 
 def converte_html_para_markdown_memoria(html_content: str) -> str:
     """
@@ -32,7 +78,7 @@ def ler_conteudo_md(md_data: str) -> str:
 
 def ler_arquivo_md_minio(object_name: str) -> str:
     """
-    Lê arquivo MD diretamente do MinIO
+    Lê arquivo MD diretamente do MinIO usando requests
     """
     from .config import settings
     
@@ -40,25 +86,15 @@ def ler_arquivo_md_minio(object_name: str) -> str:
         return ""
     
     try:
-        # Inicializar cliente MinIO
-        minio_client = Minio(
-            settings.MINIO_ENDPOINT,
-            access_key=settings.MINIO_ACCESS_KEY,
-            secret_key=settings.MINIO_SECRET_KEY,
-            secure=False
+        content = _ler_objeto_minio(
+            settings.MINIO_BUCKET, 
+            object_name, 
+            settings.MINIO_ACCESS_KEY, 
+            settings.MINIO_SECRET_KEY, 
+            settings.MINIO_ENDPOINT
         )
-        
-        # Baixar o objeto do MinIO
-        response = minio_client.get_object(settings.MINIO_BUCKET, object_name)
-        content = response.read().decode('utf-8')
-        response.close()
-        response.release_conn()
-        
         return content
-    except S3Error as e:
-        print(f"[WARN] Falha ao ler arquivo MD do MinIO: {str(e)}")
-        return ""
     except Exception as e:
-        print(f"[WARN] MinIO inacessível (leitura MD): {str(e)}")
+        print(f"[WARN] Erro ao ler arquivo MD do MinIO: {str(e)}")
         return ""
 

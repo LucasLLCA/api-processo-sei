@@ -3,13 +3,78 @@ import requests
 import io
 import math
 import time
+import hashlib
+import hmac
+import base64
+from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from fastapi import HTTPException
-from minio import Minio
-from minio.error import S3Error
 from .models import ErrorDetail, ErrorType
 from .utils import converte_html_para_markdown_memoria
 from .config import settings
+
+def _gerar_assinatura_aws(method: str, bucket: str, key: str, headers: dict, access_key: str, secret_key: str):
+    """
+    Gera assinatura AWS v2 para requisições S3/MinIO
+    """
+    # String to sign
+    headers_to_sign = {}
+    for header_name, header_value in headers.items():
+        if header_name.lower().startswith('x-amz-'):
+            headers_to_sign[header_name.lower()] = header_value
+    
+    canonical_headers = ''.join(f"{k}:{v}\n" for k, v in sorted(headers_to_sign.items()))
+    
+    string_to_sign = f"{method}\n\n{headers.get('content-type', '')}\n{headers.get('date', '')}\n{canonical_headers}/{bucket}/{key}"
+    
+    # Gerar assinatura
+    signature = base64.b64encode(
+        hmac.new(secret_key.encode(), string_to_sign.encode(), hashlib.sha1).digest()
+    ).decode()
+    
+    return f"AWS {access_key}:{signature}"
+
+def _verificar_objeto_exists(bucket: str, key: str):
+    """
+    Verifica se um objeto existe no MinIO usando HEAD
+    """
+    try:
+        url = f"http://{settings.MINIO_ENDPOINT}/{bucket}/{key}"
+        date = datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT')
+        headers = {'date': date}
+        
+        auth = _gerar_assinatura_aws('HEAD', bucket, key, headers, 
+                                   settings.MINIO_ACCESS_KEY, settings.MINIO_SECRET_KEY)
+        headers['authorization'] = auth
+        
+        response = requests.head(url, headers=headers, timeout=10)
+        return response.status_code == 200
+    except Exception as e:
+        print(f"[WARN] Erro ao verificar objeto {key}: {str(e)}")
+        return False
+
+def _salvar_objeto_minio(bucket: str, key: str, content: bytes, content_type: str):
+    """
+    Salva um objeto no MinIO usando PUT
+    """
+    try:
+        url = f"http://{settings.MINIO_ENDPOINT}/{bucket}/{key}"
+        date = datetime.utcnow().strftime('%a, %d %b %Y %H:%M:%S GMT')
+        headers = {
+            'date': date,
+            'content-type': content_type,
+            'content-length': str(len(content))
+        }
+        
+        auth = _gerar_assinatura_aws('PUT', bucket, key, headers,
+                                   settings.MINIO_ACCESS_KEY, settings.MINIO_SECRET_KEY)
+        headers['authorization'] = auth
+        
+        response = requests.put(url, headers=headers, data=content, timeout=30)
+        return response.status_code == 200
+    except Exception as e:
+        print(f"[WARN] Erro ao salvar objeto {key}: {str(e)}")
+        return False
 
 def _fazer_requisicao_com_retry(url: str, headers: dict, params: dict, max_tentativas: int = 3, timeout: int = 30):
     """
@@ -332,46 +397,21 @@ def baixar_documento(token: str, id_unidade: str, documento_formatado: str, nume
         match = re.search(r'filename="(.+)"', content_disposition)
         filename = match.group(1) if match else f"documento_{documento_formatado}.html"
 
-        # Inicializar cliente MinIO
-        minio_client = Minio(
-            settings.MINIO_ENDPOINT,
-            access_key=settings.MINIO_ACCESS_KEY,
-            secret_key=settings.MINIO_SECRET_KEY,
-            secure=False
-        )
-
         # Definir estrutura de pastas no MinIO
         processo_folder = numero_processo if numero_processo else "sem_processo"
         html_object_name = f"{processo_folder}/{filename}"
         
         # Verificar se o arquivo HTML já existe no MinIO
-        try:
-            minio_client.stat_object(settings.MINIO_BUCKET, html_object_name)
+        html_exists = _verificar_objeto_exists(settings.MINIO_BUCKET, html_object_name)
+        if html_exists:
             print(f"[DEBUG] Arquivo HTML já existe no MinIO: {html_object_name}")
-            html_exists = True
-        except S3Error:
-            html_exists = False
-        except Exception as e:
-            print(f"[WARN] MinIO inacessível (verificação HTML): {str(e)}")
-            html_exists = False
 
         # Se o arquivo HTML não existe, salvar no MinIO
         if not html_exists:
-            try:
-                html_data = io.BytesIO(response.content)
-                minio_client.put_object(
-                    settings.MINIO_BUCKET,
-                    html_object_name,
-                    html_data,
-                    len(response.content),
-                    content_type="text/html"
-                )
+            if _salvar_objeto_minio(settings.MINIO_BUCKET, html_object_name, response.content, "text/html"):
                 print(f"[DEBUG] Arquivo HTML salvo no MinIO: {html_object_name}")
-            except S3Error as e:
-                print(f"[WARN] Falha ao salvar HTML no MinIO: {str(e)}")
-                # Continua sem salvar no MinIO
-            except Exception as e:
-                print(f"[WARN] MinIO inacessível (salvamento HTML): {str(e)}")
+            else:
+                print(f"[WARN] Falha ao salvar HTML no MinIO: {html_object_name}")
                 # Continua sem salvar no MinIO
 
         # Processar documento para Markdown se for HTML
@@ -380,40 +420,26 @@ def baixar_documento(token: str, id_unidade: str, documento_formatado: str, nume
             md_object_name = f"{processo_folder}/{md_filename}"
             
             # Verificar se o arquivo MD já existe no MinIO
-            try:
-                minio_client.stat_object(settings.MINIO_BUCKET, md_object_name)
+            md_exists = _verificar_objeto_exists(settings.MINIO_BUCKET, md_object_name)
+            if md_exists:
                 print(f"[DEBUG] Arquivo MD já existe no MinIO: {md_object_name}")
                 # Retornar o caminho do objeto no MinIO
                 return md_object_name
-            except S3Error:
-                # Arquivo MD não existe, precisa converter e salvar
-                pass
-            except Exception as e:
-                print(f"[WARN] MinIO inacessível (verificação MD): {str(e)}")
-                # Continua para conversão local sem MinIO
-                pass
             
-            # Se chegou aqui, o arquivo MD não existe no MinIO ou MinIO está inacessível
+            # Se chegou aqui, o arquivo MD não existe no MinIO
             try:
                 # Converter HTML para Markdown diretamente em memória
                 html_content = response.content.decode('utf-8')
                 md_content = converte_html_para_markdown_memoria(html_content)
                 
                 # Tentar salvar o MD no MinIO
-                try:
-                    md_data = io.BytesIO(md_content.encode('utf-8'))
-                    minio_client.put_object(
-                        settings.MINIO_BUCKET,
-                        md_object_name,
-                        md_data,
-                        len(md_content.encode('utf-8')),
-                        content_type="text/markdown"
-                    )
+                md_content_bytes = md_content.encode('utf-8')
+                if _salvar_objeto_minio(settings.MINIO_BUCKET, md_object_name, md_content_bytes, "text/markdown"):
                     print(f"[DEBUG] Arquivo MD convertido e salvo no MinIO: {md_object_name}")
                     # Retornar o caminho do objeto no MinIO
                     return md_object_name
-                except Exception as minio_error:
-                    print(f"[WARN] MinIO inacessível (salvamento MD): {str(minio_error)}")
+                else:
+                    print(f"[WARN] MinIO inacessível (salvamento MD), retornando conteúdo em memória")
                     # Retorna o conteúdo convertido em memória
                     return md_content
             except Exception as e:
