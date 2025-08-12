@@ -30,4 +30,3 @@ urllib3==2.4.0
 uvicorn==0.29.0
 watchfiles==1.0.5
 websockets==15.0.1
-minio==7.2.11

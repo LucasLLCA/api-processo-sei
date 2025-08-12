@@ -1,72 +1,14 @@
 import re
 import requests
-import io
 import math
 import time
 from datetime import datetime
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from fastapi import HTTPException
-from minio import Minio
-from minio.error import S3Error
 from .models import ErrorDetail, ErrorType
 from .utils import converte_html_para_markdown_memoria
 from .config import settings
 
-def _get_minio_client():
-    """
-    Cria e retorna um cliente MinIO
-    """
-    import urllib3
-    
-    # Desabilitar warnings de SSL não verificado
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
-    
-    return Minio(
-        settings.MINIO_ENDPOINT,
-        access_key=settings.MINIO_ACCESS_KEY,
-        secret_key=settings.MINIO_SECRET_KEY,
-        secure=True,
-        http_client=urllib3.PoolManager(
-            cert_reqs='CERT_NONE',
-            ca_cert_dir=None,
-            ca_certs=None
-        )
-    )
-
-def _verificar_objeto_exists(bucket: str, key: str):
-    """
-    Verifica se um objeto existe no MinIO
-    """
-    try:
-        client = _get_minio_client()
-        client.stat_object(bucket, key)
-        return True
-    except S3Error as e:
-        if e.code == 'NoSuchKey':
-            return False
-        print(f"[WARN] Erro ao verificar objeto {key}: {str(e)}")
-        return False
-    except Exception as e:
-        print(f"[WARN] Erro ao verificar objeto {key}: {str(e)}")
-        return False
-
-def _salvar_objeto_minio(bucket: str, key: str, content: bytes, content_type: str):
-    """
-    Salva um objeto no MinIO
-    """
-    try:
-        client = _get_minio_client()
-        client.put_object(
-            bucket,
-            key,
-            io.BytesIO(content),
-            length=len(content),
-            content_type=content_type
-        )
-        return True
-    except Exception as e:
-        print(f"[WARN] Erro ao salvar objeto {key}: {str(e)}")
-        return False
 
 def _fazer_requisicao_com_retry(url: str, headers: dict, params: dict, max_tentativas: int = 3, timeout: int = 30):
     """
@@ -389,51 +331,13 @@ def baixar_documento(token: str, id_unidade: str, documento_formatado: str, nume
         match = re.search(r'filename="(.+)"', content_disposition)
         filename = match.group(1) if match else f"documento_{documento_formatado}.html"
 
-        # Definir estrutura de pastas no MinIO
-        processo_folder = numero_processo if numero_processo else "sem_processo"
-        html_object_name = f"{processo_folder}/{filename}"
-        
-        # Verificar se o arquivo HTML já existe no MinIO
-        html_exists = _verificar_objeto_exists(settings.MINIO_BUCKET, html_object_name)
-        if html_exists:
-            print(f"[DEBUG] Arquivo HTML já existe no MinIO: {html_object_name}")
-
-        # Se o arquivo HTML não existe, salvar no MinIO
-        if not html_exists:
-            if _salvar_objeto_minio(settings.MINIO_BUCKET, html_object_name, response.content, "text/html"):
-                print(f"[DEBUG] Arquivo HTML salvo no MinIO: {html_object_name}")
-            else:
-                print(f"[WARN] Falha ao salvar HTML no MinIO: {html_object_name}")
-                # Continua sem salvar no MinIO
-
-        # Processar documento para Markdown se for HTML
+        # Processar documento para Markdown se for HTML - apenas em memória
         if filename.lower().endswith(".html") or filename.lower().endswith(".htm"):
-            md_filename = filename.rsplit('.', 1)[0] + '.md'
-            md_object_name = f"{processo_folder}/{md_filename}"
-            
-            # Verificar se o arquivo MD já existe no MinIO
-            md_exists = _verificar_objeto_exists(settings.MINIO_BUCKET, md_object_name)
-            if md_exists:
-                print(f"[DEBUG] Arquivo MD já existe no MinIO: {md_object_name}")
-                # Retornar o caminho do objeto no MinIO
-                return md_object_name
-            
-            # Se chegou aqui, o arquivo MD não existe no MinIO
             try:
                 # Converter HTML para Markdown diretamente em memória
                 html_content = response.content.decode('utf-8')
                 md_content = converte_html_para_markdown_memoria(html_content)
-                
-                # Tentar salvar o MD no MinIO
-                md_content_bytes = md_content.encode('utf-8')
-                if _salvar_objeto_minio(settings.MINIO_BUCKET, md_object_name, md_content_bytes, "text/markdown"):
-                    print(f"[DEBUG] Arquivo MD convertido e salvo no MinIO: {md_object_name}")
-                    # Retornar o caminho do objeto no MinIO
-                    return md_object_name
-                else:
-                    print(f"[WARN] MinIO inacessível (salvamento MD), retornando conteúdo em memória")
-                    # Retorna o conteúdo convertido em memória
-                    return md_content
+                return md_content
             except Exception as e:
                 print(f"[ERRO] Falha na conversão HTML->MD: {str(e)}")
                 return None
