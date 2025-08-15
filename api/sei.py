@@ -513,8 +513,8 @@ def extrair_documentos_dos_andamentos(andamentos: list) -> list:
             
             # Também procurar na descrição por padrões de documento
             import re
-            # Buscar por IDs de documentos de 10 dígitos nas descrições
-            doc_matches = re.findall(r'\b\d{10}\b', descricao)
+            # Buscar por IDs de documentos de 9 a 12 dígitos nas descrições
+            doc_matches = re.findall(r'\b\d{9,12}\b', descricao)
             for match in doc_matches:
                 documentos_ids.add(match)
                 documentos_detalhes.append({
