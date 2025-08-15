@@ -481,6 +481,59 @@ def listar_tarefa(token: str, protocolo: str, id_unidade: str):
             ).dict()
         )
 
+def extrair_documentos_dos_andamentos(andamentos: list) -> list:
+    """
+    Extrai IDs de documentos únicos das descrições dos andamentos
+    """
+    documentos_ids = set()
+    documentos_detalhes = []
+    
+    for andamento in andamentos:
+        try:
+            # Verificar se existe atributos com documentos
+            atributos = andamento.get("Atributos", [])
+            descricao = andamento.get("Descricao", "")
+            
+            # Procurar por IDs de documentos nos atributos
+            for atributo in atributos:
+                if isinstance(atributo, dict):
+                    nome = atributo.get("Nome", "")
+                    valor = atributo.get("Valor", "")
+                    
+                    # Procurar padrões de documentos formatados
+                    if "documento" in nome.lower() or "protocolo" in nome.lower():
+                        if valor and isinstance(valor, str) and re.match(r'\d+\.\d+', valor):
+                            documentos_ids.add(valor)
+                            documentos_detalhes.append({
+                                "DocumentoFormatado": valor,
+                                "DataAndamento": andamento.get("Data", ""),
+                                "TipoAndamento": andamento.get("TipoAndamento", ""),
+                                "Descricao": descricao[:100]  # Primeiros 100 chars
+                            })
+            
+            # Também procurar na descrição por padrões de documento
+            import re
+            # Buscar por IDs de documentos de 10 dígitos nas descrições
+            doc_matches = re.findall(r'\b\d{10}\b', descricao)
+            for match in doc_matches:
+                documentos_ids.add(match)
+                documentos_detalhes.append({
+                    "DocumentoFormatado": match,
+                    "DataAndamento": andamento.get("DataHora", andamento.get("Data", "")),
+                    "TipoAndamento": andamento.get("Tarefa", andamento.get("TipoAndamento", "")),
+                    "Descricao": descricao[:100]
+                })
+                    
+        except Exception as e:
+            print(f"[WARN] Erro ao processar andamento: {str(e)}")
+            continue
+    
+    # Ordenar por data de andamento para pegar primeiro e último cronologicamente
+    documentos_detalhes.sort(key=lambda x: x.get("DataAndamento", ""))
+    
+    print(f"[DEBUG] Extraídos {len(documentos_ids)} documentos únicos dos andamentos")
+    return documentos_detalhes
+
 def consultar_documento(token: str, id_unidade: str, documento_formatado: str):
     try:
         print(f"[DEBUG] Consultando documento: {documento_formatado}")

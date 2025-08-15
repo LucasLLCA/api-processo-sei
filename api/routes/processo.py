@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from ..sei import listar_documentos, listar_tarefa, consultar_documento, baixar_documento
+from ..sei import listar_documentos, listar_tarefa, consultar_documento, baixar_documento, extrair_documentos_dos_andamentos
 from ..openai_client import enviar_para_ia_conteudo, enviar_para_ia_conteudo_md, enviar_documento_ia_conteudo
 from ..utils import ler_conteudo_md
 from ..models import ErrorDetail, ErrorType, Retorno
@@ -135,7 +135,7 @@ async def resumo(numero_processo: str, token: str, id_unidade: str):
 @router.get("/resumo-completo/{numero_processo}", response_model=Retorno)
 async def resumo_completo(numero_processo: str, token: str, id_unidade: str):
     """
-    Retorna uma análise completa do processo, combinando o primeiro e último documento.
+    Retorna uma análise completa do processo usando andamentos para encontrar documentos.
     
     Args:
         numero_processo (str): Número do processo no SEI
@@ -146,81 +146,111 @@ async def resumo_completo(numero_processo: str, token: str, id_unidade: str):
         Retorno: Objeto contendo o status e resumo completo do processo
     """
     try:
-        documentos = listar_documentos(token, numero_processo, id_unidade)
-
-        if not documentos:
+        print(f"[DEBUG] Iniciando resumo completo do processo {numero_processo}")
+        
+        # Buscar andamentos ao invés de listar documentos diretamente
+        andamentos = listar_tarefa(token, numero_processo, id_unidade)
+        
+        if not andamentos:
             raise HTTPException(
                 status_code=404,
                 detail=ErrorDetail(
                     type=ErrorType.NOT_FOUND,
-                    message="Nenhum documento encontrado para este processo",
+                    message="Nenhum andamento encontrado para este processo",
                     details={"numero_processo": numero_processo}
                 ).dict()
             )
+        
+        # Extrair documentos dos andamentos
+        documentos_encontrados = extrair_documentos_dos_andamentos(andamentos)
+        
+        if not documentos_encontrados:
+            raise HTTPException(
+                status_code=404,
+                detail=ErrorDetail(
+                    type=ErrorType.NOT_FOUND,
+                    message="Nenhum documento encontrado nos andamentos do processo",
+                    details={"numero_processo": numero_processo, "total_andamentos": len(andamentos)}
+                ).dict()
+            )
 
-        primeiro = documentos[0]
-        ultimo = documentos[-1]
+        # Pegar primeiro e último documento cronologicamente
+        primeiro_doc = documentos_encontrados[0]
+        ultimo_doc = documentos_encontrados[-1]
+        
+        print(f"[DEBUG] Encontrados {len(documentos_encontrados)} documentos nos andamentos")
+        print(f"[DEBUG] Primeiro documento: {primeiro_doc['DocumentoFormatado']} (Data: {primeiro_doc.get('DataAndamento', 'N/A')})")
+        print(f"[DEBUG] Último documento: {ultimo_doc['DocumentoFormatado']} (Data: {ultimo_doc.get('DataAndamento', 'N/A')})")
 
         with ThreadPoolExecutor() as executor:
-            print(f"[DEBUG] Iniciando processamento do processo {numero_processo}")
-            print(f"[DEBUG] Primeiro documento: {primeiro['DocumentoFormatado']}")
-            print(f"[DEBUG] Último documento: {ultimo['DocumentoFormatado']}")
-            
-            fut_doc_primeiro = executor.submit(consultar_documento, token, id_unidade, primeiro["DocumentoFormatado"])
-            fut_doc_ultimo = executor.submit(consultar_documento, token, id_unidade, ultimo["DocumentoFormatado"])
-            fut_md_primeiro = executor.submit(baixar_documento, token, id_unidade, primeiro["DocumentoFormatado"], numero_processo)
-            fut_md_ultimo = executor.submit(baixar_documento, token, id_unidade, ultimo["DocumentoFormatado"], numero_processo)
+            # Processar primeiro e último documento em paralelo
+            fut_doc_primeiro = executor.submit(consultar_documento, token, id_unidade, primeiro_doc["DocumentoFormatado"])
+            fut_doc_ultimo = executor.submit(consultar_documento, token, id_unidade, ultimo_doc["DocumentoFormatado"])
+            fut_md_primeiro = executor.submit(baixar_documento, token, id_unidade, primeiro_doc["DocumentoFormatado"], numero_processo)
+            fut_md_ultimo = executor.submit(baixar_documento, token, id_unidade, ultimo_doc["DocumentoFormatado"], numero_processo)
 
+            # Coletar resultados com tratamento de erro individual
             try:
                 doc_primeiro = fut_doc_primeiro.result()
-                print(f"[DEBUG] Primeiro documento consultado com sucesso: {doc_primeiro.get('Titulo', 'Sem título')}")
+                print(f"[DEBUG] Primeiro documento consultado: {doc_primeiro.get('Titulo', 'Sem título')}")
             except Exception as e:
                 print(f"[ERRO] Falha ao consultar primeiro documento: {str(e)}")
-                doc_primeiro = {}
+                doc_primeiro = {"Titulo": "Erro ao consultar", "Erro": str(e)}
 
             try:
                 doc_ultimo = fut_doc_ultimo.result()
-                print(f"[DEBUG] Último documento consultado com sucesso: {doc_ultimo.get('Titulo', 'Sem título')}")
+                print(f"[DEBUG] Último documento consultado: {doc_ultimo.get('Titulo', 'Sem título')}")
             except Exception as e:
                 print(f"[ERRO] Falha ao consultar último documento: {str(e)}")
-                doc_ultimo = {}
+                doc_ultimo = {"Titulo": "Erro ao consultar", "Erro": str(e)}
 
             try:
                 md_primeiro = fut_md_primeiro.result()
-                print(f"[DEBUG] Primeiro documento baixado com sucesso: {md_primeiro if md_primeiro else 'Nenhum arquivo'}")
+                print(f"[DEBUG] Primeiro documento baixado: {'Sucesso' if md_primeiro else 'Sem conteúdo'}")
             except Exception as e:
                 print(f"[ERRO] Falha ao baixar primeiro documento: {str(e)}")
                 md_primeiro = None
 
             try:
                 md_ultimo = fut_md_ultimo.result()
-                print(f"[DEBUG] Último documento baixado com sucesso: {md_ultimo if md_ultimo else 'Nenhum arquivo'}")
+                print(f"[DEBUG] Último documento baixado: {'Sucesso' if md_ultimo else 'Sem conteúdo'}")
             except Exception as e:
                 print(f"[ERRO] Falha ao baixar último documento: {str(e)}")
                 md_ultimo = None
 
+            # Combinar conteúdos para enviar à IA
             conteudo_combinado = ""
+            
             if md_primeiro:
                 try:
                     conteudo_primeiro = ler_conteudo_md(md_primeiro)
-                    print(f"[DEBUG] Conteúdo do primeiro documento lido: {len(conteudo_primeiro)} caracteres")
-                    conteudo_combinado += f"PRIMEIRO DOCUMENTO:\n{conteudo_primeiro}\n\n"
+                    print(f"[DEBUG] Conteúdo do primeiro documento: {len(conteudo_primeiro)} caracteres")
+                    conteudo_combinado += f"PRIMEIRO DOCUMENTO (Data: {primeiro_doc.get('DataAndamento', 'N/A')}):\n{conteudo_primeiro}\n\n"
                 except Exception as e:
                     print(f"[ERRO] Falha ao ler conteúdo do primeiro documento: {str(e)}")
+                    conteudo_combinado += f"PRIMEIRO DOCUMENTO (Data: {primeiro_doc.get('DataAndamento', 'N/A')}):\n[Erro ao ler conteúdo: {str(e)}]\n\n"
 
             if md_ultimo:
                 try:
                     conteudo_ultimo = ler_conteudo_md(md_ultimo)
-                    print(f"[DEBUG] Conteúdo do último documento lido: {len(conteudo_ultimo)} caracteres")
-                    conteudo_combinado += f"ÚLTIMO DOCUMENTO:\n{conteudo_ultimo}"
+                    print(f"[DEBUG] Conteúdo do último documento: {len(conteudo_ultimo)} caracteres")
+                    conteudo_combinado += f"ÚLTIMO DOCUMENTO (Data: {ultimo_doc.get('DataAndamento', 'N/A')}):\n{conteudo_ultimo}"
                 except Exception as e:
                     print(f"[ERRO] Falha ao ler conteúdo do último documento: {str(e)}")
+                    conteudo_combinado += f"ÚLTIMO DOCUMENTO (Data: {ultimo_doc.get('DataAndamento', 'N/A')}):\n[Erro ao ler conteúdo: {str(e)}]"
 
-            print(f"[DEBUG] Tamanho total do conteúdo combinado: {len(conteudo_combinado)} caracteres")
+            # Se não conseguiu nenhum conteúdo, usar informações básicas dos andamentos
+            if not conteudo_combinado.strip():
+                print("[WARN] Sem conteúdo de documentos, usando informações dos andamentos")
+                conteudo_combinado = f"PRIMEIRO ANDAMENTO:\nTipo: {primeiro_doc.get('TipoAndamento', 'N/A')}\nDescrição: {primeiro_doc.get('Descricao', 'N/A')}\n\n"
+                conteudo_combinado += f"ÚLTIMO ANDAMENTO:\nTipo: {ultimo_doc.get('TipoAndamento', 'N/A')}\nDescrição: {ultimo_doc.get('Descricao', 'N/A')}"
 
+            print(f"[DEBUG] Tamanho total do conteúdo para IA: {len(conteudo_combinado)} caracteres")
+
+            # Enviar para IA
             try:
-                resposta_ia_combinada = enviar_para_ia_conteudo_md(conteudo_combinado) if conteudo_combinado else {}
-                print(f"[DEBUG] Resposta da IA recebida: {resposta_ia_combinada.get('status', 'sem status')}")
+                resposta_ia_combinada = enviar_para_ia_conteudo_md(conteudo_combinado) if conteudo_combinado.strip() else {"status": "erro", "resposta_ia": "Sem conteúdo para processar"}
+                print(f"[DEBUG] Resposta da IA obtida: {resposta_ia_combinada.get('status', 'sem status')}")
             except Exception as e:
                 print(f"[ERRO] Falha ao obter resposta da IA: {str(e)}")
                 resposta_ia_combinada = {"status": "erro", "resposta_ia": f"Erro ao processar: {str(e)}"}
@@ -230,10 +260,18 @@ async def resumo_completo(numero_processo: str, token: str, id_unidade: str):
             resumo={
                 "processo": {
                     "numero": numero_processo,
-                    "id_unidade": id_unidade
+                    "id_unidade": id_unidade,
+                    "total_andamentos": len(andamentos),
+                    "documentos_encontrados": len(documentos_encontrados)
                 },
-                "primeiro_documento": doc_primeiro,
-                "ultimo_documento": doc_ultimo,
+                "primeiro_documento": {
+                    **doc_primeiro,
+                    "origem_andamento": primeiro_doc
+                },
+                "ultimo_documento": {
+                    **doc_ultimo,
+                    "origem_andamento": ultimo_doc
+                },
                 "resumo_combinado": resposta_ia_combinada
             }
         )
