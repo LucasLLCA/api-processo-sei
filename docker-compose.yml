@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    ports:
+      - "8535:8535"
+    environment:
+      # Configurações da API
+      - API_TITLE=API Processo SEI
+      - API_DESCRIPTION=API para consulta e análise de processos do SEI utilizando FastAPI e OpenAI
+      - API_VERSION=1.0.0
+      - API_PORT=8535
+      - API_HOST=0.0.0.0
+      # Configurações do SEI
+      - SEI_BASE_URL=https://api.sei.pi.gov.br/v1
+      # Configurações da OpenAI
+      - OPENAI_BASE_URL=https://api.sobdemanda.mandu.piaui.pro
+      - OPENAI_API_KEY=sk-Thp8OzZ_6U3tHoDStt8qYg
+      - OPENAI_MODEL=Qwen/Qwen3-30B-A3B

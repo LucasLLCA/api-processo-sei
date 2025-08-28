@@ -14,11 +14,11 @@ class Settings(BaseSettings):
     API_PORT: int = 8535
     API_HOST: str = "0.0.0.0"
 
-    SEI_BASE_URL: str = "https://api.sei.pi.gov.br/v1"
+    SEI_BASE_URL: str
 
-    OPENAI_BASE_URL: str = "https://api.sobdemanda.mandu.piaui.pro"
-    OPENAI_API_KEY: str = "sk-Thp8OzZ_6U3tHoDStt8qYg"
-    OPENAI_MODEL: str = "Qwen/Qwen3-30B-A3B"
+    OPENAI_BASE_URL: str
+    OPENAI_API_KEY: str
+    OPENAI_MODEL: str
 
 
 settings = Settings()

@@ -16,5 +16,9 @@ COPY . .
 # Expor a porta que a API vai usar
 EXPOSE 8535
 
+# Variáveis de ambiente (serão definidas no momento da execução)
+ENV API_HOST=0.0.0.0
+ENV API_PORT=8535
+
 # Comando para executar a aplicação
 CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8535"]

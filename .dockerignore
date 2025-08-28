@@ -41,4 +41,7 @@ ENV/
 *.tmp
 *.bak
 *.swp
-*~ 
+*~
+
+# Arquivo de ambiente local
+.env 
