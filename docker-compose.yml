@@ -15,6 +15,6 @@ services:
       # Configurações do SEI
       - SEI_BASE_URL=https://api.sei.pi.gov.br/v1
       # Configurações da OpenAI
-      - OPENAI_BASE_URL=https://api.sobdemanda.mandu.piaui.pro
-      - OPENAI_API_KEY=sk-Thp8OzZ_6U3tHoDStt8qYg
+      - OPENAI_BASE_URL=https://api.sobdemanda.mandu.piaui.pro/v1
+      - OPENAI_API_KEY=sk-_nJZLEfexAJAXbxMTThwPg
       - OPENAI_MODEL=Qwen/Qwen3-30B-A3B
