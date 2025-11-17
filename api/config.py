@@ -20,5 +20,11 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: str = "sk-Thp8OzZ_6U3tHoDStt8qYg"
     OPENAI_MODEL: str = "Qwen/Qwen3-30B-A3B"
 
+    # Configurações Redis
+    REDIS_HOST: str = "redis"
+    REDIS_PORT: int = 6379
+    REDIS_DB: int = 0
+    REDIS_PASSWORD: str = ""
+
 
 settings = Settings()

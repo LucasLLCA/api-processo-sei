@@ -3,6 +3,7 @@ from ..sei import listar_documentos, listar_tarefa, consultar_documento, baixar_
 from ..openai_client import enviar_para_ia_conteudo, enviar_para_ia_conteudo_md, enviar_documento_ia_conteudo
 from ..utils import ler_conteudo_md
 from ..models import ErrorDetail, ErrorType, Retorno
+from ..cache import cache, gerar_chave_processo, gerar_chave_documento
 from concurrent.futures import ThreadPoolExecutor
 
 router = APIRouter()
@@ -136,12 +137,12 @@ async def resumo(numero_processo: str, token: str, id_unidade: str):
 async def resumo_completo(numero_processo: str, token: str, id_unidade: str):
     """
     Retorna uma análise completa do processo, combinando o primeiro e último documento.
-    
+
     Args:
         numero_processo (str): Número do processo no SEI
         token (str): Token de autenticação do SEI
         id_unidade (str): ID da unidade no SEI
-        
+
     Returns:
         Retorno: Objeto contendo o status e resumo completo do processo
     """
@@ -160,6 +161,17 @@ async def resumo_completo(numero_processo: str, token: str, id_unidade: str):
 
         primeiro = documentos[0]
         ultimo = documentos[-1]
+
+        # Gera chave de cache com processo, primeiro e último documento
+        id_primeiro_doc = primeiro.get("IdDocumento", primeiro.get("DocumentoFormatado"))
+        id_ultimo_doc = ultimo.get("IdDocumento", ultimo.get("DocumentoFormatado"))
+        cache_key = gerar_chave_processo(numero_processo, id_primeiro_doc, id_ultimo_doc)
+
+        # Tenta obter do cache (TTL de 48h = 172800 segundos)
+        cached_result = cache.get(cache_key)
+        if cached_result:
+            print(f"[DEBUG] Retornando resultado do cache para processo {numero_processo}")
+            return Retorno(status="ok", resumo=cached_result)
 
         with ThreadPoolExecutor() as executor:
             print(f"[DEBUG] Iniciando processamento do processo {numero_processo}")
@@ -225,18 +237,21 @@ async def resumo_completo(numero_processo: str, token: str, id_unidade: str):
                 print(f"[ERRO] Falha ao obter resposta da IA: {str(e)}")
                 resposta_ia_combinada = {"status": "erro", "resposta_ia": f"Erro ao processar: {str(e)}"}
 
-        return Retorno(
-            status="ok",
-            resumo={
-                "processo": {
-                    "numero": numero_processo,
-                    "id_unidade": id_unidade
-                },
-                "primeiro_documento": doc_primeiro,
-                "ultimo_documento": doc_ultimo,
-                "resumo_combinado": resposta_ia_combinada
-            }
-        )
+        # Monta o resultado
+        resultado = {
+            "processo": {
+                "numero": numero_processo,
+                "id_unidade": id_unidade
+            },
+            "primeiro_documento": doc_primeiro,
+            "ultimo_documento": doc_ultimo,
+            "resumo_combinado": resposta_ia_combinada
+        }
+
+        # Armazena no cache (TTL de 48h = 172800 segundos)
+        cache.set(cache_key, resultado, ttl=172800)
+
+        return Retorno(status="ok", resumo=resultado)
 
     except HTTPException as he:
         raise he
@@ -254,16 +269,25 @@ async def resumo_completo(numero_processo: str, token: str, id_unidade: str):
 async def resumo_documento(documento_formatado: str, token: str, id_unidade: str):
     """
     Retorna uma análise completa de um documento.
-    
+
     Args:
         documento_formatado (str): Número do documento formatado
         token (str): Token de autenticação do SEI
         id_unidade (str): ID da unidade no SEI
-        
+
     Returns:
         Retorno: Objeto contendo o status e resumo completo do documento
     """
     try:
+        # Gera chave de cache com o ID do documento
+        cache_key = gerar_chave_documento(documento_formatado)
+
+        # Tenta obter do cache (TTL de 48h = 172800 segundos)
+        cached_result = cache.get(cache_key)
+        if cached_result:
+            print(f"[DEBUG] Retornando resultado do cache para documento {documento_formatado}")
+            return Retorno(status="ok", resumo=cached_result)
+
         doc = consultar_documento(token, id_unidade, documento_formatado)
         md = baixar_documento(token, id_unidade, documento_formatado)
 
@@ -288,13 +312,16 @@ async def resumo_documento(documento_formatado: str, token: str, id_unidade: str
 
         resposta_ia = enviar_documento_ia_conteudo(conteudo)
 
-        return Retorno(
-            status="ok",
-            resumo={
-                "documento": doc,
-                "resumo": resposta_ia
-            }
-        )
+        # Monta o resultado
+        resultado = {
+            "documento": doc,
+            "resumo": resposta_ia
+        }
+
+        # Armazena no cache (TTL de 48h = 172800 segundos)
+        cache.set(cache_key, resultado, ttl=172800)
+
+        return Retorno(status="ok", resumo=resultado)
 
     except HTTPException as he:
         raise he
