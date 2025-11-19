@@ -14,15 +14,26 @@ class RedisCache:
     def _connect(self):
         """Conecta ao Redis com tratamento de erros"""
         try:
-            self.redis_client = redis.Redis(
-                host=settings.REDIS_HOST,
-                port=settings.REDIS_PORT,
-                db=settings.REDIS_DB,
-                password=settings.REDIS_PASSWORD if settings.REDIS_PASSWORD else None,
-                decode_responses=True,
-                socket_connect_timeout=5,
-                socket_timeout=5
-            )
+            # Prepara parâmetros de conexão
+            redis_params = {
+                "host": settings.REDIS_HOST,
+                "port": settings.REDIS_PORT,
+                "db": settings.REDIS_DB,
+                "decode_responses": True,
+                "socket_connect_timeout": 5,
+                "socket_timeout": 5
+            }
+
+            # Adiciona username se fornecido (Redis 6+)
+            if settings.REDIS_USERNAME:
+                redis_params["username"] = settings.REDIS_USERNAME
+
+            # Adiciona password se fornecido
+            if settings.REDIS_PASSWORD:
+                redis_params["password"] = settings.REDIS_PASSWORD
+
+            self.redis_client = redis.Redis(**redis_params)
+
             # Testa a conexão
             self.redis_client.ping()
             print("[INFO] Conexão com Redis estabelecida com sucesso")
