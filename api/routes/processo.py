@@ -1,29 +1,46 @@
+import asyncio
+import logging
 from fastapi import APIRouter, HTTPException
 from ..sei import listar_documentos, listar_tarefa, consultar_documento, baixar_documento
 from ..openai_client import enviar_para_ia_conteudo, enviar_para_ia_conteudo_md, enviar_documento_ia_conteudo
 from ..utils import ler_conteudo_md
 from ..models import ErrorDetail, ErrorType, Retorno
-from ..cache import cache, gerar_chave_processo, gerar_chave_documento
-from concurrent.futures import ThreadPoolExecutor
+from ..cache import cache, gerar_chave_processo, gerar_chave_documento, gerar_chave_andamento, gerar_chave_resumo
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
+
+# TTL padrão de 48 horas
+CACHE_TTL = 172800
+
 
 @router.get("/andamento/{numero_processo}", response_model=Retorno)
 async def andamento(numero_processo: str, token: str, id_unidade: str):
     """
     Retorna o andamento atual do processo e um resumo do último documento.
-    
+
     Args:
         numero_processo (str): Número do processo no SEI
         token (str): Token de autenticação do SEI
         id_unidade (str): ID da unidade no SEI
-        
+
     Returns:
         Retorno: Objeto contendo o status, andamento e resumo do último documento
     """
     try:
-        documentos = listar_documentos(token, numero_processo, id_unidade)
-        andamentos = listar_tarefa(token, numero_processo, id_unidade)
+        # Verifica cache primeiro
+        cache_key = gerar_chave_andamento(numero_processo)
+        cached_result = await cache.get(cache_key)
+        if cached_result:
+            logger.debug(f"Retornando andamento do cache para processo {numero_processo}")
+            return Retorno(status="ok", andamento=cached_result.get("andamento"), resumo=cached_result.get("resumo"))
+
+        # Busca documentos e andamentos em paralelo
+        documentos, andamentos = await asyncio.gather(
+            listar_documentos(token, numero_processo, id_unidade),
+            listar_tarefa(token, numero_processo, id_unidade)
+        )
 
         if not documentos:
             raise HTTPException(
@@ -37,14 +54,21 @@ async def andamento(numero_processo: str, token: str, id_unidade: str):
 
         ultimo = documentos[-1]
 
-        with ThreadPoolExecutor() as executor:
-            fut_doc_ultimo = executor.submit(consultar_documento, token, id_unidade, ultimo["DocumentoFormatado"])
-            fut_md_ultimo = executor.submit(baixar_documento, token, id_unidade, ultimo["DocumentoFormatado"], numero_processo)
+        # Consulta documento e baixa conteúdo em paralelo
+        doc_ultimo, md_ultimo = await asyncio.gather(
+            consultar_documento(token, id_unidade, ultimo["DocumentoFormatado"]),
+            baixar_documento(token, id_unidade, ultimo["DocumentoFormatado"], numero_processo)
+        )
 
-            doc_ultimo = fut_doc_ultimo.result()
-            md_ultimo = fut_md_ultimo.result()
+        # Envia para IA
+        resposta_ia_ultimo = await enviar_para_ia_conteudo(ler_conteudo_md(md_ultimo)) if md_ultimo else {}
 
-            resposta_ia_ultimo = enviar_para_ia_conteudo(ler_conteudo_md(md_ultimo)) if md_ultimo else {}
+        # Armazena no cache
+        resultado = {
+            "andamento": doc_ultimo,
+            "resumo": resposta_ia_ultimo
+        }
+        await cache.set(cache_key, resultado, ttl=CACHE_TTL)
 
         return Retorno(
             status="ok",
@@ -55,6 +79,7 @@ async def andamento(numero_processo: str, token: str, id_unidade: str):
     except HTTPException as he:
         raise he
     except Exception as e:
+        logger.error(f"Erro ao processar andamento: {str(e)}", exc_info=True)
         raise HTTPException(
             status_code=500,
             detail=ErrorDetail(
@@ -64,21 +89,29 @@ async def andamento(numero_processo: str, token: str, id_unidade: str):
             ).dict()
         )
 
+
 @router.get("/resumo/{numero_processo}", response_model=Retorno)
 async def resumo(numero_processo: str, token: str, id_unidade: str):
     """
     Retorna um resumo do processo, incluindo o primeiro e último documento.
-    
+
     Args:
         numero_processo (str): Número do processo no SEI
         token (str): Token de autenticação do SEI
         id_unidade (str): ID da unidade no SEI
-        
+
     Returns:
         Retorno: Objeto contendo o status e resumo do processo
     """
     try:
-        documentos = listar_documentos(token, numero_processo, id_unidade)
+        # Verifica cache primeiro
+        cache_key = gerar_chave_resumo(numero_processo)
+        cached_result = await cache.get(cache_key)
+        if cached_result:
+            logger.debug(f"Retornando resumo do cache para processo {numero_processo}")
+            return Retorno(status="ok", resumo=cached_result)
+
+        documentos = await listar_documentos(token, numero_processo, id_unidade)
 
         if not documentos:
             raise HTTPException(
@@ -93,37 +126,40 @@ async def resumo(numero_processo: str, token: str, id_unidade: str):
         primeiro = documentos[0]
         ultimo = documentos[-1]
 
-        with ThreadPoolExecutor() as executor:
-            fut_doc_primeiro = executor.submit(consultar_documento, token, id_unidade, primeiro["DocumentoFormatado"])
-            fut_doc_ultimo = executor.submit(consultar_documento, token, id_unidade, ultimo["DocumentoFormatado"])
-            fut_md_primeiro = executor.submit(baixar_documento, token, id_unidade, primeiro["DocumentoFormatado"], numero_processo)
-            fut_md_ultimo = executor.submit(baixar_documento, token, id_unidade, ultimo["DocumentoFormatado"], numero_processo)
-
-            doc_primeiro = fut_doc_primeiro.result()
-            doc_ultimo = fut_doc_ultimo.result()
-            md_primeiro = fut_md_primeiro.result()
-            md_ultimo = fut_md_ultimo.result()
-
-            resposta_ia_primeiro = enviar_para_ia_conteudo(ler_conteudo_md(md_primeiro)) if md_primeiro else {}
-            resposta_ia_ultimo = enviar_para_ia_conteudo(ler_conteudo_md(md_ultimo)) if md_ultimo else {}
-
-        return Retorno(
-            status="ok",
-            resumo={
-                "processo": {
-                    "numero": numero_processo,
-                    "id_unidade": id_unidade
-                },
-                "primeiro_documento": doc_primeiro,
-                "resumo_primeiro": resposta_ia_primeiro,
-                "ultimo_documento": doc_ultimo,
-                "resumo_ultimo": resposta_ia_ultimo
-            }
+        # Busca todos os dados em paralelo
+        doc_primeiro, doc_ultimo, md_primeiro, md_ultimo = await asyncio.gather(
+            consultar_documento(token, id_unidade, primeiro["DocumentoFormatado"]),
+            consultar_documento(token, id_unidade, ultimo["DocumentoFormatado"]),
+            baixar_documento(token, id_unidade, primeiro["DocumentoFormatado"], numero_processo),
+            baixar_documento(token, id_unidade, ultimo["DocumentoFormatado"], numero_processo)
         )
+
+        # Envia para IA em paralelo
+        resposta_ia_primeiro, resposta_ia_ultimo = await asyncio.gather(
+            enviar_para_ia_conteudo(ler_conteudo_md(md_primeiro)) if md_primeiro else asyncio.sleep(0, result={}),
+            enviar_para_ia_conteudo(ler_conteudo_md(md_ultimo)) if md_ultimo else asyncio.sleep(0, result={})
+        )
+
+        resultado = {
+            "processo": {
+                "numero": numero_processo,
+                "id_unidade": id_unidade
+            },
+            "primeiro_documento": doc_primeiro,
+            "resumo_primeiro": resposta_ia_primeiro,
+            "ultimo_documento": doc_ultimo,
+            "resumo_ultimo": resposta_ia_ultimo
+        }
+
+        # Armazena no cache
+        await cache.set(cache_key, resultado, ttl=CACHE_TTL)
+
+        return Retorno(status="ok", resumo=resultado)
 
     except HTTPException as he:
         raise he
     except Exception as e:
+        logger.error(f"Erro ao processar resumo: {str(e)}", exc_info=True)
         raise HTTPException(
             status_code=500,
             detail=ErrorDetail(
@@ -132,6 +168,7 @@ async def resumo(numero_processo: str, token: str, id_unidade: str):
                 details={"error": str(e), "numero_processo": numero_processo}
             ).dict()
         )
+
 
 @router.get("/resumo-completo/{numero_processo}", response_model=Retorno)
 async def resumo_completo(numero_processo: str, token: str, id_unidade: str):
@@ -147,7 +184,7 @@ async def resumo_completo(numero_processo: str, token: str, id_unidade: str):
         Retorno: Objeto contendo o status e resumo completo do processo
     """
     try:
-        documentos = listar_documentos(token, numero_processo, id_unidade)
+        documentos = await listar_documentos(token, numero_processo, id_unidade)
 
         if not documentos:
             raise HTTPException(
@@ -167,75 +204,65 @@ async def resumo_completo(numero_processo: str, token: str, id_unidade: str):
         id_ultimo_doc = ultimo.get("IdDocumento", ultimo.get("DocumentoFormatado"))
         cache_key = gerar_chave_processo(numero_processo, id_primeiro_doc, id_ultimo_doc)
 
-        # Tenta obter do cache (TTL de 48h = 172800 segundos)
-        cached_result = cache.get(cache_key)
+        # Tenta obter do cache
+        cached_result = await cache.get(cache_key)
         if cached_result:
-            print(f"[DEBUG] Retornando resultado do cache para processo {numero_processo}")
+            logger.debug(f"Retornando resultado do cache para processo {numero_processo}")
             return Retorno(status="ok", resumo=cached_result)
 
-        with ThreadPoolExecutor() as executor:
-            print(f"[DEBUG] Iniciando processamento do processo {numero_processo}")
-            print(f"[DEBUG] Primeiro documento: {primeiro['DocumentoFormatado']}")
-            print(f"[DEBUG] Último documento: {ultimo['DocumentoFormatado']}")
-            
-            fut_doc_primeiro = executor.submit(consultar_documento, token, id_unidade, primeiro["DocumentoFormatado"])
-            fut_doc_ultimo = executor.submit(consultar_documento, token, id_unidade, ultimo["DocumentoFormatado"])
-            fut_md_primeiro = executor.submit(baixar_documento, token, id_unidade, primeiro["DocumentoFormatado"], numero_processo)
-            fut_md_ultimo = executor.submit(baixar_documento, token, id_unidade, ultimo["DocumentoFormatado"], numero_processo)
+        logger.debug(f"Iniciando processamento do processo {numero_processo}")
+        logger.debug(f"Primeiro documento: {primeiro['DocumentoFormatado']}")
+        logger.debug(f"Último documento: {ultimo['DocumentoFormatado']}")
 
+        # Busca todos os dados em paralelo
+        results = await asyncio.gather(
+            consultar_documento(token, id_unidade, primeiro["DocumentoFormatado"]),
+            consultar_documento(token, id_unidade, ultimo["DocumentoFormatado"]),
+            baixar_documento(token, id_unidade, primeiro["DocumentoFormatado"], numero_processo),
+            baixar_documento(token, id_unidade, ultimo["DocumentoFormatado"], numero_processo),
+            return_exceptions=True
+        )
+
+        doc_primeiro = results[0] if not isinstance(results[0], Exception) else {}
+        doc_ultimo = results[1] if not isinstance(results[1], Exception) else {}
+        md_primeiro = results[2] if not isinstance(results[2], Exception) else None
+        md_ultimo = results[3] if not isinstance(results[3], Exception) else None
+
+        if isinstance(results[0], Exception):
+            logger.error(f"Falha ao consultar primeiro documento: {str(results[0])}")
+        else:
+            logger.debug(f"Primeiro documento consultado: {doc_primeiro.get('Titulo', 'Sem título')}")
+
+        if isinstance(results[1], Exception):
+            logger.error(f"Falha ao consultar último documento: {str(results[1])}")
+        else:
+            logger.debug(f"Último documento consultado: {doc_ultimo.get('Titulo', 'Sem título')}")
+
+        conteudo_combinado = ""
+        if md_primeiro:
             try:
-                doc_primeiro = fut_doc_primeiro.result()
-                print(f"[DEBUG] Primeiro documento consultado com sucesso: {doc_primeiro.get('Titulo', 'Sem título')}")
+                conteudo_primeiro = ler_conteudo_md(md_primeiro)
+                logger.debug(f"Conteúdo do primeiro documento: {len(conteudo_primeiro)} caracteres")
+                conteudo_combinado += f"PRIMEIRO DOCUMENTO:\n{conteudo_primeiro}\n\n"
             except Exception as e:
-                print(f"[ERRO] Falha ao consultar primeiro documento: {str(e)}")
-                doc_primeiro = {}
+                logger.error(f"Falha ao ler conteúdo do primeiro documento: {str(e)}")
 
+        if md_ultimo:
             try:
-                doc_ultimo = fut_doc_ultimo.result()
-                print(f"[DEBUG] Último documento consultado com sucesso: {doc_ultimo.get('Titulo', 'Sem título')}")
+                conteudo_ultimo = ler_conteudo_md(md_ultimo)
+                logger.debug(f"Conteúdo do último documento: {len(conteudo_ultimo)} caracteres")
+                conteudo_combinado += f"ÚLTIMO DOCUMENTO:\n{conteudo_ultimo}"
             except Exception as e:
-                print(f"[ERRO] Falha ao consultar último documento: {str(e)}")
-                doc_ultimo = {}
+                logger.error(f"Falha ao ler conteúdo do último documento: {str(e)}")
 
-            try:
-                md_primeiro = fut_md_primeiro.result()
-                print(f"[DEBUG] Primeiro documento baixado com sucesso: {md_primeiro if md_primeiro else 'Nenhum arquivo'}")
-            except Exception as e:
-                print(f"[ERRO] Falha ao baixar primeiro documento: {str(e)}")
-                md_primeiro = None
+        logger.debug(f"Tamanho total do conteúdo combinado: {len(conteudo_combinado)} caracteres")
 
-            try:
-                md_ultimo = fut_md_ultimo.result()
-                print(f"[DEBUG] Último documento baixado com sucesso: {md_ultimo if md_ultimo else 'Nenhum arquivo'}")
-            except Exception as e:
-                print(f"[ERRO] Falha ao baixar último documento: {str(e)}")
-                md_ultimo = None
-
-            conteudo_combinado = ""
-            if md_primeiro:
-                try:
-                    conteudo_primeiro = ler_conteudo_md(md_primeiro)
-                    print(f"[DEBUG] Conteúdo do primeiro documento lido: {len(conteudo_primeiro)} caracteres")
-                    conteudo_combinado += f"PRIMEIRO DOCUMENTO:\n{conteudo_primeiro}\n\n"
-                except Exception as e:
-                    print(f"[ERRO] Falha ao ler conteúdo do primeiro documento: {str(e)}")
-
-            if md_ultimo:
-                try:
-                    conteudo_ultimo = ler_conteudo_md(md_ultimo)
-                    print(f"[DEBUG] Conteúdo do último documento lido: {len(conteudo_ultimo)} caracteres")
-                    conteudo_combinado += f"ÚLTIMO DOCUMENTO:\n{conteudo_ultimo}"
-                except Exception as e:
-                    print(f"[ERRO] Falha ao ler conteúdo do último documento: {str(e)}")
-
-            print(f"[DEBUG] Tamanho total do conteúdo combinado: {len(conteudo_combinado)} caracteres")
-
-            try:
-                resposta_ia_combinada = enviar_para_ia_conteudo_md(conteudo_combinado) if conteudo_combinado else {}
-                print(f"[DEBUG] Resposta da IA recebida: {resposta_ia_combinada.get('status', 'sem status')}")
-            except Exception as e:
-                print(f"[ERRO] Falha ao obter resposta da IA: {str(e)}")
-                resposta_ia_combinada = {"status": "erro", "resposta_ia": f"Erro ao processar: {str(e)}"}
+        try:
+            resposta_ia_combinada = await enviar_para_ia_conteudo_md(conteudo_combinado) if conteudo_combinado else {}
+            logger.debug(f"Resposta da IA recebida: {resposta_ia_combinada.get('status', 'sem status')}")
+        except Exception as e:
+            logger.error(f"Falha ao obter resposta da IA: {str(e)}")
+            resposta_ia_combinada = {"status": "erro", "resposta_ia": f"Erro ao processar: {str(e)}"}
 
         # Monta o resultado
         resultado = {
@@ -248,14 +275,15 @@ async def resumo_completo(numero_processo: str, token: str, id_unidade: str):
             "resumo_combinado": resposta_ia_combinada
         }
 
-        # Armazena no cache (TTL de 48h = 172800 segundos)
-        cache.set(cache_key, resultado, ttl=172800)
+        # Armazena no cache
+        await cache.set(cache_key, resultado, ttl=CACHE_TTL)
 
         return Retorno(status="ok", resumo=resultado)
 
     except HTTPException as he:
         raise he
     except Exception as e:
+        logger.error(f"Erro ao processar resumo completo: {str(e)}", exc_info=True)
         raise HTTPException(
             status_code=500,
             detail=ErrorDetail(
@@ -264,6 +292,7 @@ async def resumo_completo(numero_processo: str, token: str, id_unidade: str):
                 details={"error": str(e), "numero_processo": numero_processo}
             ).dict()
         )
+
 
 @router.get("/resumo-documento/{documento_formatado}", response_model=Retorno)
 async def resumo_documento(documento_formatado: str, token: str, id_unidade: str):
@@ -282,24 +311,24 @@ async def resumo_documento(documento_formatado: str, token: str, id_unidade: str
         # Gera chave de cache com o ID do documento
         cache_key = gerar_chave_documento(documento_formatado)
 
-        # Tenta obter do cache (TTL de 48h = 172800 segundos)
-        cached_result = cache.get(cache_key)
+        # Tenta obter do cache
+        cached_result = await cache.get(cache_key)
         if cached_result:
-            print(f"[DEBUG] Retornando resultado do cache para documento {documento_formatado}")
+            logger.debug(f"Retornando resultado do cache para documento {documento_formatado}")
             return Retorno(status="ok", resumo=cached_result)
 
-        doc = consultar_documento(token, id_unidade, documento_formatado)
-        md = baixar_documento(token, id_unidade, documento_formatado)
+        # Busca documento e conteúdo em paralelo
+        doc, md = await asyncio.gather(
+            consultar_documento(token, id_unidade, documento_formatado),
+            baixar_documento(token, id_unidade, documento_formatado)
+        )
 
         conteudo = ""
         if md:
-            # Conseguiu baixar e processar o documento
             conteudo = ler_conteudo_md(md)
         else:
-            # Fallback: documento não é HTML ou houve erro no processamento
-            # Tenta usar os dados básicos do documento consultado para a IA
-            print(f"[WARN] Documento {documento_formatado} não retornou conteúdo MD, usando dados básicos")
-        
+            logger.warning(f"Documento {documento_formatado} não retornou conteúdo MD, usando dados básicos")
+
         if not conteudo:
             raise HTTPException(
                 status_code=404,
@@ -310,7 +339,7 @@ async def resumo_documento(documento_formatado: str, token: str, id_unidade: str
                 ).dict()
             )
 
-        resposta_ia = enviar_documento_ia_conteudo(conteudo)
+        resposta_ia = await enviar_documento_ia_conteudo(conteudo)
 
         # Monta o resultado
         resultado = {
@@ -318,14 +347,15 @@ async def resumo_documento(documento_formatado: str, token: str, id_unidade: str
             "resumo": resposta_ia
         }
 
-        # Armazena no cache (TTL de 48h = 172800 segundos)
-        cache.set(cache_key, resultado, ttl=172800)
+        # Armazena no cache
+        await cache.set(cache_key, resultado, ttl=CACHE_TTL)
 
         return Retorno(status="ok", resumo=resultado)
 
     except HTTPException as he:
         raise he
     except Exception as e:
+        logger.error(f"Erro ao processar resumo do documento: {str(e)}", exc_info=True)
         raise HTTPException(
             status_code=500,
             detail=ErrorDetail(
@@ -334,5 +364,3 @@ async def resumo_documento(documento_formatado: str, token: str, id_unidade: str
                 details={"error": str(e), "documento_formatado": documento_formatado}
             ).dict()
         )
-
-    

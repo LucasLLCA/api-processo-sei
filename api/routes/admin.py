@@ -1,6 +1,9 @@
+import logging
 from fastapi import APIRouter, HTTPException
-from ..cache import cache
+from ..cache import cache, gerar_chave_documento
 from ..models import ErrorDetail, ErrorType
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -14,7 +17,7 @@ async def cache_status():
         dict: Status da conexão e informações do Redis
     """
     try:
-        is_available = cache.is_available()
+        is_available = await cache.is_available()
 
         if not is_available:
             return {
@@ -25,22 +28,23 @@ async def cache_status():
 
         # Obter informações do Redis
         try:
-            info = cache.redis_client.info()
-            dbsize = cache.redis_client.dbsize()
+            info = await cache.get_info()
+            keys = await cache.get_keys("*")
 
             return {
                 "status": "ok",
                 "message": "Redis conectado e funcionando",
                 "connected": True,
                 "info": {
-                    "version": info.get("redis_version", "unknown"),
-                    "uptime_seconds": info.get("uptime_in_seconds", 0),
                     "used_memory_human": info.get("used_memory_human", "unknown"),
-                    "total_keys": dbsize,
-                    "connected_clients": info.get("connected_clients", 0)
+                    "total_keys": len(keys),
+                    "connected_clients": info.get("connected_clients", 0),
+                    "keyspace_hits": info.get("keyspace_hits", 0),
+                    "keyspace_misses": info.get("keyspace_misses", 0)
                 }
             }
         except Exception as e:
+            logger.error(f"Erro ao obter informações do Redis: {str(e)}")
             return {
                 "status": "error",
                 "message": f"Erro ao obter informações do Redis: {str(e)}",
@@ -48,6 +52,7 @@ async def cache_status():
             }
 
     except Exception as e:
+        logger.error(f"Erro ao verificar status do cache: {str(e)}")
         raise HTTPException(
             status_code=500,
             detail=ErrorDetail(
@@ -67,7 +72,7 @@ async def reset_cache():
         dict: Resultado da operação
     """
     try:
-        if not cache.is_available():
+        if not await cache.is_available():
             raise HTTPException(
                 status_code=503,
                 detail=ErrorDetail(
@@ -78,7 +83,9 @@ async def reset_cache():
             )
 
         # Remove todas as chaves do banco atual
-        deleted = cache.clear_pattern("*")
+        deleted = await cache.clear_pattern("*")
+
+        logger.info(f"Cache resetado: {deleted} chaves removidas")
 
         return {
             "status": "ok",
@@ -89,6 +96,7 @@ async def reset_cache():
     except HTTPException as he:
         raise he
     except Exception as e:
+        logger.error(f"Erro ao resetar cache: {str(e)}")
         raise HTTPException(
             status_code=500,
             detail=ErrorDetail(
@@ -112,7 +120,7 @@ async def reset_cache_processo(numero_processo: str):
         dict: Resultado da operação
     """
     try:
-        if not cache.is_available():
+        if not await cache.is_available():
             raise HTTPException(
                 status_code=503,
                 detail=ErrorDetail(
@@ -123,8 +131,11 @@ async def reset_cache_processo(numero_processo: str):
             )
 
         # Remove todas as chaves relacionadas ao processo
-        pattern = f"processo:{numero_processo}:*"
-        deleted = cache.clear_pattern(pattern)
+        deleted = 0
+        for pattern in [f"processo:{numero_processo}:*", f"andamento:{numero_processo}", f"resumo:{numero_processo}"]:
+            deleted += await cache.clear_pattern(pattern)
+
+        logger.info(f"Cache do processo {numero_processo} resetado: {deleted} chaves removidas")
 
         return {
             "status": "ok",
@@ -136,6 +147,7 @@ async def reset_cache_processo(numero_processo: str):
     except HTTPException as he:
         raise he
     except Exception as e:
+        logger.error(f"Erro ao resetar cache do processo: {str(e)}")
         raise HTTPException(
             status_code=500,
             detail=ErrorDetail(
@@ -158,7 +170,7 @@ async def reset_cache_documento(documento_formatado: str):
         dict: Resultado da operação
     """
     try:
-        if not cache.is_available():
+        if not await cache.is_available():
             raise HTTPException(
                 status_code=503,
                 detail=ErrorDetail(
@@ -169,9 +181,10 @@ async def reset_cache_documento(documento_formatado: str):
             )
 
         # Remove a chave específica do documento
-        from ..cache import gerar_chave_documento
         cache_key = gerar_chave_documento(documento_formatado)
-        deleted = cache.delete(cache_key)
+        deleted = await cache.delete(cache_key)
+
+        logger.info(f"Cache do documento {documento_formatado} resetado")
 
         return {
             "status": "ok",
@@ -183,6 +196,7 @@ async def reset_cache_documento(documento_formatado: str):
     except HTTPException as he:
         raise he
     except Exception as e:
+        logger.error(f"Erro ao resetar cache do documento: {str(e)}")
         raise HTTPException(
             status_code=500,
             detail=ErrorDetail(
@@ -206,7 +220,7 @@ async def list_cache_keys(pattern: str = "*", limit: int = 100):
         dict: Lista de chaves encontradas
     """
     try:
-        if not cache.is_available():
+        if not await cache.is_available():
             raise HTTPException(
                 status_code=503,
                 detail=ErrorDetail(
@@ -216,8 +230,8 @@ async def list_cache_keys(pattern: str = "*", limit: int = 100):
                 ).dict()
             )
 
-        # Lista as chaves
-        keys = cache.redis_client.keys(pattern)
+        # Lista as chaves usando SCAN
+        keys = await cache.get_keys(pattern)
         total_keys = len(keys)
 
         # Limita o número de chaves retornadas
@@ -226,7 +240,7 @@ async def list_cache_keys(pattern: str = "*", limit: int = 100):
         # Obtém TTL de cada chave
         keys_with_ttl = []
         for key in limited_keys:
-            ttl = cache.redis_client.ttl(key)
+            ttl = await cache.redis_client.ttl(key)
             keys_with_ttl.append({
                 "key": key,
                 "ttl": ttl if ttl > 0 else "sem expiração" if ttl == -1 else "expirado"
@@ -244,6 +258,7 @@ async def list_cache_keys(pattern: str = "*", limit: int = 100):
     except HTTPException as he:
         raise he
     except Exception as e:
+        logger.error(f"Erro ao listar chaves do cache: {str(e)}")
         raise HTTPException(
             status_code=500,
             detail=ErrorDetail(

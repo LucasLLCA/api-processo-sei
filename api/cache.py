@@ -1,57 +1,67 @@
-import redis
-import json
+import redis.asyncio as aioredis
+import orjson
+import logging
 from typing import Optional, Any
 from .config import settings
 
+logger = logging.getLogger(__name__)
+
+
 class RedisCache:
     """
-    Cliente Redis para cache da API SEI
+    Cliente Redis assíncrono para cache da API SEI
     """
     def __init__(self):
         self.redis_client = None
-        self._connect()
+        self._connected = False
 
-    def _connect(self):
+    async def connect(self):
         """Conecta ao Redis com tratamento de erros"""
+        if self._connected:
+            return
+
         try:
-            # Prepara parâmetros de conexão
-            redis_params = {
-                "host": settings.REDIS_HOST,
-                "port": settings.REDIS_PORT,
-                "db": settings.REDIS_DB,
-                "decode_responses": True,
-                "socket_connect_timeout": 5,
-                "socket_timeout": 5
-            }
-
-            # Adiciona username se fornecido (Redis 6+)
-            if settings.REDIS_USERNAME:
-                redis_params["username"] = settings.REDIS_USERNAME
-
-            # Adiciona password se fornecido
+            # Prepara URL de conexão
             if settings.REDIS_PASSWORD:
-                redis_params["password"] = settings.REDIS_PASSWORD
+                redis_url = f"redis://{settings.REDIS_USERNAME}:{settings.REDIS_PASSWORD}@{settings.REDIS_HOST}:{settings.REDIS_PORT}/{settings.REDIS_DB}"
+            else:
+                redis_url = f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}/{settings.REDIS_DB}"
 
-            self.redis_client = redis.Redis(**redis_params)
+            self.redis_client = aioredis.from_url(
+                redis_url,
+                encoding="utf-8",
+                decode_responses=True,
+                socket_connect_timeout=5,
+                socket_timeout=5,
+                max_connections=20
+            )
 
             # Testa a conexão
-            self.redis_client.ping()
-            print("[INFO] Conexão com Redis estabelecida com sucesso")
+            await self.redis_client.ping()
+            self._connected = True
+            logger.info("Conexão com Redis estabelecida com sucesso")
         except Exception as e:
-            print(f"[WARN] Não foi possível conectar ao Redis: {str(e)}")
+            logger.warning(f"Não foi possível conectar ao Redis: {str(e)}")
             self.redis_client = None
+            self._connected = False
 
-    def is_available(self) -> bool:
+    async def close(self):
+        """Fecha a conexão com o Redis"""
+        if self.redis_client:
+            await self.redis_client.close()
+            self._connected = False
+
+    async def is_available(self) -> bool:
         """Verifica se o Redis está disponível"""
         if self.redis_client is None:
             return False
         try:
-            self.redis_client.ping()
+            await self.redis_client.ping()
             return True
         except Exception:
             return False
 
-    def get(self, key: str) -> Optional[Any]:
+    async def get(self, key: str) -> Optional[Any]:
         """
         Obtém um valor do cache
 
@@ -61,21 +71,24 @@ class RedisCache:
         Returns:
             Valor do cache ou None se não encontrado ou em caso de erro
         """
-        if not self.is_available():
+        if not self._connected:
+            await self.connect()
+
+        if self.redis_client is None:
             return None
 
         try:
-            value = self.redis_client.get(key)
+            value = await self.redis_client.get(key)
             if value:
-                print(f"[CACHE HIT] Chave: {key}")
-                return json.loads(value)
-            print(f"[CACHE MISS] Chave: {key}")
+                logger.debug(f"[CACHE HIT] Chave: {key}")
+                return orjson.loads(value)
+            logger.debug(f"[CACHE MISS] Chave: {key}")
             return None
         except Exception as e:
-            print(f"[WARN] Erro ao obter cache para chave {key}: {str(e)}")
+            logger.warning(f"Erro ao obter cache para chave {key}: {str(e)}")
             return None
 
-    def set(self, key: str, value: Any, ttl: int = 3600) -> bool:
+    async def set(self, key: str, value: Any, ttl: int = 3600) -> bool:
         """
         Define um valor no cache
 
@@ -87,19 +100,22 @@ class RedisCache:
         Returns:
             True se sucesso, False caso contrário
         """
-        if not self.is_available():
+        if not self._connected:
+            await self.connect()
+
+        if self.redis_client is None:
             return False
 
         try:
-            serialized_value = json.dumps(value, ensure_ascii=False)
-            self.redis_client.setex(key, ttl, serialized_value)
-            print(f"[CACHE SET] Chave: {key}, TTL: {ttl}s")
+            serialized_value = orjson.dumps(value).decode('utf-8')
+            await self.redis_client.setex(key, ttl, serialized_value)
+            logger.debug(f"[CACHE SET] Chave: {key}, TTL: {ttl}s")
             return True
         except Exception as e:
-            print(f"[WARN] Erro ao definir cache para chave {key}: {str(e)}")
+            logger.warning(f"Erro ao definir cache para chave {key}: {str(e)}")
             return False
 
-    def delete(self, key: str) -> bool:
+    async def delete(self, key: str) -> bool:
         """
         Remove um valor do cache
 
@@ -109,20 +125,23 @@ class RedisCache:
         Returns:
             True se sucesso, False caso contrário
         """
-        if not self.is_available():
+        if not self._connected:
+            await self.connect()
+
+        if self.redis_client is None:
             return False
 
         try:
-            self.redis_client.delete(key)
-            print(f"[CACHE DELETE] Chave: {key}")
+            await self.redis_client.delete(key)
+            logger.debug(f"[CACHE DELETE] Chave: {key}")
             return True
         except Exception as e:
-            print(f"[WARN] Erro ao deletar cache para chave {key}: {str(e)}")
+            logger.warning(f"Erro ao deletar cache para chave {key}: {str(e)}")
             return False
 
-    def clear_pattern(self, pattern: str) -> int:
+    async def clear_pattern(self, pattern: str) -> int:
         """
-        Remove todas as chaves que correspondem ao padrão
+        Remove todas as chaves que correspondem ao padrão usando SCAN (não bloqueia)
 
         Args:
             pattern: Padrão de chave (ex: "processo:*")
@@ -130,19 +149,81 @@ class RedisCache:
         Returns:
             Número de chaves removidas
         """
-        if not self.is_available():
+        if not self._connected:
+            await self.connect()
+
+        if self.redis_client is None:
             return 0
 
         try:
-            keys = self.redis_client.keys(pattern)
-            if keys:
-                deleted = self.redis_client.delete(*keys)
-                print(f"[CACHE CLEAR] Padrão: {pattern}, Chaves removidas: {deleted}")
-                return deleted
-            return 0
+            deleted = 0
+            cursor = 0
+            while True:
+                cursor, keys = await self.redis_client.scan(cursor, match=pattern, count=100)
+                if keys:
+                    deleted += await self.redis_client.delete(*keys)
+                if cursor == 0:
+                    break
+            logger.debug(f"[CACHE CLEAR] Padrão: {pattern}, Chaves removidas: {deleted}")
+            return deleted
         except Exception as e:
-            print(f"[WARN] Erro ao limpar cache com padrão {pattern}: {str(e)}")
+            logger.warning(f"Erro ao limpar cache com padrão {pattern}: {str(e)}")
             return 0
+
+    async def get_keys(self, pattern: str = "*") -> list:
+        """
+        Lista chaves que correspondem ao padrão usando SCAN
+
+        Args:
+            pattern: Padrão de chave (ex: "processo:*")
+
+        Returns:
+            Lista de chaves
+        """
+        if not self._connected:
+            await self.connect()
+
+        if self.redis_client is None:
+            return []
+
+        try:
+            keys = []
+            cursor = 0
+            while True:
+                cursor, batch = await self.redis_client.scan(cursor, match=pattern, count=100)
+                keys.extend(batch)
+                if cursor == 0:
+                    break
+            return keys
+        except Exception as e:
+            logger.warning(f"Erro ao listar chaves com padrão {pattern}: {str(e)}")
+            return []
+
+    async def get_info(self) -> dict:
+        """
+        Obtém informações do Redis
+
+        Returns:
+            Dicionário com informações do Redis
+        """
+        if not self._connected:
+            await self.connect()
+
+        if self.redis_client is None:
+            return {}
+
+        try:
+            info = await self.redis_client.info()
+            return {
+                "connected_clients": info.get("connected_clients", 0),
+                "used_memory_human": info.get("used_memory_human", "0B"),
+                "total_connections_received": info.get("total_connections_received", 0),
+                "keyspace_hits": info.get("keyspace_hits", 0),
+                "keyspace_misses": info.get("keyspace_misses", 0)
+            }
+        except Exception as e:
+            logger.warning(f"Erro ao obter informações do Redis: {str(e)}")
+            return {}
 
 
 # Instância global do cache
@@ -175,3 +256,29 @@ def gerar_chave_documento(documento_formatado: str) -> str:
         Chave formatada para cache
     """
     return f"documento:{documento_formatado}"
+
+
+def gerar_chave_andamento(numero_processo: str) -> str:
+    """
+    Gera chave de cache para andamento de processo
+
+    Args:
+        numero_processo: Número do processo
+
+    Returns:
+        Chave formatada para cache
+    """
+    return f"andamento:{numero_processo}"
+
+
+def gerar_chave_resumo(numero_processo: str) -> str:
+    """
+    Gera chave de cache para resumo de processo
+
+    Args:
+        numero_processo: Número do processo
+
+    Returns:
+        Chave formatada para cache
+    """
+    return f"resumo:{numero_processo}"
