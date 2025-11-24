@@ -184,6 +184,14 @@ async def resumo_completo(numero_processo: str, token: str, id_unidade: str):
         Retorno: Objeto contendo o status e resumo completo do processo
     """
     try:
+        # Verifica cache primeiro usando apenas o número do processo
+        cache_key_base = f"processo:{numero_processo}:resumo_completo"
+        cached_result = await cache.get(cache_key_base)
+        if cached_result:
+            logger.debug(f"Retornando resultado do cache para processo {numero_processo}")
+            return Retorno(status="ok", resumo=cached_result)
+
+        # Só lista documentos se não houver cache
         documentos = await listar_documentos(token, numero_processo, id_unidade)
 
         if not documentos:
@@ -197,16 +205,7 @@ async def resumo_completo(numero_processo: str, token: str, id_unidade: str):
             )
 
         primeiro = documentos[0]
-
-        # Gera chave de cache com processo, primeiro e último documento
-        id_primeiro_doc = primeiro.get("IdDocumento", primeiro.get("DocumentoFormatado"))
-        cache_key = gerar_chave_processo(numero_processo, id_primeiro_doc)
-
-        # Tenta obter do cache
-        cached_result = await cache.get(cache_key)
-        if cached_result:
-            logger.debug(f"Retornando resultado do cache para processo {numero_processo}")
-            return Retorno(status="ok", resumo=cached_result)
+        cache_key = cache_key_base
 
         logger.debug(f"Iniciando processamento do processo {numero_processo}")
         logger.debug(f"Primeiro documento: {primeiro['DocumentoFormatado']}")
