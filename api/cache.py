@@ -230,19 +230,21 @@ class RedisCache:
 cache = RedisCache()
 
 
-def gerar_chave_processo(numero_processo: str, id_primeiro_doc: str, id_ultimo_doc: str) -> str:
+def gerar_chave_processo(numero_processo: str, id_primeiro_doc: str, id_ultimo_doc: str = None) -> str:
     """
     Gera chave de cache para entendimento de processo
 
     Args:
         numero_processo: Número do processo
         id_primeiro_doc: ID do primeiro documento
-        id_ultimo_doc: ID do último documento
+        id_ultimo_doc: ID do último documento (opcional)
 
     Returns:
         Chave formatada para cache
     """
-    return f"processo:{numero_processo}:primeiro:{id_primeiro_doc}:ultimo:{id_ultimo_doc}"
+    if id_ultimo_doc:
+        return f"processo:{numero_processo}:primeiro:{id_primeiro_doc}:ultimo:{id_ultimo_doc}"
+    return f"processo:{numero_processo}:primeiro:{id_primeiro_doc}"
 
 
 def gerar_chave_documento(documento_formatado: str) -> str:

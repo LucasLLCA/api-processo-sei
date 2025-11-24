@@ -197,12 +197,10 @@ async def resumo_completo(numero_processo: str, token: str, id_unidade: str):
             )
 
         primeiro = documentos[0]
-        ultimo = documentos[-1]
 
         # Gera chave de cache com processo, primeiro e último documento
         id_primeiro_doc = primeiro.get("IdDocumento", primeiro.get("DocumentoFormatado"))
-        id_ultimo_doc = ultimo.get("IdDocumento", ultimo.get("DocumentoFormatado"))
-        cache_key = gerar_chave_processo(numero_processo, id_primeiro_doc, id_ultimo_doc)
+        cache_key = gerar_chave_processo(numero_processo, id_primeiro_doc)
 
         # Tenta obter do cache
         cached_result = await cache.get(cache_key)
@@ -212,31 +210,21 @@ async def resumo_completo(numero_processo: str, token: str, id_unidade: str):
 
         logger.debug(f"Iniciando processamento do processo {numero_processo}")
         logger.debug(f"Primeiro documento: {primeiro['DocumentoFormatado']}")
-        logger.debug(f"Último documento: {ultimo['DocumentoFormatado']}")
 
         # Busca todos os dados em paralelo
         results = await asyncio.gather(
             consultar_documento(token, id_unidade, primeiro["DocumentoFormatado"]),
-            consultar_documento(token, id_unidade, ultimo["DocumentoFormatado"]),
             baixar_documento(token, id_unidade, primeiro["DocumentoFormatado"], numero_processo),
-            baixar_documento(token, id_unidade, ultimo["DocumentoFormatado"], numero_processo),
             return_exceptions=True
         )
 
         doc_primeiro = results[0] if not isinstance(results[0], Exception) else {}
-        doc_ultimo = results[1] if not isinstance(results[1], Exception) else {}
-        md_primeiro = results[2] if not isinstance(results[2], Exception) else None
-        md_ultimo = results[3] if not isinstance(results[3], Exception) else None
+        md_primeiro = results[1] if not isinstance(results[1], Exception) else None
 
         if isinstance(results[0], Exception):
             logger.error(f"Falha ao consultar primeiro documento: {str(results[0])}")
         else:
             logger.debug(f"Primeiro documento consultado: {doc_primeiro.get('Titulo', 'Sem título')}")
-
-        if isinstance(results[1], Exception):
-            logger.error(f"Falha ao consultar último documento: {str(results[1])}")
-        else:
-            logger.debug(f"Último documento consultado: {doc_ultimo.get('Titulo', 'Sem título')}")
 
         conteudo_combinado = ""
         if md_primeiro:
@@ -246,14 +234,6 @@ async def resumo_completo(numero_processo: str, token: str, id_unidade: str):
                 conteudo_combinado += f"PRIMEIRO DOCUMENTO:\n{conteudo_primeiro}\n\n"
             except Exception as e:
                 logger.error(f"Falha ao ler conteúdo do primeiro documento: {str(e)}")
-
-        if md_ultimo:
-            try:
-                conteudo_ultimo = ler_conteudo_md(md_ultimo)
-                logger.debug(f"Conteúdo do último documento: {len(conteudo_ultimo)} caracteres")
-                conteudo_combinado += f"ÚLTIMO DOCUMENTO:\n{conteudo_ultimo}"
-            except Exception as e:
-                logger.error(f"Falha ao ler conteúdo do último documento: {str(e)}")
 
         logger.debug(f"Tamanho total do conteúdo combinado: {len(conteudo_combinado)} caracteres")
 
@@ -271,7 +251,6 @@ async def resumo_completo(numero_processo: str, token: str, id_unidade: str):
                 "id_unidade": id_unidade
             },
             "primeiro_documento": doc_primeiro,
-            "ultimo_documento": doc_ultimo,
             "resumo_combinado": resposta_ia_combinada
         }
 
