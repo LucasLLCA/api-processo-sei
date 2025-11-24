@@ -45,12 +45,7 @@ async def enviar_para_ia_conteudo_md(conteudo_md: str) -> dict:
             model=settings.OPENAI_MODEL,
             messages=[
                 {"role": "system", "content": "Você é um assistente jurídico especializado em analisar processos administrativos. Sua tarefa é produzir um resumo claro e conciso em dois parágrafos, integrando as informações dos documentos de forma coerente."},
-                {"role": "user", "content": f"""Analise os documentos abaixo e produza um resumo em dois parágrafos que integre as informações de forma coerente:
-                1. No primeiro parágrafo, explique do que se trata o processo e seu objetivo.
-                2. No segundo parágrafo, descreva a situação atual do processo.
-
-                Produza um texto único e coerente, não separando por documentos. O texto deve fluir naturalmente entre os parágrafos.
-
+                {"role": "user", "content": f"""Analise os documentos abaixo e produza um resumo que integre as informações de forma coerente:
                 Documentos:
                 {conteudo_md}"""}
             ],
