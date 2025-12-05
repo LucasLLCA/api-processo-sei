@@ -1,7 +1,7 @@
 import logging
 from fastapi import APIRouter, HTTPException
 from ..cache import cache, gerar_chave_documento
-from ..models import ErrorDetail, ErrorType
+from ..schemas_legacy import ErrorDetail, ErrorType
 
 logger = logging.getLogger(__name__)
 

@@ -26,3 +26,8 @@ annotated-types==0.7.0
 
 # Utils
 PyYAML==6.0.2
+
+# Database (PostgreSQL)
+sqlalchemy[asyncio]==2.0.35
+asyncpg==0.30.0
+alembic==1.14.0

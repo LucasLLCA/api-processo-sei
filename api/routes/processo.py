@@ -4,7 +4,7 @@ from fastapi import APIRouter, HTTPException
 from ..sei import listar_documentos, listar_tarefa, consultar_documento, baixar_documento
 from ..openai_client import enviar_para_ia_conteudo, enviar_para_ia_conteudo_md, enviar_documento_ia_conteudo
 from ..utils import ler_conteudo_md
-from ..models import ErrorDetail, ErrorType, Retorno
+from ..schemas_legacy import ErrorDetail, ErrorType, Retorno
 from ..cache import cache, gerar_chave_processo, gerar_chave_documento, gerar_chave_andamento, gerar_chave_resumo
 
 logger = logging.getLogger(__name__)

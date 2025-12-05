@@ -4,7 +4,7 @@ import math
 import asyncio
 import logging
 from fastapi import HTTPException
-from .models import ErrorDetail, ErrorType
+from .schemas_legacy import ErrorDetail, ErrorType
 from .utils import converte_html_para_markdown_memoria
 from .config import settings
 

@@ -27,5 +27,23 @@ class Settings(BaseSettings):
     REDIS_USERNAME: str = "default"
     REDIS_PASSWORD: str = ""
 
+    # Configurações PostgreSQL
+    DATABASE_HOST: str = "localhost"
+    DATABASE_PORT: int = 5432
+    DATABASE_USER: str = "postgres"
+    DATABASE_PASSWORD: str = ""
+    DATABASE_NAME: str = "postgres"
+    DATABASE_ECHO: bool = False
+    DATABASE_POOL_SIZE: int = 5
+    DATABASE_MAX_OVERFLOW: int = 10
+
+    @property
+    def DATABASE_URL(self) -> str:
+        """Constrói a URL de conexão do PostgreSQL para asyncpg"""
+        return (
+            f"postgresql+asyncpg://{self.DATABASE_USER}:{self.DATABASE_PASSWORD}"
+            f"@{self.DATABASE_HOST}:{self.DATABASE_PORT}/{self.DATABASE_NAME}"
+        )
+
 
 settings = Settings()

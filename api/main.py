@@ -6,10 +6,11 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import ORJSONResponse
 from .routes import router
-from .models import ErrorDetail, ErrorType
+from .schemas_legacy import ErrorDetail, ErrorType
 from .config import settings
 from .cache import cache
 from .openai_client import client
+from .database import close_db
 
 # Configurar logging estruturado
 logging.basicConfig(
@@ -29,6 +30,7 @@ async def lifespan(app: FastAPI):
     # Startup
     logger.info("Iniciando API Processo SEI...")
     await cache.connect()
+    logger.info("Cache conectado")
     logger.info("API iniciada com sucesso")
 
     yield
@@ -36,6 +38,9 @@ async def lifespan(app: FastAPI):
     # Shutdown
     logger.info("Encerrando API...")
     await cache.close()
+    logger.info("Cache desconectado")
+    await close_db()
+    logger.info("Banco de dados desconectado")
     logger.info("API encerrada")
 
 
@@ -58,7 +63,7 @@ app.add_middleware(
         "http://visualizadorprocessos.sei.sead.pi.gov.br"
     ],
     allow_credentials=True,
-    allow_methods=["GET", "POST", "DELETE"],
+    allow_methods=["GET", "POST", "DELETE", "PATCH"],
     allow_headers=["Authorization", "Content-Type", "X-Request-ID"],
 )
 
