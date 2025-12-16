@@ -31,3 +31,7 @@ PyYAML==6.0.2
 sqlalchemy[asyncio]==2.0.35
 asyncpg==0.30.0
 alembic==1.14.0
+
+# PDF Processing
+pdf2image==1.17.0
+Pillow==10.4.0

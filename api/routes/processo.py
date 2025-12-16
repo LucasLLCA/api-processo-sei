@@ -226,19 +226,38 @@ async def resumo_completo(numero_processo: str, token: str, id_unidade: str):
             logger.debug(f"Primeiro documento consultado: {doc_primeiro.get('Titulo', 'Sem título')}")
 
         conteudo_combinado = ""
+        tipo_arquivo = "html"  # Default
+
         if md_primeiro:
             try:
-                conteudo_primeiro = ler_conteudo_md(md_primeiro)
-                logger.debug(f"Conteúdo do primeiro documento: {len(conteudo_primeiro)} caracteres")
-                conteudo_combinado += f"PRIMEIRO DOCUMENTO:\n{conteudo_primeiro}\n\n"
-            except Exception as e:
-                logger.error(f"Falha ao ler conteúdo do primeiro documento: {str(e)}")
+                # Detectar tipo de arquivo
+                if isinstance(md_primeiro, dict):
+                    tipo_arquivo = md_primeiro.get("tipo", "html")
+                    conteudo = md_primeiro.get("conteudo")
 
-        logger.debug(f"Tamanho total do conteúdo combinado: {len(conteudo_combinado)} caracteres")
+                    if tipo_arquivo == "html":
+                        conteudo_primeiro = ler_conteudo_md(conteudo)
+                        logger.debug(f"Documento HTML - Conteúdo: {len(conteudo_primeiro)} caracteres")
+                        conteudo_combinado += f"PRIMEIRO DOCUMENTO:\n{conteudo_primeiro}\n\n"
+                    elif tipo_arquivo == "pdf":
+                        logger.debug(f"Documento PDF - Tamanho: {len(conteudo)} bytes")
+                        conteudo_combinado = conteudo  # Para PDF, usar o binário direto
+                else:
+                    # Formato antigo (compatibilidade)
+                    conteudo_primeiro = ler_conteudo_md(md_primeiro)
+                    conteudo_combinado += f"PRIMEIRO DOCUMENTO:\n{conteudo_primeiro}\n\n"
+
+            except Exception as e:
+                logger.error(f"Falha ao processar primeiro documento: {str(e)}")
+
+        logger.debug(f"Tipo de arquivo detectado: {tipo_arquivo}")
 
         try:
-            resposta_ia_combinada = await enviar_para_ia_conteudo_md(conteudo_combinado) if conteudo_combinado else {}
-            logger.debug(f"Resposta da IA recebida: {resposta_ia_combinada.get('status', 'sem status')}")
+            if conteudo_combinado:
+                resposta_ia_combinada = await enviar_para_ia_conteudo_md(conteudo_combinado, tipo_arquivo)
+                logger.debug(f"Resposta da IA recebida: {resposta_ia_combinada.get('status', 'sem status')}")
+            else:
+                resposta_ia_combinada = {}
         except Exception as e:
             logger.error(f"Falha ao obter resposta da IA: {str(e)}")
             resposta_ia_combinada = {"status": "erro", "resposta_ia": f"Erro ao processar: {str(e)}"}
@@ -302,8 +321,23 @@ async def resumo_documento(documento_formatado: str, token: str, id_unidade: str
         )
 
         conteudo = ""
+        tipo_arquivo = "html"  # Default
+
         if md:
-            conteudo = ler_conteudo_md(md)
+            # Detectar tipo de arquivo
+            if isinstance(md, dict):
+                tipo_arquivo = md.get("tipo", "html")
+                conteudo_raw = md.get("conteudo")
+
+                if tipo_arquivo == "html":
+                    conteudo = ler_conteudo_md(conteudo_raw)
+                    logger.debug(f"Documento HTML - Conteúdo: {len(conteudo)} caracteres")
+                elif tipo_arquivo == "pdf":
+                    conteudo = conteudo_raw  # Para PDF, manter binário
+                    logger.debug(f"Documento PDF - Tamanho: {len(conteudo)} bytes")
+            else:
+                # Formato antigo (compatibilidade)
+                conteudo = ler_conteudo_md(md)
         else:
             logger.warning(f"Documento {documento_formatado} não retornou conteúdo MD, usando dados básicos")
 
@@ -317,7 +351,8 @@ async def resumo_documento(documento_formatado: str, token: str, id_unidade: str
                 ).dict()
             )
 
-        resposta_ia = await enviar_documento_ia_conteudo(conteudo)
+        logger.debug(f"Tipo de arquivo detectado: {tipo_arquivo}")
+        resposta_ia = await enviar_documento_ia_conteudo(conteudo, tipo_arquivo)
 
         # Monta o resultado
         resultado = {

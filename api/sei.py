@@ -310,17 +310,21 @@ async def baixar_documento(token: str, id_unidade: str, documento_formatado: str
         match = re.search(r'filename="(.+)"', content_disposition)
         filename = match.group(1) if match else f"documento_{documento_formatado}.html"
 
-        # Processar documento para Markdown se for HTML - apenas em memória
+        # Detectar tipo de arquivo e retornar estrutura com tipo e conteúdo
         if filename.lower().endswith(".html") or filename.lower().endswith(".htm"):
             try:
                 # Converter HTML para Markdown diretamente em memória
                 html_content = response.content.decode('utf-8')
                 md_content = converte_html_para_markdown_memoria(html_content)
-                return md_content
+                return {"tipo": "html", "conteudo": md_content, "filename": filename}
             except Exception as e:
                 logger.error(f"Falha na conversão HTML->MD: {str(e)}")
                 return None
+        elif filename.lower().endswith(".pdf"):
+            # Para PDF, retornar o conteúdo binário
+            return {"tipo": "pdf", "conteudo": response.content, "filename": filename}
         else:
+            logger.warning(f"Tipo de arquivo não suportado: {filename}")
             return None
     except httpx.RequestError as e:
         raise HTTPException(

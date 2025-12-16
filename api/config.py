@@ -19,6 +19,8 @@ class Settings(BaseSettings):
     OPENAI_BASE_URL: str = "https://api.sobdemanda.mandu.piaui.pro"
     OPENAI_API_KEY: str = "sk-Thp8OzZ_6U3tHoDStt8qYg"
     OPENAI_MODEL: str = "Qwen/Qwen3-30B-A3B"
+    OPENAI_MODEL_TEXTO: str = "soberano-alpha-local"
+    OPENAI_MODEL_VISAO: str = "Qwen/Qwen3-Omni-30B-A3B-Instruct"
 
     # Configurações Redis
     REDIS_HOST: str = "redis"
