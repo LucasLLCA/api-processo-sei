@@ -21,6 +21,7 @@ class Settings(BaseSettings):
     OPENAI_MODEL: str = "Qwen/Qwen3-30B-A3B"
     OPENAI_MODEL_TEXTO: str = "soberano-alpha-local"
     OPENAI_MODEL_VISAO: str = "Qwen/Qwen3-Omni-30B-A3B-Instruct"
+    OPENAI_TIMEOUT: int = 120
 
     # Configurações Redis
     REDIS_HOST: str = "redis"

@@ -13,7 +13,6 @@ def ler_conteudo_md(md_data: str) -> str:
     """
     if not md_data:
         return ""
-    
-    print(f"[DEBUG] Processando conteúdo MD em memória: {len(md_data)} caracteres")
+
     return md_data
 

@@ -155,6 +155,49 @@ async def listar_documentos(token: str, protocolo: str, id_unidade: str):
         )
 
 
+async def listar_primeiro_documento(token: str, protocolo: str, id_unidade: str):
+    """
+    Busca apenas o primeiro documento de um processo.
+    Usado pelo resumo_completo que só precisa do primeiro documento.
+    """
+    try:
+        url = f"{settings.SEI_BASE_URL}/unidades/{id_unidade}/procedimentos/documentos"
+        params = {
+            "protocolo_procedimento": protocolo,
+            "pagina": 1,
+            "quantidade": 1,
+            "sinal_geracao": "N",
+            "sinal_assinaturas": "N",
+            "sinal_publicacao": "N",
+            "sinal_campos": "N",
+            "sinal_completo": "S"
+        }
+        headers = {"accept": "application/json", "token": f'"{token}"'}
+        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=45)
+
+        if response.status_code != 200:
+            raise HTTPException(
+                status_code=500,
+                detail=ErrorDetail(
+                    type=ErrorType.EXTERNAL_SERVICE_ERROR,
+                    message="Falha ao listar documentos no SEI",
+                    details={"status_code": response.status_code, "response": response.text}
+                ).dict()
+            )
+
+        documentos = response.json().get("Documentos", [])
+        return documentos[0] if documentos else None
+    except httpx.RequestError as e:
+        raise HTTPException(
+            status_code=500,
+            detail=ErrorDetail(
+                type=ErrorType.EXTERNAL_SERVICE_ERROR,
+                message="Erro ao conectar com o serviço SEI para listar documentos",
+                details={"error": str(e)}
+            ).dict()
+        )
+
+
 async def _buscar_pagina_andamentos(token: str, protocolo: str, id_unidade: str, pagina: int, quantidade_por_pagina: int):
     """
     Função auxiliar para buscar uma página específica de andamentos com retry
