@@ -31,14 +31,46 @@ logger = logging.getLogger(__name__)
     response_model=dict,
     status_code=201,
     summary="Salvar pesquisa no histórico",
-    description="Registra uma nova pesquisa de processo no histórico"
+    description="Registra uma nova pesquisa de processo no histórico. "
+                "Se o usuário já pesquisou este processo, atualiza o contexto e retorna o registro existente."
 )
 async def criar_historico(
     dados: HistoricoPesquisaCreate,
     db: AsyncSession = Depends(get_db)
 ):
-    """Cria um novo registro de histórico de pesquisa"""
+    """Cria um novo registro de histórico de pesquisa, ou atualiza se já existir para o mesmo usuário+processo"""
     try:
+        # Verificar se já existe registro (não deletado) para este usuário+processo
+        query_existente = select(HistoricoPesquisa).where(
+            and_(
+                HistoricoPesquisa.usuario == dados.usuario,
+                HistoricoPesquisa.numero_processo == dados.numero_processo,
+                HistoricoPesquisa.deletado_em.is_(None)
+            )
+        ).order_by(desc(HistoricoPesquisa.criado_em)).limit(1)
+
+        result = await db.execute(query_existente)
+        existente = result.scalar_one_or_none()
+
+        if existente:
+            # Atualizar contexto e timestamp do registro existente
+            if dados.caixa_contexto:
+                existente.caixa_contexto = dados.caixa_contexto
+            existente.atualizado_em = datetime.utcnow()
+            await db.commit()
+            await db.refresh(existente)
+
+            logger.info(
+                f"Histórico atualizado (dedup): processo={dados.numero_processo}, "
+                f"usuario={dados.usuario}"
+            )
+
+            return {
+                "status": "success",
+                "data": HistoricoPesquisaResponse.model_validate(existente)
+            }
+
+        # Criar novo registro
         novo_historico = HistoricoPesquisa(
             numero_processo=dados.numero_processo,
             numero_processo_formatado=dados.numero_processo_formatado,
