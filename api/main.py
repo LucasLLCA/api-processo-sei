@@ -61,7 +61,8 @@ app.add_middleware(
     allow_origins=[
         "https://sei.pi.gov.br",
         "https://visualizadorprocessos.sei.sead.pi.gov.br",
-        "http://visualizadorprocessos.sei.sead.pi.gov.br"
+        "http://visualizadorprocessos.sei.sead.pi.gov.br",
+        "http://localhost:3000"
     ],
     allow_credentials=True,
     allow_methods=["GET", "POST", "DELETE", "PATCH"],
