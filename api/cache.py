@@ -32,7 +32,7 @@ class RedisCache:
                 encoding="utf-8",
                 decode_responses=True,
                 socket_connect_timeout=5,
-                socket_timeout=5,
+                socket_timeout=180,
                 max_connections=20
             )
 
@@ -86,6 +86,7 @@ class RedisCache:
             return None
         except Exception as e:
             logger.warning(f"Erro ao obter cache para chave {key}: {str(e)}")
+            self._connected = False
             return None
 
     async def set(self, key: str, value: Any, ttl: int = 3600) -> bool:
@@ -113,6 +114,7 @@ class RedisCache:
             return True
         except Exception as e:
             logger.warning(f"Erro ao definir cache para chave {key}: {str(e)}")
+            self._connected = False
             return False
 
     async def delete(self, key: str) -> bool:
@@ -137,6 +139,7 @@ class RedisCache:
             return True
         except Exception as e:
             logger.warning(f"Erro ao deletar cache para chave {key}: {str(e)}")
+            self._connected = False
             return False
 
     async def clear_pattern(self, pattern: str) -> int:
