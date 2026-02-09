@@ -30,6 +30,11 @@ class Settings(BaseSettings):
     REDIS_USERNAME: str = "default"
     REDIS_PASSWORD: str = ""
 
+    # JWE Authentication
+    AUTH_API_KEY: str = ""
+    JWE_SECRET_KEY: str = ""  # 256-bit key, base64url-encoded
+    FRONTEND_BASE_URL: str = "http://localhost:3000"
+
     # Configurações PostgreSQL
     DATABASE_HOST: str = "localhost"
     DATABASE_PORT: int = 5432

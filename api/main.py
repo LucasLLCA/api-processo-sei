@@ -66,7 +66,7 @@ app.add_middleware(
     ],
     allow_credentials=True,
     allow_methods=["GET", "POST", "DELETE", "PATCH"],
-    allow_headers=["Authorization", "Content-Type", "X-Request-ID", "X-SEI-Token"],
+    allow_headers=["Authorization", "Content-Type", "X-Request-ID", "X-SEI-Token", "x-api-key"],
 )
 
 

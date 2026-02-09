@@ -35,3 +35,6 @@ alembic==1.14.0
 # PDF Processing
 pdf2image==1.17.0
 Pillow==10.4.0
+
+# JWE Authentication
+jwcrypto==1.5.6
