@@ -7,6 +7,7 @@ from ..sei import listar_documentos, listar_primeiro_documento, listar_tarefa, c
 from ..openai_client import (
     enviar_para_ia_conteudo, enviar_para_ia_conteudo_md, enviar_documento_ia_conteudo,
     enviar_para_ia_conteudo_md_stream, enviar_documento_ia_conteudo_stream,
+    enviar_situacao_atual_stream,
 )
 from ..schemas_legacy import ErrorDetail, ErrorType, Retorno
 from ..cache import cache, gerar_chave_processo, gerar_chave_documento, gerar_chave_andamento, gerar_chave_resumo
@@ -589,6 +590,102 @@ async def resumo_documento_stream(
         except Exception as e:
             logger.error(f"[stream] Erro ao processar resumo do documento: {str(e)}", exc_info=True)
             yield _sse_event({"type": "error", "content": f"Erro ao processar resumo: {str(e)}"})
+
+    return StreamingResponse(
+        stream_generator(),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
+
+
+@router.get("/resumo-situacao-stream/{numero_processo}")
+async def resumo_situacao_stream(
+    numero_processo: str,
+    id_unidade: str,
+    token: str = Query(default=None),
+    x_sei_token: str = Header(default=None, alias="X-SEI-Token"),
+):
+    """
+    Versão streaming (SSE) da situação atual do processo.
+    Combina o entendimento existente, último documento e últimos andamentos
+    para gerar um resumo da situação corrente.
+    """
+    token = x_sei_token or token
+    if not token:
+        raise HTTPException(status_code=401, detail="Token de autenticação não fornecido")
+
+    cache_key = f"processo:{numero_processo}:situacao_atual"
+
+    cached_result = await cache.get(cache_key)
+    if cached_result:
+        logger.debug(f"[stream] Retornando situação atual do cache para processo {numero_processo}")
+
+        async def cached_generator():
+            yield _sse_event({"type": "done", "content": cached_result})
+
+        return StreamingResponse(
+            cached_generator(),
+            media_type="text/event-stream",
+            headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+        )
+
+    async def stream_generator():
+        try:
+            # 1. Get cached entendimento
+            resumo_cache_key = f"processo:{numero_processo}:resumo_completo"
+            cached_resumo = await cache.get(resumo_cache_key)
+            entendimento = ""
+            if cached_resumo:
+                entendimento = cached_resumo.get("resumo_combinado", {}).get("resposta_ia", "")
+
+            if not entendimento:
+                yield _sse_event({"type": "error", "content": "Entendimento do processo não disponível. Gere o entendimento primeiro."})
+                return
+
+            # 2. Fetch last document content
+            documentos = await listar_documentos(token, numero_processo, id_unidade)
+            ultimo_doc_conteudo = ""
+            if documentos:
+                ultimo = documentos[-1]
+                md = await baixar_documento(token, id_unidade, ultimo["DocumentoFormatado"], numero_processo)
+                if md:
+                    if isinstance(md, dict):
+                        tipo = md.get("tipo", "html")
+                        if tipo == "html":
+                            ultimo_doc_conteudo = md.get("conteudo", "")
+                        else:
+                            ultimo_doc_conteudo = "(Documento PDF - conteúdo binário não disponível em texto)"
+                    else:
+                        ultimo_doc_conteudo = md
+
+            # 3. Fetch last 3 andamentos
+            andamentos = await listar_tarefa(token, numero_processo, id_unidade)
+            ultimos_andamentos = andamentos[-3:] if andamentos else []
+            andamentos_texto = "\n".join(
+                f"- {a.get('DataHora', '')} | {a.get('Unidade', {}).get('Sigla', '')} | {a.get('Descricao', '')}"
+                for a in ultimos_andamentos
+            )
+
+            # 4. Stream the response
+            accumulated = []
+            async for chunk in enviar_situacao_atual_stream(entendimento, ultimo_doc_conteudo, andamentos_texto):
+                accumulated.append(chunk)
+                yield _sse_event({"type": "chunk", "content": chunk})
+
+            full_text = "".join(accumulated)
+
+            resultado = {
+                "status": "ok",
+                "situacao_atual": full_text,
+            }
+
+            await cache.set(cache_key, resultado, ttl=CACHE_TTL)
+
+            yield _sse_event({"type": "done", "content": resultado})
+
+        except Exception as e:
+            logger.error(f"[stream] Erro ao processar situação atual: {str(e)}", exc_info=True)
+            yield _sse_event({"type": "error", "content": f"Erro ao processar situação atual: {str(e)}"})
 
     return StreamingResponse(
         stream_generator(),

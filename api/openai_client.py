@@ -105,12 +105,13 @@ async def enviar_para_ia_conteudo_md(conteudo_md: str, tipo_arquivo: str = "html
             resposta = await client.chat.completions.create(
                 model=modelo,
                 messages=[
-                    {"role": "system", "content": "Você é um assistente jurídico especializado em analisar processos administrativos. Sua tarefa é produzir um resumo claro e conciso em dois parágrafos, integrando as informações dos documentos de forma coerente."},
+                    {"role": "system", "content": "Você é um assistente jurídico especializado em analisar processos administrativos. Sua tarefa é produzir um resumo claro e conciso em um único parágrafo curto de no máximo 4 frases, integrando as informações dos documentos de forma coerente."},
                     {"role": "user", "content": f"""Analise os documentos abaixo e produza um resumo que integre as informações de forma coerente:
                     Documentos:
                     {conteudo_md}"""}
                 ],
                 temperature=0.7,
+                max_tokens=250,
             )
         else:  # PDF
             try:
@@ -126,13 +127,14 @@ async def enviar_para_ia_conteudo_md(conteudo_md: str, tipo_arquivo: str = "html
                 resposta = await client.chat.completions.create(
                     model=modelo,
                     messages=[
-                        {"role": "system", "content": "Você é um assistente jurídico especializado em analisar processos administrativos. Sua tarefa é produzir um resumo claro e conciso em dois parágrafos, integrando as informações dos documentos de forma coerente."},
+                        {"role": "system", "content": "Você é um assistente jurídico especializado em analisar processos administrativos. Sua tarefa é produzir um resumo claro e conciso em um único parágrafo curto de no máximo 4 frases, integrando as informações dos documentos de forma coerente."},
                         {
                             "role": "user",
                             "content": user_content
                         }
                     ],
                     temperature=0.7,
+                    max_tokens=250,
                 )
             except ImportError:
                 logger.error("pdf2image não está instalado. Instale com: pip install pdf2image")
@@ -168,7 +170,7 @@ async def enviar_para_ia_conteudo_md_stream(conteudo_md, tipo_arquivo: str = "ht
 
     if tipo_arquivo == "html":
         messages = [
-            {"role": "system", "content": "Você é um assistente jurídico especializado em analisar processos administrativos. Sua tarefa é produzir um resumo claro e conciso em dois parágrafos, integrando as informações dos documentos de forma coerente."},
+            {"role": "system", "content": "Você é um assistente jurídico especializado em analisar processos administrativos. Sua tarefa é produzir um resumo claro e conciso em um único parágrafo curto de no máximo 4 frases, integrando as informações dos documentos de forma coerente."},
             {"role": "user", "content": f"""Analise os documentos abaixo e produza um resumo que integre as informações de forma coerente:
                     Documentos:
                     {conteudo_md}"""}
@@ -182,7 +184,7 @@ async def enviar_para_ia_conteudo_md_stream(conteudo_md, tipo_arquivo: str = "ht
             }
         ] + image_contents
         messages = [
-            {"role": "system", "content": "Você é um assistente jurídico especializado em analisar processos administrativos. Sua tarefa é produzir um resumo claro e conciso em dois parágrafos, integrando as informações dos documentos de forma coerente."},
+            {"role": "system", "content": "Você é um assistente jurídico especializado em analisar processos administrativos. Sua tarefa é produzir um resumo claro e conciso em um único parágrafo curto de no máximo 4 frases, integrando as informações dos documentos de forma coerente."},
             {"role": "user", "content": user_content}
         ]
 
@@ -190,6 +192,35 @@ async def enviar_para_ia_conteudo_md_stream(conteudo_md, tipo_arquivo: str = "ht
         model=modelo,
         messages=messages,
         temperature=0.7,
+        max_tokens=250,
+        stream=True,
+    )
+    async for chunk in stream:
+        if chunk.choices and chunk.choices[0].delta.content:
+            yield chunk.choices[0].delta.content
+
+
+async def enviar_situacao_atual_stream(entendimento: str, ultimo_doc_conteudo: str, ultimos_andamentos_texto: str):
+    """
+    Gera streaming da situação atual do processo com base no entendimento,
+    último documento e últimos andamentos.
+    """
+    messages = [
+        {
+            "role": "system",
+            "content": "Você é um assistente jurídico. Com base no resumo do processo, no conteúdo do último documento adicionado e nas últimas atividades, produza um único parágrafo curto descrevendo a situação atual do processo."
+        },
+        {
+            "role": "user",
+            "content": f"""Resumo do processo:\n{entendimento}\n\nÚltimo documento adicionado:\n{ultimo_doc_conteudo}\n\nÚltimas atividades:\n{ultimos_andamentos_texto}"""
+        },
+    ]
+
+    stream = await client.chat.completions.create(
+        model=settings.OPENAI_MODEL_TEXTO,
+        messages=messages,
+        temperature=0.7,
+        max_tokens=300,
         stream=True,
     )
     async for chunk in stream:
