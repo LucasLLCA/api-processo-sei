@@ -304,6 +304,112 @@ async def listar_tarefa(token: str, protocolo: str, id_unidade: str):
         )
 
 
+async def login(usuario: str, senha: str, orgao: str):
+    """
+    Autentica um usuário na API SEI.
+    Retorna a resposta bruta (Token, Login, Unidades).
+    Sem retry - falha rápida em credenciais inválidas.
+    """
+    try:
+        url = f"{settings.SEI_BASE_URL}/orgaos/usuarios/login"
+        headers = {"accept": "application/json", "Content-Type": "application/json"}
+        body = {"Usuario": usuario, "Senha": senha, "Orgao": orgao}
+
+        response = await http_client.post(url, headers=headers, json=body, timeout=30)
+
+        if response.status_code == 401:
+            data = response.json()
+            message = data.get("Message", "Credenciais inválidas")
+            raise HTTPException(status_code=401, detail=message)
+
+        if response.status_code != 200:
+            raise HTTPException(
+                status_code=response.status_code,
+                detail=ErrorDetail(
+                    type=ErrorType.EXTERNAL_SERVICE_ERROR,
+                    message="Falha ao autenticar no SEI",
+                    details={"status_code": response.status_code, "response": response.text}
+                ).dict()
+            )
+
+        return response.json()
+    except HTTPException:
+        raise
+    except httpx.RequestError as e:
+        raise HTTPException(
+            status_code=500,
+            detail=ErrorDetail(
+                type=ErrorType.EXTERNAL_SERVICE_ERROR,
+                message="Erro ao conectar com o serviço SEI para login",
+                details={"error": str(e)}
+            ).dict()
+        )
+
+
+async def consultar_procedimento(token: str, protocolo: str, id_unidade: str):
+    """
+    Consulta informações de um procedimento (processo) no SEI.
+    Retorna dados incluindo UnidadesProcedimentoAberto e LinkAcesso.
+    """
+    try:
+        url = f"{settings.SEI_BASE_URL}/unidades/{id_unidade}/procedimentos/consulta"
+        params = {
+            "protocolo_procedimento": protocolo,
+            "sinal_unidades_procedimento_aberto": "S",
+            "sinal_completo": "N",
+            "sinal_assuntos": "N",
+            "sinal_interessados": "N",
+            "sinal_observacoes": "N",
+            "sinal_andamento_geracao": "N",
+            "sinal_andamento_conclusao": "N",
+            "sinal_ultimo_andamento": "N",
+            "sinal_procedimentos_relacionados": "N",
+            "sinal_procedimentos_anexados": "N",
+        }
+        headers = {"accept": "application/json", "token": f'"{token}"'}
+
+        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=45)
+
+        if response.status_code != 200:
+            raise HTTPException(
+                status_code=500,
+                detail=ErrorDetail(
+                    type=ErrorType.EXTERNAL_SERVICE_ERROR,
+                    message="Falha ao consultar procedimento no SEI",
+                    details={"status_code": response.status_code, "response": response.text}
+                ).dict()
+            )
+
+        return response.json()
+    except httpx.RequestError as e:
+        raise HTTPException(
+            status_code=500,
+            detail=ErrorDetail(
+                type=ErrorType.EXTERNAL_SERVICE_ERROR,
+                message="Erro ao conectar com o serviço SEI para consultar procedimento",
+                details={"error": str(e)}
+            ).dict()
+        )
+
+
+async def verificar_saude():
+    """
+    Verifica se a API SEI está online.
+    Retorna {online: bool, status_code: int}.
+    """
+    try:
+        url = f"{settings.SEI_BASE_URL}/orgaos"
+        params = {"pagina": 1, "quantidade": 10}
+        headers = {"accept": "application/json"}
+
+        response = await http_client.get(url, headers=headers, params=params, timeout=10)
+
+        return {"online": response.status_code == 200, "status_code": response.status_code}
+    except Exception as e:
+        logger.warning(f"Health check SEI falhou: {str(e)}")
+        return {"online": False, "status_code": 0}
+
+
 async def consultar_documento(token: str, id_unidade: str, documento_formatado: str):
     try:
         logger.debug(f"Consultando documento: {documento_formatado}")

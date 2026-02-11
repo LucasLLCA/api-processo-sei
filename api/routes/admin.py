@@ -130,9 +130,16 @@ async def reset_cache_processo(numero_processo: str):
                 ).dict()
             )
 
-        # Remove todas as chaves relacionadas ao processo
+        # Remove todas as chaves relacionadas ao processo (incluindo proxy cache)
         deleted = 0
-        for pattern in [f"processo:{numero_processo}:*", f"andamento:{numero_processo}", f"resumo:{numero_processo}"]:
+        for pattern in [
+            f"processo:{numero_processo}:*",
+            f"andamento:{numero_processo}",
+            f"resumo:{numero_processo}",
+            f"proxy:andamentos:{numero_processo}:*",
+            f"proxy:unidades:{numero_processo}:*",
+            f"proxy:documentos:{numero_processo}:*",
+        ]:
             deleted += await cache.clear_pattern(pattern)
 
         logger.info(f"Cache do processo {numero_processo} resetado: {deleted} chaves removidas")

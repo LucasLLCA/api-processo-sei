@@ -1,4 +1,5 @@
 import redis.asyncio as aioredis
+from redis.exceptions import ConnectionError, TimeoutError
 import orjson
 import logging
 from typing import Optional, Any
@@ -14,6 +15,17 @@ class RedisCache:
     def __init__(self):
         self.redis_client = None
         self._connected = False
+
+    async def _reconnect(self):
+        """Força reconexão fechando o cliente antigo"""
+        if self.redis_client:
+            try:
+                await self.redis_client.close()
+            except Exception:
+                pass
+        self.redis_client = None
+        self._connected = False
+        await self.connect()
 
     async def connect(self):
         """Conecta ao Redis com tratamento de erros"""
@@ -33,7 +45,9 @@ class RedisCache:
                 decode_responses=True,
                 socket_connect_timeout=5,
                 socket_timeout=180,
-                max_connections=20
+                max_connections=20,
+                health_check_interval=30,
+                retry_on_error=[ConnectionError, TimeoutError],
             )
 
             # Testa a conexão
@@ -84,6 +98,20 @@ class RedisCache:
                 return orjson.loads(value)
             logger.debug(f"[CACHE MISS] Chave: {key}")
             return None
+        except (ConnectionError, TimeoutError, OSError) as e:
+            logger.warning(f"Erro de conexão ao obter cache para chave {key}: {str(e)}. Reconectando...")
+            try:
+                await self._reconnect()
+                if self.redis_client is None:
+                    return None
+                value = await self.redis_client.get(key)
+                if value:
+                    logger.debug(f"[CACHE HIT após reconexão] Chave: {key}")
+                    return orjson.loads(value)
+                return None
+            except Exception:
+                self._connected = False
+                return None
         except Exception as e:
             logger.warning(f"Erro ao obter cache para chave {key}: {str(e)}")
             self._connected = False
@@ -112,6 +140,19 @@ class RedisCache:
             await self.redis_client.setex(key, ttl, serialized_value)
             logger.debug(f"[CACHE SET] Chave: {key}, TTL: {ttl}s")
             return True
+        except (ConnectionError, TimeoutError, OSError) as e:
+            logger.warning(f"Erro de conexão ao definir cache para chave {key}: {str(e)}. Reconectando...")
+            try:
+                await self._reconnect()
+                if self.redis_client is None:
+                    return False
+                serialized_value = orjson.dumps(value).decode('utf-8')
+                await self.redis_client.setex(key, ttl, serialized_value)
+                logger.debug(f"[CACHE SET após reconexão] Chave: {key}, TTL: {ttl}s")
+                return True
+            except Exception:
+                self._connected = False
+                return False
         except Exception as e:
             logger.warning(f"Erro ao definir cache para chave {key}: {str(e)}")
             self._connected = False
