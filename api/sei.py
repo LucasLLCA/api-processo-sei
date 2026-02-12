@@ -318,8 +318,11 @@ async def login(usuario: str, senha: str, orgao: str):
         response = await http_client.post(url, headers=headers, json=body, timeout=30)
 
         if response.status_code == 401:
-            data = response.json()
-            message = data.get("Message", "Credenciais inválidas")
+            try:
+                data = response.json()
+                message = data.get("Message", "Credenciais inválidas")
+            except Exception:
+                message = "Credenciais inválidas"
             raise HTTPException(status_code=401, detail=message)
 
         if response.status_code != 200:
@@ -332,7 +335,18 @@ async def login(usuario: str, senha: str, orgao: str):
                 ).dict()
             )
 
-        return response.json()
+        try:
+            return response.json()
+        except Exception as e:
+            logger.error(f"SEI login retornou resposta não-JSON (status 200): {response.text[:200]}")
+            raise HTTPException(
+                status_code=502,
+                detail=ErrorDetail(
+                    type=ErrorType.EXTERNAL_SERVICE_ERROR,
+                    message="Resposta inválida do serviço SEI",
+                    details={"error": "Resposta não é JSON válido"}
+                ).dict()
+            )
     except HTTPException:
         raise
     except httpx.RequestError as e:
