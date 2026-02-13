@@ -3,7 +3,7 @@ import json
 import logging
 from fastapi import APIRouter, Header, HTTPException, Query
 from starlette.responses import StreamingResponse
-from ..sei import listar_documentos, listar_primeiro_documento, listar_tarefa, consultar_documento, baixar_documento
+from ..sei import listar_documentos, listar_primeiro_documento, listar_ultimo_documento, listar_ultimos_andamentos, listar_tarefa, consultar_documento, baixar_documento
 from ..openai_client import (
     enviar_para_ia_conteudo, enviar_para_ia_conteudo_md, enviar_documento_ia_conteudo,
     enviar_para_ia_conteudo_md_stream, enviar_documento_ia_conteudo_stream,
@@ -11,6 +11,7 @@ from ..openai_client import (
 )
 from ..schemas_legacy import ErrorDetail, ErrorType, Retorno
 from ..cache import cache, gerar_chave_processo, gerar_chave_documento, gerar_chave_andamento, gerar_chave_resumo
+from ..normalization import normalizar_numero_processo
 
 logger = logging.getLogger(__name__)
 
@@ -42,6 +43,7 @@ async def andamento(
     token = x_sei_token or token
     if not token:
         raise HTTPException(status_code=401, detail="Token de autenticação não fornecido")
+    numero_processo = normalizar_numero_processo(numero_processo)
     try:
         # Verifica cache primeiro
         cache_key = gerar_chave_andamento(numero_processo)
@@ -126,6 +128,7 @@ async def resumo(
     token = x_sei_token or token
     if not token:
         raise HTTPException(status_code=401, detail="Token de autenticação não fornecido")
+    numero_processo = normalizar_numero_processo(numero_processo)
     try:
         # Verifica cache primeiro
         cache_key = gerar_chave_resumo(numero_processo)
@@ -215,6 +218,7 @@ async def resumo_completo(
     token = x_sei_token or token
     if not token:
         raise HTTPException(status_code=401, detail="Token de autenticação não fornecido")
+    numero_processo = normalizar_numero_processo(numero_processo)
     try:
         # Verifica cache primeiro usando apenas o número do processo
         cache_key_base = f"processo:{numero_processo}:resumo_completo"
@@ -437,6 +441,7 @@ async def resumo_completo_stream(
     token = x_sei_token or token
     if not token:
         raise HTTPException(status_code=401, detail="Token de autenticação não fornecido")
+    numero_processo = normalizar_numero_processo(numero_processo)
 
     cache_key = f"processo:{numero_processo}:resumo_completo"
 
@@ -613,6 +618,7 @@ async def resumo_situacao_stream(
     token = x_sei_token or token
     if not token:
         raise HTTPException(status_code=401, detail="Token de autenticação não fornecido")
+    numero_processo = normalizar_numero_processo(numero_processo)
 
     cache_key = f"processo:{numero_processo}:situacao_atual"
 
@@ -642,31 +648,45 @@ async def resumo_situacao_stream(
                 yield _sse_event({"type": "error", "content": "Entendimento do processo não disponível. Gere o entendimento primeiro."})
                 return
 
-            # 2. Fetch last document content
-            documentos = await listar_documentos(token, numero_processo, id_unidade)
-            ultimo_doc_conteudo = ""
-            if documentos:
-                ultimo = documentos[-1]
-                md = await baixar_documento(token, id_unidade, ultimo["DocumentoFormatado"], numero_processo)
-                if md:
-                    if isinstance(md, dict):
-                        tipo = md.get("tipo", "html")
-                        if tipo == "html":
-                            ultimo_doc_conteudo = md.get("conteudo", "")
-                        else:
-                            ultimo_doc_conteudo = "(Documento PDF - conteúdo binário não disponível em texto)"
-                    else:
-                        ultimo_doc_conteudo = md
+            # 2. Fetch last document + last 3 andamentos in parallel (optimized)
+            ultimo_doc, ultimos_andamentos = await asyncio.gather(
+                listar_ultimo_documento(token, numero_processo, id_unidade),
+                listar_ultimos_andamentos(token, numero_processo, id_unidade, quantidade=3),
+            )
 
-            # 3. Fetch last 3 andamentos
-            andamentos = await listar_tarefa(token, numero_processo, id_unidade)
-            ultimos_andamentos = andamentos[-3:] if andamentos else []
+            # 3. Process last document content with smart caching
+            ultimo_doc_conteudo = ""
+            if ultimo_doc:
+                doc_id = ultimo_doc.get("DocumentoFormatado", "")
+                doc_cache_key = f"processo:{numero_processo}:ultimo_doc:{doc_id}"
+
+                # Check document-level cache first
+                cached_doc_content = await cache.get(doc_cache_key)
+                if cached_doc_content:
+                    ultimo_doc_conteudo = cached_doc_content
+                    logger.debug(f"[stream] Último documento {doc_id} retornado do cache")
+                else:
+                    md = await baixar_documento(token, id_unidade, doc_id, numero_processo)
+                    if md:
+                        if isinstance(md, dict):
+                            tipo = md.get("tipo", "html")
+                            if tipo == "html":
+                                ultimo_doc_conteudo = md.get("conteudo", "")
+                            else:
+                                ultimo_doc_conteudo = "(Documento PDF - conteúdo binário não disponível em texto)"
+                        else:
+                            ultimo_doc_conteudo = md
+                        # Cache document content by doc_id
+                        if ultimo_doc_conteudo:
+                            await cache.set(doc_cache_key, ultimo_doc_conteudo, ttl=CACHE_TTL)
+
+            # 4. Format andamentos text
             andamentos_texto = "\n".join(
                 f"- {a.get('DataHora', '')} | {a.get('Unidade', {}).get('Sigla', '')} | {a.get('Descricao', '')}"
                 for a in ultimos_andamentos
             )
 
-            # 4. Stream the response
+            # 5. Stream the response
             accumulated = []
             async for chunk in enviar_situacao_atual_stream(entendimento, ultimo_doc_conteudo, andamentos_texto):
                 accumulated.append(chunk)

@@ -11,6 +11,7 @@ import logging
 
 from ..database import get_db
 from ..models import HistoricoPesquisa
+from ..normalization import normalizar_numero_processo
 from ..schemas import (
     HistoricoPesquisaCreate,
     HistoricoPesquisaUpdate,
@@ -40,13 +41,19 @@ async def criar_historico(
 ):
     """Cria um novo registro de histórico de pesquisa, ou atualiza se já existir para o mesmo usuário+processo"""
     try:
-        # Verificar se já existe registro (não deletado) para este usuário+processo
+        # Verificar se já existe registro (não deletado) para este usuário+processo+unidade
+        dedup_filters = [
+            HistoricoPesquisa.usuario == dados.usuario,
+            HistoricoPesquisa.numero_processo == dados.numero_processo,
+            HistoricoPesquisa.deletado_em.is_(None),
+        ]
+        if dados.id_unidade:
+            dedup_filters.append(HistoricoPesquisa.id_unidade == dados.id_unidade)
+        else:
+            dedup_filters.append(HistoricoPesquisa.id_unidade.is_(None))
+
         query_existente = select(HistoricoPesquisa).where(
-            and_(
-                HistoricoPesquisa.usuario == dados.usuario,
-                HistoricoPesquisa.numero_processo == dados.numero_processo,
-                HistoricoPesquisa.deletado_em.is_(None)
-            )
+            and_(*dedup_filters)
         ).order_by(desc(HistoricoPesquisa.criado_em)).limit(1)
 
         result = await db.execute(query_existente)
@@ -56,6 +63,8 @@ async def criar_historico(
             # Atualizar contexto e timestamp do registro existente
             if dados.caixa_contexto:
                 existente.caixa_contexto = dados.caixa_contexto
+            if dados.id_unidade:
+                existente.id_unidade = dados.id_unidade
             existente.atualizado_em = datetime.utcnow()
             await db.commit()
             await db.refresh(existente)
@@ -75,6 +84,7 @@ async def criar_historico(
             numero_processo=dados.numero_processo,
             numero_processo_formatado=dados.numero_processo_formatado,
             usuario=dados.usuario,
+            id_unidade=dados.id_unidade,
             caixa_contexto=dados.caixa_contexto
         )
 
@@ -132,9 +142,9 @@ async def listar_historico_usuario(
         total_result = await db.execute(count_query)
         total = total_result.scalar()
 
-        # Buscar registros com paginação
+        # Buscar registros com paginação (ordenar por atualizado_em para last-accessed primeiro)
         query = base_query.order_by(
-            desc(HistoricoPesquisa.criado_em)
+            desc(HistoricoPesquisa.atualizado_em)
         ).limit(limit).offset(offset)
 
         result = await db.execute(query)
@@ -174,6 +184,7 @@ async def verificar_pesquisa_processo(
     db: AsyncSession = Depends(get_db)
 ):
     """Verifica se o usuário já pesquisou determinado processo"""
+    numero_processo = normalizar_numero_processo(numero_processo)
     try:
         # Buscar pesquisas do processo pelo usuário
         query = select(HistoricoPesquisa).where(
@@ -258,7 +269,10 @@ async def atualizar_historico(
             )
 
         # Atualizar
-        historico.caixa_contexto = dados.caixa_contexto
+        if dados.caixa_contexto is not None:
+            historico.caixa_contexto = dados.caixa_contexto
+        if dados.id_unidade is not None:
+            historico.id_unidade = dados.id_unidade
         await db.commit()
         await db.refresh(historico)
 

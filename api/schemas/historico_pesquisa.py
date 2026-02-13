@@ -1,7 +1,8 @@
 """
 Schemas Pydantic para histórico de pesquisas
 """
-from pydantic import BaseModel, Field, ConfigDict
+import re
+from pydantic import BaseModel, Field, ConfigDict, field_validator
 from datetime import datetime
 from typing import Optional
 from uuid import UUID
@@ -22,12 +23,24 @@ class HistoricoPesquisaBase(BaseModel):
         description="Número do processo formatado",
         examples=["12345.678901/2024-99"]
     )
+
+    @field_validator('numero_processo', mode='before')
+    @classmethod
+    def strip_non_digits(cls, v: str) -> str:
+        return re.sub(r'\D', '', v)
+
     usuario: str = Field(
         ...,
         min_length=1,
         max_length=100,
         description="Identificação do usuário",
         examples=["joao.silva@email.com"]
+    )
+    id_unidade: Optional[str] = Field(
+        None,
+        max_length=50,
+        description="ID da unidade usada para acessar o processo",
+        examples=["110000001"]
     )
     caixa_contexto: Optional[str] = Field(
         None,
@@ -46,6 +59,11 @@ class HistoricoPesquisaUpdate(BaseModel):
     caixa_contexto: Optional[str] = Field(
         None,
         description="Novo contexto da pesquisa"
+    )
+    id_unidade: Optional[str] = Field(
+        None,
+        max_length=50,
+        description="ID da unidade associada ao contexto"
     )
 
 
@@ -76,6 +94,7 @@ class HistoricoPesquisaSimple(BaseModel):
     id: UUID
     numero_processo: str
     numero_processo_formatado: Optional[str]
+    id_unidade: Optional[str] = None
     caixa_contexto: Optional[str]
     criado_em: datetime
 

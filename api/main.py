@@ -1,6 +1,8 @@
+import asyncio
 import logging
 import sys
 from contextlib import asynccontextmanager
+from pathlib import Path
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.gzip import GZipMiddleware
@@ -24,11 +26,36 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+def _run_alembic_upgrade():
+    """Executa alembic upgrade head de forma síncrona"""
+    from alembic.config import Config
+    from alembic import command
+
+    alembic_ini = Path(__file__).resolve().parents[1] / "alembic.ini"
+    if not alembic_ini.exists():
+        logger.warning(f"alembic.ini não encontrado em {alembic_ini}, pulando migrations")
+        return
+
+    alembic_cfg = Config(str(alembic_ini))
+    command.upgrade(alembic_cfg, "head")
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Gerencia o ciclo de vida da aplicação"""
     # Startup
     logger.info("Iniciando API Processo SEI...")
+
+    # Run Alembic migrations
+    if not settings.SKIP_MIGRATIONS:
+        try:
+            logger.info("Executando migrations do banco de dados...")
+            await asyncio.to_thread(_run_alembic_upgrade)
+            logger.info("Migrations executadas com sucesso")
+        except Exception as e:
+            logger.error(f"Erro ao executar migrations: {e}")
+    
+
     await cache.connect()
     logger.info("Cache conectado")
     logger.info("API iniciada com sucesso")

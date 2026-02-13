@@ -4,6 +4,7 @@ import orjson
 import logging
 from typing import Optional, Any
 from .config import settings
+from .normalization import normalizar_numero_processo
 
 logger = logging.getLogger(__name__)
 
@@ -286,6 +287,7 @@ def gerar_chave_processo(numero_processo: str, id_primeiro_doc: str, id_ultimo_d
     Returns:
         Chave formatada para cache
     """
+    numero_processo = normalizar_numero_processo(numero_processo)
     if id_ultimo_doc:
         return f"processo:{numero_processo}:primeiro:{id_primeiro_doc}:ultimo:{id_ultimo_doc}"
     return f"processo:{numero_processo}:primeiro:{id_primeiro_doc}"
@@ -314,7 +316,7 @@ def gerar_chave_andamento(numero_processo: str) -> str:
     Returns:
         Chave formatada para cache
     """
-    return f"andamento:{numero_processo}"
+    return f"andamento:{normalizar_numero_processo(numero_processo)}"
 
 
 def gerar_chave_resumo(numero_processo: str) -> str:
@@ -327,4 +329,4 @@ def gerar_chave_resumo(numero_processo: str) -> str:
     Returns:
         Chave formatada para cache
     """
-    return f"resumo:{numero_processo}"
+    return f"resumo:{normalizar_numero_processo(numero_processo)}"

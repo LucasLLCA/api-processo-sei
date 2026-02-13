@@ -46,6 +46,8 @@ class Settings(BaseSettings):
     DATABASE_POOL_SIZE: int = 5
     DATABASE_MAX_OVERFLOW: int = 10
 
+    SKIP_MIGRATIONS: bool = True
+
     @property
     def DATABASE_URL(self) -> str:
         """Constrói a URL de conexão do PostgreSQL para asyncpg"""

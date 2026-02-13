@@ -1,8 +1,9 @@
 import logging
 from fastapi import APIRouter, Header, HTTPException, Query
 from pydantic import BaseModel
-from ..sei import login, listar_tarefa, listar_documentos, consultar_procedimento, verificar_saude
+from ..sei import login, listar_tarefa, listar_documentos, consultar_procedimento, verificar_saude, assinar_documento
 from ..cache import cache
+from ..normalization import normalizar_numero_processo
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +27,15 @@ async def sei_login(body: LoginRequest):
     Proxy para login na API SEI.
     Retorna a resposta bruta da API SEI (Token, Login, Unidades).
     """
-    return await login(body.usuario, body.senha, body.orgao)
+    try:
+        result = await login(body.usuario, body.senha, body.orgao)
+        logger.info(f"POST /sei/login OK for user={body.usuario} orgao={body.orgao} — keys={list(result.keys()) if isinstance(result, dict) else type(result).__name__}")
+        return result
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception(f"POST /sei/login 500 for user={body.usuario} orgao={body.orgao} — {type(e).__name__}: {e}")
+        raise
 
 
 @router.get("/andamentos/{numero_processo}")
@@ -39,6 +48,7 @@ async def sei_andamentos(
     Proxy para buscar andamentos de um processo.
     Backend faz paginação paralela e retorna todos os andamentos.
     """
+    numero_processo = normalizar_numero_processo(numero_processo)
     cache_key = f"proxy:andamentos:{numero_processo}:{id_unidade}"
     cached = await cache.get(cache_key)
     if cached:
@@ -70,6 +80,7 @@ async def sei_unidades_abertas(
     """
     Proxy para consultar unidades com processo aberto.
     """
+    numero_processo = normalizar_numero_processo(numero_processo)
     cache_key = f"proxy:unidades:{numero_processo}:{id_unidade}"
     cached = await cache.get(cache_key)
     if cached:
@@ -96,6 +107,7 @@ async def sei_documentos(
     Proxy para buscar documentos de um processo.
     Backend faz paginação paralela e retorna todos os documentos.
     """
+    numero_processo = normalizar_numero_processo(numero_processo)
     cache_key = f"proxy:documentos:{numero_processo}:{id_unidade}"
     cached = await cache.get(cache_key)
     if cached:
@@ -117,12 +129,56 @@ async def sei_documentos(
     return resultado
 
 
+class AssinarDocumentoRequest(BaseModel):
+    orgao: str
+    cargo: str
+    id_login: str
+    senha: str
+    id_usuario: str
+
+
+@router.post("/documentos/{protocolo_documento}/assinar")
+async def sei_assinar_documento(
+    protocolo_documento: str,
+    body: AssinarDocumentoRequest,
+    id_unidade: str = Query(...),
+    x_sei_token: str = Header(..., alias="X-SEI-Token"),
+):
+    """
+    Proxy para assinar um documento no SEI.
+    """
+    try:
+        logger.info(
+            f"POST /sei/documentos/{protocolo_documento}/assinar INCOMING "
+            f"unidade={id_unidade} orgao={body.orgao} cargo={body.cargo} "
+            f"id_login={body.id_login} id_usuario={body.id_usuario} "
+            f"senha_len={len(body.senha)} token_len={len(x_sei_token)}"
+        )
+        result = await assinar_documento(
+            x_sei_token, id_unidade, protocolo_documento,
+            body.orgao, body.cargo, body.id_login, body.senha, body.id_usuario
+        )
+        logger.info(f"POST /sei/documentos/{protocolo_documento}/assinar OK unidade={id_unidade} result={result}")
+
+        # Invalidate document caches so refetch picks up the new signature
+        deleted = await cache.clear_pattern(f"proxy:documentos:*:{id_unidade}")
+        logger.info(f"Cache documentos invalidado após assinatura: {deleted} chaves removidas")
+
+        return result
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception(f"POST /sei/documentos/{protocolo_documento}/assinar 500 — {type(e).__name__}: {e}")
+        raise
+
+
 @router.delete("/cache/{numero_processo}")
 async def sei_invalidar_cache(numero_processo: str):
     """
     Invalida todo o cache proxy de um processo específico.
     Remove andamentos, unidades e documentos cacheados.
     """
+    numero_processo = normalizar_numero_processo(numero_processo)
     deleted = 0
     for pattern in [
         f"proxy:andamentos:{numero_processo}:*",

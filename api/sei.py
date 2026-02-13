@@ -198,6 +198,121 @@ async def listar_primeiro_documento(token: str, protocolo: str, id_unidade: str)
         )
 
 
+async def listar_ultimo_documento(token: str, protocolo: str, id_unidade: str):
+    """
+    Busca apenas o último documento de um processo.
+    Usado pela situação atual que só precisa do último documento.
+    """
+    try:
+        url = f"{settings.SEI_BASE_URL}/unidades/{id_unidade}/procedimentos/documentos"
+        params = {
+            "protocolo_procedimento": protocolo,
+            "pagina": 1,
+            "quantidade": 1,
+            "sinal_geracao": "N",
+            "sinal_assinaturas": "N",
+            "sinal_publicacao": "N",
+            "sinal_campos": "N",
+            "sinal_completo": "S"
+        }
+        headers = {"accept": "application/json", "token": f'"{token}"'}
+        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=45)
+
+        if response.status_code != 200:
+            logger.warning(f"Falha ao listar documentos para último documento (status {response.status_code})")
+            return None
+
+        data = response.json()
+        total_itens = data.get("Info", {}).get("TotalItens", 0)
+        documentos = data.get("Documentos", [])
+
+        if total_itens == 0:
+            return None
+
+        # Se só existe 1 documento, já o temos
+        if total_itens <= 1:
+            return documentos[0] if documentos else None
+
+        # Buscar a última página (qty=1, page=TotalItens => último item)
+        params["pagina"] = total_itens
+        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=45)
+
+        if response.status_code != 200:
+            logger.warning(f"Falha ao buscar último documento na página {total_itens}")
+            return None
+
+        documentos = response.json().get("Documentos", [])
+        return documentos[0] if documentos else None
+    except Exception as e:
+        logger.warning(f"Erro ao buscar último documento: {str(e)}")
+        return None
+
+
+async def listar_ultimos_andamentos(token: str, protocolo: str, id_unidade: str, quantidade: int = 3):
+    """
+    Busca apenas os últimos N andamentos de um processo.
+    Retorna lista vazia em caso de erro (graceful degradation).
+    """
+    try:
+        url = f"{settings.SEI_BASE_URL}/unidades/{id_unidade}/procedimentos/andamentos"
+        params = {
+            "protocolo_procedimento": protocolo,
+            "sinal_atributos": "S",
+            "pagina": 1,
+            "quantidade": 10
+        }
+        headers = {"accept": "application/json", "token": f'"{token}"'}
+        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=45)
+
+        if response.status_code != 200:
+            logger.warning(f"Falha ao listar andamentos para últimos {quantidade} (status {response.status_code})")
+            return []
+
+        data = response.json()
+        total_itens = data.get("Info", {}).get("TotalItens", 0)
+        andamentos = data.get("Andamentos", [])
+
+        if total_itens == 0:
+            return []
+
+        # Se tudo cabe na primeira página, retornar os últimos N
+        if total_itens <= 10:
+            return andamentos[-quantidade:]
+
+        # Calcular última página
+        quantidade_por_pagina = 10
+        total_paginas = math.ceil(total_itens / quantidade_por_pagina)
+
+        # Buscar última página
+        params["pagina"] = total_paginas
+        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=45)
+
+        if response.status_code != 200:
+            logger.warning(f"Falha ao buscar última página de andamentos")
+            return []
+
+        ultima_pagina_andamentos = response.json().get("Andamentos", [])
+
+        # Se a última página tem itens suficientes, retornar os últimos N
+        if len(ultima_pagina_andamentos) >= quantidade:
+            return ultima_pagina_andamentos[-quantidade:]
+
+        # Precisamos da penúltima página também
+        if total_paginas >= 2:
+            params["pagina"] = total_paginas - 1
+            response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=45)
+
+            if response.status_code == 200:
+                penultima = response.json().get("Andamentos", [])
+                combinados = penultima + ultima_pagina_andamentos
+                return combinados[-quantidade:]
+
+        return ultima_pagina_andamentos[-quantidade:]
+    except Exception as e:
+        logger.warning(f"Erro ao buscar últimos andamentos: {str(e)}")
+        return []
+
+
 async def _buscar_pagina_andamentos(token: str, protocolo: str, id_unidade: str, pagina: int, quantidade_por_pagina: int):
     """
     Função auxiliar para buscar uma página específica de andamentos com retry
@@ -317,6 +432,19 @@ async def login(usuario: str, senha: str, orgao: str):
 
         response = await http_client.post(url, headers=headers, json=body, timeout=30)
 
+        logger.info(
+            f"SEI login response: status={response.status_code} "
+            f"headers={dict(response.headers)} "
+            f"body={response.text[:1000]}"
+        )
+
+        if response.status_code != 200:
+            logger.error(
+                f"SEI login FAILED: status={response.status_code} "
+                f"user={usuario} orgao={orgao} "
+                f"response_body={response.text[:2000]}"
+            )
+
         if response.status_code == 401:
             try:
                 data = response.json()
@@ -385,11 +513,21 @@ async def consultar_procedimento(token: str, protocolo: str, id_unidade: str):
         response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=45)
 
         if response.status_code != 200:
+            error_message = "Falha ao consultar procedimento no SEI"
+            try:
+                error_data = response.json()
+                if isinstance(error_data, dict) and "detail" in error_data:
+                    detail_list = error_data["detail"]
+                    if isinstance(detail_list, list) and len(detail_list) > 0:
+                        error_message = detail_list[0].get("msg", error_message)
+            except Exception:
+                pass
+
             raise HTTPException(
-                status_code=500,
+                status_code=response.status_code,
                 detail=ErrorDetail(
                     type=ErrorType.EXTERNAL_SERVICE_ERROR,
-                    message="Falha ao consultar procedimento no SEI",
+                    message=error_message,
                     details={"status_code": response.status_code, "response": response.text}
                 ).dict()
             )
@@ -447,6 +585,71 @@ async def consultar_documento(token: str, id_unidade: str, documento_formatado: 
             detail=ErrorDetail(
                 type=ErrorType.EXTERNAL_SERVICE_ERROR,
                 message="Erro ao conectar com o serviço SEI para consultar documento",
+                details={"error": str(e)}
+            ).dict()
+        )
+
+
+async def assinar_documento(
+    token: str,
+    id_unidade: str,
+    protocolo_documento: str,
+    orgao: str,
+    cargo: str,
+    id_login: str,
+    senha: str,
+    id_usuario: str,
+) -> dict:
+    """
+    Assina um documento no SEI.
+    """
+    try:
+        url = f"{settings.SEI_BASE_URL}/unidades/{id_unidade}/documentos/assinar"
+        headers = {"accept": "application/json", "token": f'"{token}"', "Content-Type": "application/json"}
+        body = {
+            "ProtocoloDocumento": protocolo_documento,
+            "Orgao": orgao,
+            "Cargo": cargo,
+            "IdLogin": id_login,
+            "Senha": senha,
+            "IdUsuario": id_usuario,
+        }
+
+        logger.info(
+            f"SEI assinar_documento REQUEST: url={url} "
+            f"body={{ProtocoloDocumento={protocolo_documento}, Orgao={orgao}, Cargo={cargo}, "
+            f"IdLogin={id_login}, IdUsuario={id_usuario}, Senha=***({len(senha)}chars)}}"
+        )
+
+        response = await http_client.patch(url, headers=headers, json=body, timeout=30)
+
+        logger.info(
+            f"SEI assinar_documento RESPONSE: status={response.status_code} "
+            f"headers={dict(response.headers)} "
+            f"body={response.text[:2000]}"
+        )
+
+        if response.status_code not in (200, 204):
+            logger.error(
+                f"SEI assinar_documento FAILED: status={response.status_code} "
+                f"protocolo={protocolo_documento} unidade={id_unidade} "
+                f"response_body={response.text[:2000]}"
+            )
+            raise HTTPException(status_code=response.status_code, detail=response.text[:2000])
+
+        # 204 No Content = success with no body
+        if response.status_code == 204 or not response.text.strip():
+            return {"status": "ok"}
+
+        return response.json()
+    except HTTPException:
+        raise
+    except httpx.RequestError as e:
+        raise HTTPException(
+            status_code=500,
+            detail=ErrorDetail(
+                type=ErrorType.EXTERNAL_SERVICE_ERROR,
+                message="Erro ao conectar com o serviço SEI para assinar documento",
                 details={"error": str(e)}
             ).dict()
         )

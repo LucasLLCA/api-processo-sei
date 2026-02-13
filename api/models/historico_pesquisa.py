@@ -44,6 +44,12 @@ class HistoricoPesquisa(Base):
         comment="Identificação do usuário (email, CPF, username, etc)"
     )
 
+    id_unidade = Column(
+        String(50),
+        nullable=True,
+        comment="ID da unidade usada para acessar o processo"
+    )
+
     caixa_contexto = Column(
         Text,
         nullable=True,
@@ -97,6 +103,13 @@ class HistoricoPesquisa(Base):
             postgresql_ops={'criado_em': 'DESC'},
             postgresql_where=text("deletado_em IS NULL")
         ),
+        Index(
+            'idx_historico_usuario_processo_unidade',
+            'usuario',
+            'numero_processo',
+            'id_unidade',
+            postgresql_where=text("deletado_em IS NULL")
+        ),
         {'comment': 'Tabela de histórico de pesquisas de processos do SEI'}
     )
 
@@ -130,6 +143,7 @@ class HistoricoPesquisa(Base):
             "numero_processo": self.numero_processo,
             "numero_processo_formatado": self.numero_processo_formatado,
             "usuario": self.usuario,
+            "id_unidade": self.id_unidade,
             "caixa_contexto": self.caixa_contexto,
             "criado_em": self.criado_em.isoformat() if self.criado_em else None,
             "atualizado_em": self.atualizado_em.isoformat() if self.atualizado_em else None,
