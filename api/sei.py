@@ -18,24 +18,39 @@ http_client = httpx.AsyncClient(
 )
 
 
-async def _fazer_requisicao_com_retry(url: str, headers: dict, params: dict, max_tentativas: int = 3, timeout: int = 30):
+async def _fazer_requisicao_com_retry(url: str, headers: dict, params: dict, max_tentativas: int = 3, timeout: int = 60):
     """
-    Faz uma requisição HTTP com retry automático em caso de falha
+    Faz uma requisição HTTP com retry automático em caso de falha.
+    Retries imediatos sem backoff.
     """
     for tentativa in range(max_tentativas):
         try:
             response = await http_client.get(url, headers=headers, params=params, timeout=timeout)
+            if response.status_code >= 400:
+                logger.warning(
+                    f"HTTP {response.status_code} na tentativa {tentativa + 1}/{max_tentativas} "
+                    f"GET {url} params={params} — body={response.text[:500]}"
+                )
             return response
-        except (httpx.TimeoutException, httpx.ConnectError) as e:
+        except httpx.TimeoutException as e:
+            logger.warning(
+                f"TIMEOUT na tentativa {tentativa + 1}/{max_tentativas} "
+                f"GET {url} params={params} — {type(e).__name__}: {e}"
+            )
             if tentativa == max_tentativas - 1:
                 raise e
-
-            # Backoff exponencial: 1s, 2s, 4s
-            tempo_espera = 2 ** tentativa
-            logger.debug(f"Tentativa {tentativa + 1} falhou, aguardando {tempo_espera}s: {str(e)}")
-            await asyncio.sleep(tempo_espera)
+        except httpx.ConnectError as e:
+            logger.warning(
+                f"CONNECT_ERROR na tentativa {tentativa + 1}/{max_tentativas} "
+                f"GET {url} params={params} — {type(e).__name__}: {e}"
+            )
+            if tentativa == max_tentativas - 1:
+                raise e
         except httpx.RequestError as e:
-            # Para outros erros, falha imediatamente
+            logger.error(
+                f"REQUEST_ERROR (não retentável) "
+                f"GET {url} params={params} — {type(e).__name__}: {e}"
+            )
             raise e
 
 
@@ -57,25 +72,27 @@ async def _buscar_pagina_documentos(token: str, protocolo: str, id_unidade: str,
         }
         headers = {"accept": "application/json", "token": f'"{token}"'}
 
-        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=45)
-
-        if response.status_code == 504:
-            logger.warning(f"Timeout na página {pagina}, pulando esta página")
-            return []
+        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=60)
 
         if response.status_code != 200:
-            logger.warning(f"Erro na página {pagina} (status {response.status_code}), pulando esta página")
+            logger.warning(
+                f"HTTP {response.status_code} na página {pagina} de documentos "
+                f"processo={protocolo} unidade={id_unidade} — body={response.text[:300]}"
+            )
             return []
 
         return response.json().get("Documentos", [])
-    except (httpx.TimeoutException, httpx.ConnectError) as e:
-        logger.warning(f"Timeout/conexão falhou na página {pagina}, pulando: {str(e)}")
+    except httpx.TimeoutException as e:
+        logger.warning(f"TIMEOUT na página {pagina} de documentos processo={protocolo} — {type(e).__name__}: {e}")
+        return []
+    except httpx.ConnectError as e:
+        logger.warning(f"CONNECT_ERROR na página {pagina} de documentos processo={protocolo} — {type(e).__name__}: {e}")
         return []
     except httpx.RequestError as e:
-        logger.warning(f"Erro de requisição na página {pagina}, pulando: {str(e)}")
+        logger.warning(f"REQUEST_ERROR na página {pagina} de documentos processo={protocolo} — {type(e).__name__}: {e}")
         return []
     except Exception as e:
-        logger.warning(f"Erro inesperado na página {pagina}, pulando: {str(e)}")
+        logger.warning(f"UNEXPECTED_ERROR na página {pagina} de documentos processo={protocolo} — {type(e).__name__}: {e}")
         return []
 
 
@@ -95,7 +112,7 @@ async def listar_documentos(token: str, protocolo: str, id_unidade: str):
         }
         headers = {"accept": "application/json", "token": f'"{token}"'}
         logger.debug(f"Fazendo requisição inicial para processo: {protocolo}")
-        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=45)
+        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=60)
 
         if response.status_code != 200:
             raise HTTPException(
@@ -173,7 +190,7 @@ async def listar_primeiro_documento(token: str, protocolo: str, id_unidade: str)
             "sinal_completo": "S"
         }
         headers = {"accept": "application/json", "token": f'"{token}"'}
-        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=45)
+        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=60)
 
         if response.status_code != 200:
             raise HTTPException(
@@ -216,7 +233,7 @@ async def listar_ultimo_documento(token: str, protocolo: str, id_unidade: str):
             "sinal_completo": "S"
         }
         headers = {"accept": "application/json", "token": f'"{token}"'}
-        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=45)
+        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=60)
 
         if response.status_code != 200:
             logger.warning(f"Falha ao listar documentos para último documento (status {response.status_code})")
@@ -235,7 +252,7 @@ async def listar_ultimo_documento(token: str, protocolo: str, id_unidade: str):
 
         # Buscar a última página (qty=1, page=TotalItens => último item)
         params["pagina"] = total_itens
-        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=45)
+        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=60)
 
         if response.status_code != 200:
             logger.warning(f"Falha ao buscar último documento na página {total_itens}")
@@ -262,7 +279,7 @@ async def listar_ultimos_andamentos(token: str, protocolo: str, id_unidade: str,
             "quantidade": 10
         }
         headers = {"accept": "application/json", "token": f'"{token}"'}
-        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=45)
+        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=60)
 
         if response.status_code != 200:
             logger.warning(f"Falha ao listar andamentos para últimos {quantidade} (status {response.status_code})")
@@ -285,7 +302,7 @@ async def listar_ultimos_andamentos(token: str, protocolo: str, id_unidade: str,
 
         # Buscar última página
         params["pagina"] = total_paginas
-        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=45)
+        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=60)
 
         if response.status_code != 200:
             logger.warning(f"Falha ao buscar última página de andamentos")
@@ -300,7 +317,7 @@ async def listar_ultimos_andamentos(token: str, protocolo: str, id_unidade: str,
         # Precisamos da penúltima página também
         if total_paginas >= 2:
             params["pagina"] = total_paginas - 1
-            response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=45)
+            response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=60)
 
             if response.status_code == 200:
                 penultima = response.json().get("Andamentos", [])
@@ -327,26 +344,219 @@ async def _buscar_pagina_andamentos(token: str, protocolo: str, id_unidade: str,
         }
         headers = {"accept": "application/json", "token": f'"{token}"'}
 
-        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=45)
-
-        if response.status_code == 504:
-            logger.warning(f"Timeout na página {pagina} de andamentos, pulando esta página")
-            return []
+        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=60)
 
         if response.status_code != 200:
-            logger.warning(f"Erro na página {pagina} de andamentos (status {response.status_code}), pulando esta página")
+            logger.warning(
+                f"HTTP {response.status_code} na página {pagina} de andamentos "
+                f"processo={protocolo} unidade={id_unidade} — body={response.text[:300]}"
+            )
             return []
 
         return response.json().get("Andamentos", [])
-    except (httpx.TimeoutException, httpx.ConnectError) as e:
-        logger.warning(f"Timeout/conexão falhou na página {pagina} de andamentos, pulando: {str(e)}")
+    except httpx.TimeoutException as e:
+        logger.warning(f"TIMEOUT na página {pagina} de andamentos processo={protocolo} — {type(e).__name__}: {e}")
+        return []
+    except httpx.ConnectError as e:
+        logger.warning(f"CONNECT_ERROR na página {pagina} de andamentos processo={protocolo} — {type(e).__name__}: {e}")
         return []
     except httpx.RequestError as e:
-        logger.warning(f"Erro de requisição na página {pagina} de andamentos, pulando: {str(e)}")
+        logger.warning(f"REQUEST_ERROR na página {pagina} de andamentos processo={protocolo} — {type(e).__name__}: {e}")
         return []
     except Exception as e:
-        logger.warning(f"Erro inesperado na página {pagina} de andamentos, pulando: {str(e)}")
+        logger.warning(f"UNEXPECTED_ERROR na página {pagina} de andamentos processo={protocolo} — {type(e).__name__}: {e}")
         return []
+
+
+async def listar_tarefa_parcial(token: str, protocolo: str, id_unidade: str):
+    """
+    Fetch first 5 + last 5 pages of andamentos (≤100 items) for fast initial render.
+    Returns (andamentos, total_itens, parcial) tuple.
+    If total_paginas <= 10, returns all data with parcial=False.
+    """
+    try:
+        url = f"{settings.SEI_BASE_URL}/unidades/{id_unidade}/procedimentos/andamentos"
+        params = {
+            "protocolo_procedimento": protocolo,
+            "sinal_atributos": "S",
+            "pagina": 1,
+            "quantidade": 10
+        }
+        headers = {"accept": "application/json", "token": f'"{token}"'}
+        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=60)
+
+        if response.status_code != 200:
+            raise HTTPException(
+                status_code=500,
+                detail=ErrorDetail(
+                    type=ErrorType.EXTERNAL_SERVICE_ERROR,
+                    message="Falha ao consultar andamentos no SEI",
+                    details={"status_code": response.status_code, "response": response.text}
+                ).dict()
+            )
+
+        data = response.json()
+        total_itens = data.get("Info", {}).get("TotalItens", 0)
+        andamentos_primeira_pagina = data.get("Andamentos", [])
+
+        if total_itens == 0:
+            return [], 0, False
+
+        quantidade_por_pagina = 10
+        total_paginas = math.ceil(total_itens / quantidade_por_pagina)
+
+        # Small process: fetch all pages (no benefit to partial)
+        if total_paginas <= 10:
+            if total_paginas == 1:
+                return andamentos_primeira_pagina, total_itens, False
+
+            tarefas = [
+                _buscar_pagina_andamentos(token, protocolo, id_unidade, pagina, quantidade_por_pagina)
+                for pagina in range(2, total_paginas + 1)
+            ]
+            resultados = await asyncio.gather(*tarefas, return_exceptions=True)
+            todas = andamentos_primeira_pagina.copy()
+            for resultado in resultados:
+                if isinstance(resultado, Exception):
+                    continue
+                todas.extend(resultado)
+            return todas, total_itens, False
+
+        # Large process: fetch pages 2-5 + last 5 pages
+        logger.info(
+            f"Partial fetch: processo={protocolo} total_paginas={total_paginas} "
+            f"total_itens={total_itens} — fetching first 5 + last 5 pages"
+        )
+
+        first_pages = list(range(2, 6))  # pages 2,3,4,5
+        last_pages = list(range(total_paginas - 4, total_paginas + 1))  # last 5 pages
+
+        # Deduplicate in case of overlap (e.g. total_paginas=12)
+        all_pages = sorted(set(first_pages + last_pages))
+
+        tarefas = [
+            _buscar_pagina_andamentos(token, protocolo, id_unidade, pagina, quantidade_por_pagina)
+            for pagina in all_pages
+        ]
+        resultados = await asyncio.gather(*tarefas, return_exceptions=True)
+
+        # Combine: page 1 data + first pages data
+        primeiros = andamentos_primeira_pagina.copy()
+        ultimos = []
+
+        for i, pagina in enumerate(all_pages):
+            resultado = resultados[i]
+            if isinstance(resultado, Exception):
+                continue
+            if pagina <= 5:
+                primeiros.extend(resultado)
+            else:
+                ultimos.extend(resultado)
+
+        andamentos = primeiros + ultimos
+        logger.info(
+            f"Partial fetch complete: processo={protocolo} "
+            f"returned {len(andamentos)} items (first {len(primeiros)} + last {len(ultimos)})"
+        )
+        return andamentos, total_itens, True
+
+    except httpx.RequestError as e:
+        raise HTTPException(
+            status_code=500,
+            detail=ErrorDetail(
+                type=ErrorType.EXTERNAL_SERVICE_ERROR,
+                message="Erro ao conectar com o serviço SEI para consultar andamentos",
+                details={"error": str(e)}
+            ).dict()
+        )
+
+
+async def listar_documentos_parcial(token: str, protocolo: str, id_unidade: str):
+    """
+    Fetch first page + last page of documents (≤100 items) for fast initial render.
+    Returns (documentos, total_itens, parcial) tuple.
+    If total <= 100, returns all data with parcial=False.
+    """
+    try:
+        url = f"{settings.SEI_BASE_URL}/unidades/{id_unidade}/procedimentos/documentos"
+        params = {
+            "protocolo_procedimento": protocolo,
+            "pagina": 1,
+            "quantidade": 50,
+            "sinal_geracao": "N",
+            "sinal_assinaturas": "N",
+            "sinal_publicacao": "N",
+            "sinal_campos": "N",
+            "sinal_completo": "S"
+        }
+        headers = {"accept": "application/json", "token": f'"{token}"'}
+        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=60)
+
+        if response.status_code != 200:
+            raise HTTPException(
+                status_code=500,
+                detail=ErrorDetail(
+                    type=ErrorType.EXTERNAL_SERVICE_ERROR,
+                    message="Falha ao listar documentos no SEI",
+                    details={"status_code": response.status_code, "response": response.text}
+                ).dict()
+            )
+
+        data = response.json()
+        total_itens = data.get("Info", {}).get("TotalItens", 0)
+        documentos_primeira_pagina = data.get("Documentos", [])
+
+        if total_itens == 0:
+            return [], 0, False
+
+        if total_itens <= 100:
+            # Small: fetch all remaining pages
+            if total_itens <= 50:
+                return documentos_primeira_pagina, total_itens, False
+
+            quantidade_por_pagina = 50
+            total_paginas = math.ceil(total_itens / quantidade_por_pagina)
+            tarefas = [
+                _buscar_pagina_documentos(token, protocolo, id_unidade, pagina, quantidade_por_pagina)
+                for pagina in range(2, total_paginas + 1)
+            ]
+            resultados = await asyncio.gather(*tarefas, return_exceptions=True)
+            todos = documentos_primeira_pagina.copy()
+            for resultado in resultados:
+                if isinstance(resultado, Exception):
+                    continue
+                todos.extend(resultado)
+            return todos, total_itens, False
+
+        # Large: fetch first page (already have) + last page
+        quantidade_por_pagina = 50
+        total_paginas = math.ceil(total_itens / quantidade_por_pagina)
+
+        logger.info(
+            f"Partial docs fetch: processo={protocolo} total_paginas={total_paginas} "
+            f"total_itens={total_itens} — fetching first + last page"
+        )
+
+        ultima_pagina_docs = await _buscar_pagina_documentos(
+            token, protocolo, id_unidade, total_paginas, quantidade_por_pagina
+        )
+
+        documentos = documentos_primeira_pagina + ultima_pagina_docs
+        logger.info(
+            f"Partial docs fetch complete: processo={protocolo} "
+            f"returned {len(documentos)} items"
+        )
+        return documentos, total_itens, True
+
+    except httpx.RequestError as e:
+        raise HTTPException(
+            status_code=500,
+            detail=ErrorDetail(
+                type=ErrorType.EXTERNAL_SERVICE_ERROR,
+                message="Erro ao conectar com o serviço SEI para listar documentos",
+                details={"error": str(e)}
+            ).dict()
+        )
 
 
 async def listar_tarefa(token: str, protocolo: str, id_unidade: str):
@@ -360,7 +570,7 @@ async def listar_tarefa(token: str, protocolo: str, id_unidade: str):
             "quantidade": 10
         }
         headers = {"accept": "application/json", "token": f'"{token}"'}
-        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=45)
+        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=60)
 
         if response.status_code != 200:
             raise HTTPException(
@@ -510,7 +720,7 @@ async def consultar_procedimento(token: str, protocolo: str, id_unidade: str):
         }
         headers = {"accept": "application/json", "token": f'"{token}"'}
 
-        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=45)
+        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=60)
 
         if response.status_code != 200:
             error_message = "Falha ao consultar procedimento no SEI"
@@ -568,7 +778,7 @@ async def consultar_documento(token: str, id_unidade: str, documento_formatado: 
         url = f"{settings.SEI_BASE_URL}/unidades/{id_unidade}/documentos"
         params = {"protocolo_documento": documento_formatado, "sinal_completo": "N"}
         headers = {"accept": "application/json", "token": f'"{token}"'}
-        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=45)
+        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=60)
         if response.status_code != 200:
             raise HTTPException(
                 status_code=500,
