@@ -135,28 +135,32 @@ async def listar_documentos(token: str, protocolo: str, id_unidade: str):
         if total_itens <= 50:
             return documentos_primeira_pagina
 
-        # Para totais maiores, usar paginação paralela
+        # Para totais maiores, usar paginação paralela em lotes
         quantidade_por_pagina = 50
         total_paginas = math.ceil(total_itens / quantidade_por_pagina)
+        batch_size = 20
 
-        logger.debug(f"Total de documentos: {total_itens}, Páginas: {total_paginas}")
+        logger.debug(f"Total de documentos: {total_itens}, Páginas: {total_paginas}, Lotes de: {batch_size}")
 
-        # Executar requisições em paralelo (exceto a primeira que já temos)
-        tarefas = [
-            _buscar_pagina_documentos(token, protocolo, id_unidade, pagina, quantidade_por_pagina)
-            for pagina in range(2, total_paginas + 1)
-        ]
-
-        resultados = await asyncio.gather(*tarefas, return_exceptions=True)
-
-        # Combinar resultados
         todos_documentos = documentos_primeira_pagina.copy()
-        for i, resultado in enumerate(resultados):
-            if isinstance(resultado, Exception):
-                logger.error(f"Falha na página {i + 2}: {str(resultado)}")
-                continue
-            todos_documentos.extend(resultado)
-            logger.debug(f"Página {i + 2} carregada: {len(resultado)} documentos")
+        paginas_restantes = list(range(2, total_paginas + 1))
+
+        for i in range(0, len(paginas_restantes), batch_size):
+            batch = paginas_restantes[i:i + batch_size]
+            tarefas = [
+                _buscar_pagina_documentos(token, protocolo, id_unidade, pagina, quantidade_por_pagina)
+                for pagina in batch
+            ]
+
+            resultados = await asyncio.gather(*tarefas, return_exceptions=True)
+
+            for j, resultado in enumerate(resultados):
+                if isinstance(resultado, Exception):
+                    logger.error(f"Falha na página {batch[j]}: {str(resultado)}")
+                    continue
+                todos_documentos.extend(resultado)
+
+            logger.debug(f"Lote {i // batch_size + 1} concluído: páginas {batch[0]}-{batch[-1]}, total coletado: {len(todos_documentos)}")
 
         logger.debug(f"Total de documentos carregados: {len(todos_documentos)}")
 
@@ -593,28 +597,32 @@ async def listar_tarefa(token: str, protocolo: str, id_unidade: str):
         if total_itens <= 10:
             return andamentos_primeira_pagina
 
-        # Para totais maiores, usar paginação paralela
+        # Para totais maiores, usar paginação paralela em lotes
         quantidade_por_pagina = 10
         total_paginas = math.ceil(total_itens / quantidade_por_pagina)
+        batch_size = 20
 
-        logger.debug(f"Total de andamentos: {total_itens}, Páginas: {total_paginas}")
+        logger.debug(f"Total de andamentos: {total_itens}, Páginas: {total_paginas}, Lotes de: {batch_size}")
 
-        # Executar requisições em paralelo
-        tarefas = [
-            _buscar_pagina_andamentos(token, protocolo, id_unidade, pagina, quantidade_por_pagina)
-            for pagina in range(2, total_paginas + 1)
-        ]
-
-        resultados = await asyncio.gather(*tarefas, return_exceptions=True)
-
-        # Combinar resultados
         todas_tarefas = andamentos_primeira_pagina.copy()
-        for i, resultado in enumerate(resultados):
-            if isinstance(resultado, Exception):
-                logger.error(f"Falha na página {i + 2}: {str(resultado)}")
-                continue
-            todas_tarefas.extend(resultado)
-            logger.debug(f"Página {i + 2}/{total_paginas} carregada: {len(resultado)} andamentos")
+        paginas_restantes = list(range(2, total_paginas + 1))
+
+        for i in range(0, len(paginas_restantes), batch_size):
+            batch = paginas_restantes[i:i + batch_size]
+            tarefas = [
+                _buscar_pagina_andamentos(token, protocolo, id_unidade, pagina, quantidade_por_pagina)
+                for pagina in batch
+            ]
+
+            resultados = await asyncio.gather(*tarefas, return_exceptions=True)
+
+            for j, resultado in enumerate(resultados):
+                if isinstance(resultado, Exception):
+                    logger.error(f"Falha na página {batch[j]}: {str(resultado)}")
+                    continue
+                todas_tarefas.extend(resultado)
+
+            logger.debug(f"Lote {i // batch_size + 1} concluído: páginas {batch[0]}-{batch[-1]}, total coletado: {len(todas_tarefas)}")
 
         logger.debug(f"Paginação concluída. Total esperado: {total_itens}, Total coletado: {len(todas_tarefas)}")
         return todas_tarefas
