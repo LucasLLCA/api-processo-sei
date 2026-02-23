@@ -106,7 +106,10 @@ async def enviar_para_ia_conteudo_md(conteudo_md: str, tipo_arquivo: str = "html
             "Produza um resumo estruturado no seguinte formato:\n"
             "1. Comece com UMA ÚNICA frase-síntese que resuma o processo como um todo.\n"
             "2. Em seguida, liste os pontos principais em tópicos usando '•', um por linha.\n"
-            "Seja claro, objetivo e conciso. Não repita informações entre a frase-síntese e os tópicos."
+            "Seja claro, objetivo e conciso. Não repita informações entre a frase-síntese e os tópicos.\n"
+            "IMPORTANTE: Foque no conteúdo substantivo — decisões, encaminhamentos, pareceres, objetos do processo. "
+            "NÃO inclua informações burocráticas como números de processo/SEI, assinaturas eletrônicas, "
+            "validações de decreto, nomes de signatários ou referências a normas de autenticação digital."
         )
 
         if tipo_arquivo == "html":
@@ -179,7 +182,10 @@ async def enviar_para_ia_conteudo_md_stream(conteudo_md, tipo_arquivo: str = "ht
         "Produza um resumo estruturado no seguinte formato:\n"
         "1. Comece com UMA ÚNICA frase-síntese que resuma o processo como um todo.\n"
         "2. Em seguida, liste os pontos principais em tópicos usando '•', um por linha.\n"
-        "Seja claro, objetivo e conciso. Não repita informações entre a frase-síntese e os tópicos."
+        "Seja claro, objetivo e conciso. Não repita informações entre a frase-síntese e os tópicos.\n"
+        "IMPORTANTE: Foque no conteúdo substantivo — decisões, encaminhamentos, pareceres, objetos do processo. "
+        "NÃO inclua informações burocráticas como números de processo/SEI, assinaturas eletrônicas, "
+        "validações de decreto, nomes de signatários ou referências a normas de autenticação digital."
     )
 
     if tipo_arquivo == "html":
@@ -223,6 +229,8 @@ async def enviar_situacao_atual_stream(entendimento: str, ultimo_doc_conteudo: s
         "Formato:\n"
         "1. Comece com UMA ÚNICA frase-síntese sobre o estado atual do processo.\n"
         "2. Em seguida, liste os pontos relevantes em tópicos usando '•', um por linha.\n"
+        "IMPORTANTE: Cada tópico DEVE começar com a data em que o andamento ocorreu (formato DD/MM/AAAA), "
+        "seguido da descrição do que aconteceu. Exemplo: '• 15/03/2024 — Documento encaminhado para análise da SEAD.'\n"
         "Seja claro, objetivo e conciso."
     )
 
