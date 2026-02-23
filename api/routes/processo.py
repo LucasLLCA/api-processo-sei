@@ -620,14 +620,26 @@ async def resumo_situacao_stream(
         raise HTTPException(status_code=401, detail="Token de autenticação não fornecido")
     numero_processo = normalizar_numero_processo(numero_processo)
 
+    SITUACAO_CACHE_TTL = 86400  # 24h
+
     cache_key = f"processo:{numero_processo}:situacao_atual"
 
+    # Fetch last 3 andamentos to build a fingerprint
+    ultimos_andamentos = await listar_ultimos_andamentos(token, numero_processo, id_unidade, quantidade=3)
+    andamentos_fingerprint = "|".join(
+        a.get("IdAndamento", "") for a in ultimos_andamentos
+    )
+
+    # Check cache — return if fingerprint matches (no new andamentos)
     cached_result = await cache.get(cache_key)
-    if cached_result:
-        logger.debug(f"[stream] Retornando situação atual do cache para processo {numero_processo}")
+    if cached_result and cached_result.get("_fingerprint") == andamentos_fingerprint:
+        logger.debug(f"[stream] Retornando situação atual do cache para processo {numero_processo} (fingerprint match)")
 
         async def cached_generator():
-            yield _sse_event({"type": "done", "content": cached_result})
+            yield _sse_event({"type": "done", "content": {
+                "status": cached_result.get("status", "ok"),
+                "situacao_atual": cached_result.get("situacao_atual", ""),
+            }})
 
         return StreamingResponse(
             cached_generator(),
@@ -648,11 +660,8 @@ async def resumo_situacao_stream(
                 yield _sse_event({"type": "error", "content": "Entendimento do processo não disponível. Gere o entendimento primeiro."})
                 return
 
-            # 2. Fetch last document + last 3 andamentos in parallel (optimized)
-            ultimo_doc, ultimos_andamentos = await asyncio.gather(
-                listar_ultimo_documento(token, numero_processo, id_unidade),
-                listar_ultimos_andamentos(token, numero_processo, id_unidade, quantidade=3),
-            )
+            # 2. Fetch last document (andamentos already fetched above)
+            ultimo_doc = await listar_ultimo_documento(token, numero_processo, id_unidade)
 
             # 3. Process last document content with smart caching
             ultimo_doc_conteudo = ""
@@ -697,11 +706,15 @@ async def resumo_situacao_stream(
             resultado = {
                 "status": "ok",
                 "situacao_atual": full_text,
+                "_fingerprint": andamentos_fingerprint,
             }
 
-            await cache.set(cache_key, resultado, ttl=CACHE_TTL)
+            await cache.set(cache_key, resultado, ttl=SITUACAO_CACHE_TTL)
 
-            yield _sse_event({"type": "done", "content": resultado})
+            yield _sse_event({"type": "done", "content": {
+                "status": "ok",
+                "situacao_atual": full_text,
+            }})
 
         except Exception as e:
             logger.error(f"[stream] Erro ao processar situação atual: {str(e)}", exc_info=True)

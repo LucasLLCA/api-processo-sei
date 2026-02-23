@@ -135,32 +135,68 @@ async def listar_documentos(token: str, protocolo: str, id_unidade: str):
         if total_itens <= 50:
             return documentos_primeira_pagina
 
-        # Para totais maiores, usar paginação paralela em lotes
+        # Para totais maiores, usar paginação paralela em lotes com retry
         quantidade_por_pagina = 50
         total_paginas = math.ceil(total_itens / quantidade_por_pagina)
         batch_size = 20
+        max_retries = 3
 
         logger.debug(f"Total de documentos: {total_itens}, Páginas: {total_paginas}, Lotes de: {batch_size}")
 
-        todos_documentos = documentos_primeira_pagina.copy()
-        paginas_restantes = list(range(2, total_paginas + 1))
+        resultados_por_pagina = {1: documentos_primeira_pagina}
+        paginas_pendentes = list(range(2, total_paginas + 1))
 
-        for i in range(0, len(paginas_restantes), batch_size):
-            batch = paginas_restantes[i:i + batch_size]
-            tarefas = [
-                _buscar_pagina_documentos(token, protocolo, id_unidade, pagina, quantidade_por_pagina)
-                for pagina in batch
-            ]
+        for tentativa in range(max_retries):
+            if not paginas_pendentes:
+                break
 
-            resultados = await asyncio.gather(*tarefas, return_exceptions=True)
+            if tentativa > 0:
+                logger.info(f"Retry {tentativa}/{max_retries}: refazendo {len(paginas_pendentes)} páginas de documentos falhadas")
 
-            for j, resultado in enumerate(resultados):
-                if isinstance(resultado, Exception):
-                    logger.error(f"Falha na página {batch[j]}: {str(resultado)}")
-                    continue
-                todos_documentos.extend(resultado)
+            paginas_falhadas = []
 
-            logger.debug(f"Lote {i // batch_size + 1} concluído: páginas {batch[0]}-{batch[-1]}, total coletado: {len(todos_documentos)}")
+            for i in range(0, len(paginas_pendentes), batch_size):
+                batch = paginas_pendentes[i:i + batch_size]
+                tarefas = [
+                    _buscar_pagina_documentos(token, protocolo, id_unidade, pagina, quantidade_por_pagina)
+                    for pagina in batch
+                ]
+
+                resultados = await asyncio.gather(*tarefas, return_exceptions=True)
+
+                for j, resultado in enumerate(resultados):
+                    pagina = batch[j]
+                    if isinstance(resultado, Exception) or resultado == []:
+                        paginas_falhadas.append(pagina)
+                        logger.warning(f"Página {pagina} de documentos falhou (tentativa {tentativa + 1})")
+                    else:
+                        resultados_por_pagina[pagina] = resultado
+
+                logger.debug(
+                    f"Lote documentos páginas {batch[0]}-{batch[-1]} concluído "
+                    f"(tentativa {tentativa + 1}): {len(resultados_por_pagina)}/{total_paginas} ok"
+                )
+
+            paginas_pendentes = paginas_falhadas
+
+        if paginas_pendentes:
+            logger.error(
+                f"Paginação de documentos incompleta após {max_retries} tentativas. "
+                f"Páginas faltando: {paginas_pendentes}. "
+                f"Coletadas: {len(resultados_por_pagina)}/{total_paginas}"
+            )
+            raise HTTPException(
+                status_code=502,
+                detail=ErrorDetail(
+                    type=ErrorType.EXTERNAL_SERVICE_ERROR,
+                    message=f"Falha ao buscar todas as páginas de documentos. {len(paginas_pendentes)} páginas falharam após {max_retries} tentativas.",
+                    details={"paginas_falhadas": paginas_pendentes}
+                ).dict()
+            )
+
+        todos_documentos = []
+        for pagina in sorted(resultados_por_pagina.keys()):
+            todos_documentos.extend(resultados_por_pagina[pagina])
 
         logger.debug(f"Total de documentos carregados: {len(todos_documentos)}")
 
@@ -597,32 +633,70 @@ async def listar_tarefa(token: str, protocolo: str, id_unidade: str):
         if total_itens <= 10:
             return andamentos_primeira_pagina
 
-        # Para totais maiores, usar paginação paralela em lotes
+        # Para totais maiores, usar paginação paralela em lotes com retry
         quantidade_por_pagina = 10
         total_paginas = math.ceil(total_itens / quantidade_por_pagina)
         batch_size = 20
+        max_retries = 3
 
         logger.debug(f"Total de andamentos: {total_itens}, Páginas: {total_paginas}, Lotes de: {batch_size}")
 
-        todas_tarefas = andamentos_primeira_pagina.copy()
-        paginas_restantes = list(range(2, total_paginas + 1))
+        # Dict to collect results keyed by page number (page 1 already fetched)
+        resultados_por_pagina = {1: andamentos_primeira_pagina}
+        paginas_pendentes = list(range(2, total_paginas + 1))
 
-        for i in range(0, len(paginas_restantes), batch_size):
-            batch = paginas_restantes[i:i + batch_size]
-            tarefas = [
-                _buscar_pagina_andamentos(token, protocolo, id_unidade, pagina, quantidade_por_pagina)
-                for pagina in batch
-            ]
+        for tentativa in range(max_retries):
+            if not paginas_pendentes:
+                break
 
-            resultados = await asyncio.gather(*tarefas, return_exceptions=True)
+            if tentativa > 0:
+                logger.info(f"Retry {tentativa}/{max_retries}: refazendo {len(paginas_pendentes)} páginas falhadas")
 
-            for j, resultado in enumerate(resultados):
-                if isinstance(resultado, Exception):
-                    logger.error(f"Falha na página {batch[j]}: {str(resultado)}")
-                    continue
-                todas_tarefas.extend(resultado)
+            paginas_falhadas = []
 
-            logger.debug(f"Lote {i // batch_size + 1} concluído: páginas {batch[0]}-{batch[-1]}, total coletado: {len(todas_tarefas)}")
+            for i in range(0, len(paginas_pendentes), batch_size):
+                batch = paginas_pendentes[i:i + batch_size]
+                tarefas = [
+                    _buscar_pagina_andamentos(token, protocolo, id_unidade, pagina, quantidade_por_pagina)
+                    for pagina in batch
+                ]
+
+                resultados = await asyncio.gather(*tarefas, return_exceptions=True)
+
+                for j, resultado in enumerate(resultados):
+                    pagina = batch[j]
+                    if isinstance(resultado, Exception) or resultado == []:
+                        paginas_falhadas.append(pagina)
+                        logger.warning(f"Página {pagina} falhou (tentativa {tentativa + 1})")
+                    else:
+                        resultados_por_pagina[pagina] = resultado
+
+                logger.debug(
+                    f"Lote páginas {batch[0]}-{batch[-1]} concluído "
+                    f"(tentativa {tentativa + 1}): {len(resultados_por_pagina)}/{total_paginas} ok"
+                )
+
+            paginas_pendentes = paginas_falhadas
+
+        if paginas_pendentes:
+            logger.error(
+                f"Paginação incompleta após {max_retries} tentativas. "
+                f"Páginas faltando: {paginas_pendentes}. "
+                f"Coletadas: {len(resultados_por_pagina)}/{total_paginas}"
+            )
+            raise HTTPException(
+                status_code=502,
+                detail=ErrorDetail(
+                    type=ErrorType.EXTERNAL_SERVICE_ERROR,
+                    message=f"Falha ao buscar todas as páginas de andamentos. {len(paginas_pendentes)} páginas falharam após {max_retries} tentativas.",
+                    details={"paginas_falhadas": paginas_pendentes}
+                ).dict()
+            )
+
+        # Combine in page order
+        todas_tarefas = []
+        for pagina in sorted(resultados_por_pagina.keys()):
+            todas_tarefas.extend(resultados_por_pagina[pagina])
 
         logger.debug(f"Paginação concluída. Total esperado: {total_itens}, Total coletado: {len(todas_tarefas)}")
         return todas_tarefas
