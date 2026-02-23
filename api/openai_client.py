@@ -101,17 +101,23 @@ async def enviar_para_ia_conteudo_md(conteudo_md: str, tipo_arquivo: str = "html
     try:
         logger.debug(f"Enviando conteúdo para IA (tipo: {tipo_arquivo}). Modelo: {modelo}")
 
+        system_resumo = (
+            "Você é um assistente jurídico especializado em analisar processos administrativos. "
+            "Produza um resumo estruturado no seguinte formato:\n"
+            "1. Comece com UMA ÚNICA frase-síntese que resuma o processo como um todo.\n"
+            "2. Em seguida, liste os pontos principais em tópicos usando '•', um por linha.\n"
+            "Seja claro, objetivo e conciso. Não repita informações entre a frase-síntese e os tópicos."
+        )
+
         if tipo_arquivo == "html":
             resposta = await client.chat.completions.create(
                 model=modelo,
                 messages=[
-                    {"role": "system", "content": "Você é um assistente jurídico especializado em analisar processos administrativos. Sua tarefa é produzir um resumo claro e conciso em um único parágrafo curto de no máximo 4 frases, integrando as informações dos documentos de forma coerente."},
-                    {"role": "user", "content": f"""Analise os documentos abaixo e produza um resumo que integre as informações de forma coerente:
-                    Documentos:
-                    {conteudo_md}"""}
+                    {"role": "system", "content": system_resumo},
+                    {"role": "user", "content": f"Analise os documentos abaixo e produza o resumo estruturado:\n\nDocumentos:\n{conteudo_md}"}
                 ],
                 temperature=0.7,
-                max_tokens=250,
+                max_tokens=500,
             )
         else:  # PDF
             try:
@@ -120,21 +126,21 @@ async def enviar_para_ia_conteudo_md(conteudo_md: str, tipo_arquivo: str = "html
                 user_content = [
                     {
                         "type": "text",
-                        "text": "Analise as páginas do documento PDF abaixo e produza um resumo que integre as informações de forma coerente:"
+                        "text": "Analise as páginas do documento PDF abaixo e produza o resumo estruturado:"
                     }
                 ] + image_contents
 
                 resposta = await client.chat.completions.create(
                     model=modelo,
                     messages=[
-                        {"role": "system", "content": "Você é um assistente jurídico especializado em analisar processos administrativos. Sua tarefa é produzir um resumo claro e conciso em um único parágrafo curto de no máximo 4 frases, integrando as informações dos documentos de forma coerente."},
+                        {"role": "system", "content": system_resumo},
                         {
                             "role": "user",
                             "content": user_content
                         }
                     ],
                     temperature=0.7,
-                    max_tokens=250,
+                    max_tokens=500,
                 )
             except ImportError:
                 logger.error("pdf2image não está instalado. Instale com: pip install pdf2image")
@@ -168,23 +174,29 @@ async def enviar_para_ia_conteudo_md_stream(conteudo_md, tipo_arquivo: str = "ht
     else:
         return
 
+    system_resumo = (
+        "Você é um assistente jurídico especializado em analisar processos administrativos. "
+        "Produza um resumo estruturado no seguinte formato:\n"
+        "1. Comece com UMA ÚNICA frase-síntese que resuma o processo como um todo.\n"
+        "2. Em seguida, liste os pontos principais em tópicos usando '•', um por linha.\n"
+        "Seja claro, objetivo e conciso. Não repita informações entre a frase-síntese e os tópicos."
+    )
+
     if tipo_arquivo == "html":
         messages = [
-            {"role": "system", "content": "Você é um assistente jurídico especializado em analisar processos administrativos. Sua tarefa é produzir um resumo claro e conciso em um único parágrafo curto de no máximo 4 frases, integrando as informações dos documentos de forma coerente."},
-            {"role": "user", "content": f"""Analise os documentos abaixo e produza um resumo que integre as informações de forma coerente:
-                    Documentos:
-                    {conteudo_md}"""}
+            {"role": "system", "content": system_resumo},
+            {"role": "user", "content": f"Analise os documentos abaixo e produza o resumo estruturado:\n\nDocumentos:\n{conteudo_md}"}
         ]
     else:  # PDF
         image_contents = await _pdf_para_imagens_base64(conteudo_md)
         user_content = [
             {
                 "type": "text",
-                "text": "Analise as páginas do documento PDF abaixo e produza um resumo que integre as informações de forma coerente:"
+                "text": "Analise as páginas do documento PDF abaixo e produza o resumo estruturado:"
             }
         ] + image_contents
         messages = [
-            {"role": "system", "content": "Você é um assistente jurídico especializado em analisar processos administrativos. Sua tarefa é produzir um resumo claro e conciso em um único parágrafo curto de no máximo 4 frases, integrando as informações dos documentos de forma coerente."},
+            {"role": "system", "content": system_resumo},
             {"role": "user", "content": user_content}
         ]
 
@@ -192,7 +204,7 @@ async def enviar_para_ia_conteudo_md_stream(conteudo_md, tipo_arquivo: str = "ht
         model=modelo,
         messages=messages,
         temperature=0.7,
-        max_tokens=250,
+        max_tokens=500,
         stream=True,
     )
     async for chunk in stream:
@@ -205,14 +217,23 @@ async def enviar_situacao_atual_stream(entendimento: str, ultimo_doc_conteudo: s
     Gera streaming da situação atual do processo com base no entendimento,
     último documento e últimos andamentos.
     """
+    system_situacao = (
+        "Você é um assistente jurídico. Com base no resumo do processo, no conteúdo do último documento "
+        "adicionado e nas últimas atividades, produza uma análise estruturada da situação atual.\n"
+        "Formato:\n"
+        "1. Comece com UMA ÚNICA frase-síntese sobre o estado atual do processo.\n"
+        "2. Em seguida, liste os pontos relevantes em tópicos usando '•', um por linha.\n"
+        "Seja claro, objetivo e conciso."
+    )
+
     messages = [
         {
             "role": "system",
-            "content": "Você é um assistente jurídico. Com base no resumo do processo, no conteúdo do último documento adicionado e nas últimas atividades, produza um único parágrafo curto descrevendo a situação atual do processo."
+            "content": system_situacao,
         },
         {
             "role": "user",
-            "content": f"""Resumo do processo:\n{entendimento}\n\nÚltimo documento adicionado:\n{ultimo_doc_conteudo}\n\nÚltimas atividades:\n{ultimos_andamentos_texto}"""
+            "content": f"Resumo do processo:\n{entendimento}\n\nÚltimo documento adicionado:\n{ultimo_doc_conteudo}\n\nÚltimas atividades:\n{ultimos_andamentos_texto}",
         },
     ]
 
@@ -220,7 +241,7 @@ async def enviar_situacao_atual_stream(entendimento: str, ultimo_doc_conteudo: s
         model=settings.OPENAI_MODEL_TEXTO,
         messages=messages,
         temperature=0.7,
-        max_tokens=300,
+        max_tokens=500,
         stream=True,
     )
     async for chunk in stream:

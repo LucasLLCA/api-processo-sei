@@ -27,11 +27,13 @@ async def sei_login(body: LoginRequest):
     Proxy para login na API SEI.
     Retorna a resposta bruta da API SEI (Token, Login, Unidades).
     """
+    logger.info(f"POST /sei/login INCOMING — user={body.usuario} orgao={body.orgao} senha_len={len(body.senha)}")
     try:
         result = await login(body.usuario, body.senha, body.orgao)
         logger.info(f"POST /sei/login OK for user={body.usuario} orgao={body.orgao} — keys={list(result.keys()) if isinstance(result, dict) else type(result).__name__}")
         return result
-    except HTTPException:
+    except HTTPException as he:
+        logger.error(f"POST /sei/login HTTPException for user={body.usuario} orgao={body.orgao} — status={he.status_code} detail={he.detail}")
         raise
     except Exception as e:
         logger.exception(f"POST /sei/login 500 for user={body.usuario} orgao={body.orgao} — {type(e).__name__}: {e}")

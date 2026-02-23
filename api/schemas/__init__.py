@@ -13,6 +13,35 @@ from .historico_pesquisa import (
     HistoricoPesquisaRestoreResponse,
 )
 
+from .equipe import (
+    EquipeCreate,
+    EquipeUpdate,
+    MembroAdd,
+    MembroResponse,
+    EquipeResponse,
+    EquipeDetalheResponse,
+)
+
+from .tag import (
+    TagCreate,
+    TagUpdate,
+    TagResponse,
+    ProcessoSalvoCreate,
+    ProcessoSalvoResponse,
+    TagComProcessosResponse,
+)
+
+from .compartilhamento import (
+    CompartilhamentoCreate,
+    CompartilhamentoResponse,
+    CompartilhadoComMigoItem,
+)
+
+from .observacao import (
+    ObservacaoCreate,
+    ObservacaoResponse,
+)
+
 __all__ = [
     "HistoricoPesquisaCreate",
     "HistoricoPesquisaUpdate",
@@ -23,4 +52,21 @@ __all__ = [
     "HistoricoPesquisaStats",
     "HistoricoPesquisaDeleteResponse",
     "HistoricoPesquisaRestoreResponse",
+    "EquipeCreate",
+    "EquipeUpdate",
+    "MembroAdd",
+    "MembroResponse",
+    "EquipeResponse",
+    "EquipeDetalheResponse",
+    "TagCreate",
+    "TagUpdate",
+    "TagResponse",
+    "ProcessoSalvoCreate",
+    "ProcessoSalvoResponse",
+    "TagComProcessosResponse",
+    "CompartilhamentoCreate",
+    "CompartilhamentoResponse",
+    "CompartilhadoComMigoItem",
+    "ObservacaoCreate",
+    "ObservacaoResponse",
 ]
