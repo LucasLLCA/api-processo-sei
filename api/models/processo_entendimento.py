@@ -1,7 +1,7 @@
 """
-Model SQLAlchemy para observacoes de processos
+Model SQLAlchemy para entendimentos de processos gerados por IA
 """
-from sqlalchemy import Column, String, Text, TIMESTAMP, Index, ForeignKey, text
+from sqlalchemy import Column, String, Text, TIMESTAMP, Index, text
 from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime
 import uuid
@@ -9,20 +9,20 @@ import uuid
 from ..database import Base
 
 
-class Observacao(Base):
+class ProcessoEntendimento(Base):
     """
-    Model para observacoes sobre processos
+    Model para entendimentos de processos gerados por IA.
 
-    Implementa soft delete atraves do campo deletado_em
+    Implementa soft delete atraves do campo deletado_em.
     """
-    __tablename__ = "observacoes"
+    __tablename__ = "processo_entendimentos"
 
     id = Column(
         UUID(as_uuid=True),
         primary_key=True,
         default=uuid.uuid4,
         server_default=text("gen_random_uuid()"),
-        comment="Identificador unico da observacao"
+        comment="Identificador unico do entendimento"
     )
 
     numero_processo = Column(
@@ -31,23 +31,10 @@ class Observacao(Base):
         comment="Numero do processo sem formatacao"
     )
 
-    usuario = Column(
-        String(100),
-        nullable=False,
-        comment="Usuario autor da observacao"
-    )
-
-    equipe_id = Column(
-        UUID(as_uuid=True),
-        ForeignKey("equipes.id", ondelete="SET NULL"),
-        nullable=True,
-        comment="ID da equipe (NULL = global, non-NULL = team-scoped)"
-    )
-
     conteudo = Column(
         Text,
         nullable=False,
-        comment="Conteudo da observacao"
+        comment="Conteudo do entendimento gerado por IA"
     )
 
     criado_em = Column(
@@ -72,29 +59,19 @@ class Observacao(Base):
 
     __table_args__ = (
         Index(
-            'idx_observacao_processo',
+            'idx_entendimento_processo_unique',
             'numero_processo',
+            unique=True,
             postgresql_where=text("deletado_em IS NULL")
         ),
-        Index(
-            'idx_observacao_usuario',
-            'usuario',
-            postgresql_where=text("deletado_em IS NULL")
-        ),
-        Index(
-            'idx_observacao_equipe',
-            'equipe_id',
-            postgresql_where=text("deletado_em IS NULL AND equipe_id IS NOT NULL")
-        ),
-        {'comment': 'Tabela de observacoes sobre processos'}
+        {'comment': 'Entendimentos de processos gerados por IA'}
     )
 
     def __repr__(self) -> str:
         return (
-            f"<Observacao("
+            f"<ProcessoEntendimento("
             f"id={self.id}, "
-            f"numero_processo={self.numero_processo}, "
-            f"usuario={self.usuario}"
+            f"numero_processo={self.numero_processo}"
             f")>"
         )
 

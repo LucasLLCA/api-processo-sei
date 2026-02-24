@@ -9,7 +9,7 @@ from uuid import UUID
 import logging
 
 from ..database import get_db
-from ..models import Equipe, EquipeMembro
+from ..models import Equipe, EquipeMembro, Compartilhamento, Tag, ProcessoSalvo, TeamTag, ProcessoTeamTag
 from ..schemas import (
     EquipeCreate,
     EquipeUpdate,
@@ -17,6 +17,8 @@ from ..schemas import (
     MembroResponse,
     EquipeResponse,
     EquipeDetalheResponse,
+    ProcessoSalvoResponse,
+    TeamTagResponse,
 )
 
 router = APIRouter()
@@ -318,6 +320,119 @@ async def remover_membro(
     except Exception as e:
         logger.error(f"Erro ao remover membro: {e}")
         await db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get(
+    "/{equipe_id}/kanban",
+    response_model=dict,
+    summary="Kanban board da equipe",
+)
+async def kanban_board(
+    equipe_id: UUID,
+    usuario: str = Query(..., description="Usuario"),
+    db: AsyncSession = Depends(get_db),
+):
+    try:
+        equipe = await _get_equipe_como_membro(db, equipe_id, usuario)
+
+        # Buscar membros para EquipeDetalheResponse
+        membros_q = await db.execute(
+            select(EquipeMembro).where(and_(
+                EquipeMembro.equipe_id == equipe_id,
+                EquipeMembro.deletado_em.is_(None),
+            ))
+        )
+        membros = membros_q.scalars().all()
+
+        equipe_data = EquipeDetalheResponse(
+            id=equipe.id,
+            nome=equipe.nome,
+            descricao=equipe.descricao,
+            proprietario_usuario=equipe.proprietario_usuario,
+            criado_em=equipe.criado_em,
+            atualizado_em=equipe.atualizado_em,
+            membros=[MembroResponse.model_validate(m) for m in membros],
+        )
+
+        # Buscar compartilhamentos para esta equipe
+        comp_q = await db.execute(
+            select(Compartilhamento).where(and_(
+                Compartilhamento.equipe_destino_id == equipe_id,
+                Compartilhamento.deletado_em.is_(None),
+            )).order_by(Compartilhamento.criado_em.asc())
+        )
+        compartilhamentos = comp_q.scalars().all()
+
+        colunas = []
+        for c in compartilhamentos:
+            # Buscar tag (grupo de processos)
+            tag_q = await db.execute(
+                select(Tag).where(and_(Tag.id == c.tag_id, Tag.deletado_em.is_(None)))
+            )
+            tag = tag_q.scalar_one_or_none()
+            if not tag:
+                continue
+
+            # Buscar processos da tag
+            proc_q = await db.execute(
+                select(ProcessoSalvo).where(and_(
+                    ProcessoSalvo.tag_id == tag.id,
+                    ProcessoSalvo.deletado_em.is_(None),
+                )).order_by(ProcessoSalvo.criado_em.desc())
+            )
+            processos = proc_q.scalars().all()
+
+            # Para cada processo, buscar team_tags desta equipe
+            processos_com_tags = []
+            for p in processos:
+                ptag_q = await db.execute(
+                    select(TeamTag)
+                    .join(ProcessoTeamTag, ProcessoTeamTag.team_tag_id == TeamTag.id)
+                    .where(and_(
+                        ProcessoTeamTag.numero_processo == p.numero_processo,
+                        ProcessoTeamTag.deletado_em.is_(None),
+                        TeamTag.equipe_id == equipe_id,
+                        TeamTag.deletado_em.is_(None),
+                    ))
+                )
+                team_tags = [TeamTagResponse.model_validate(t) for t in ptag_q.scalars().all()]
+
+                proc_data = ProcessoSalvoResponse.model_validate(p).model_dump()
+                proc_data["team_tags"] = [t.model_dump() for t in team_tags]
+                processos_com_tags.append(proc_data)
+
+            colunas.append({
+                "compartilhamento_id": str(c.id),
+                "tag_id": str(tag.id),
+                "tag_nome": tag.nome,
+                "tag_cor": tag.cor,
+                "compartilhado_por": c.compartilhado_por,
+                "processos": processos_com_tags,
+            })
+
+        # Buscar paleta de team tags
+        all_tags_q = await db.execute(
+            select(TeamTag).where(and_(
+                TeamTag.equipe_id == equipe_id,
+                TeamTag.deletado_em.is_(None),
+            )).order_by(TeamTag.nome.asc())
+        )
+        all_team_tags = [TeamTagResponse.model_validate(t) for t in all_tags_q.scalars().all()]
+
+        return {
+            "status": "success",
+            "data": {
+                "equipe": equipe_data.model_dump(),
+                "colunas": colunas,
+                "team_tags": [t.model_dump() for t in all_team_tags],
+            },
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Erro ao buscar kanban: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 

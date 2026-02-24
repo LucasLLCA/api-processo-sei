@@ -8,6 +8,9 @@ from .tag import Tag
 from .processo_salvo import ProcessoSalvo
 from .compartilhamento import Compartilhamento
 from .observacao import Observacao
+from .team_tag import TeamTag
+from .processo_team_tag import ProcessoTeamTag
+from .processo_entendimento import ProcessoEntendimento
 
 __all__ = [
     "HistoricoPesquisa",
@@ -17,4 +20,7 @@ __all__ = [
     "ProcessoSalvo",
     "Compartilhamento",
     "Observacao",
+    "TeamTag",
+    "ProcessoTeamTag",
+    "ProcessoEntendimento",
 ]

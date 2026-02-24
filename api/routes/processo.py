@@ -2,6 +2,7 @@ import asyncio
 import json
 import logging
 from fastapi import APIRouter, Header, HTTPException, Query
+from sqlalchemy import select
 from starlette.responses import StreamingResponse
 from ..sei import listar_documentos, listar_primeiro_documento, listar_ultimo_documento, listar_ultimos_andamentos, listar_tarefa, consultar_documento, baixar_documento
 from ..openai_client import (
@@ -12,6 +13,8 @@ from ..openai_client import (
 from ..schemas_legacy import ErrorDetail, ErrorType, Retorno
 from ..cache import cache, gerar_chave_processo, gerar_chave_documento, gerar_chave_andamento, gerar_chave_resumo
 from ..normalization import normalizar_numero_processo
+from ..database import AsyncSessionLocal
+from ..models.processo_entendimento import ProcessoEntendimento
 
 logger = logging.getLogger(__name__)
 
@@ -445,7 +448,7 @@ async def resumo_completo_stream(
 
     cache_key = f"processo:{numero_processo}:resumo_completo"
 
-    # Verifica cache - se hit, retorna instantaneamente
+    # 1. Fast path: Redis cache hit
     cached_result = await cache.get(cache_key)
     if cached_result:
         logger.debug(f"[stream] Retornando resumo do cache para processo {numero_processo}")
@@ -459,7 +462,39 @@ async def resumo_completo_stream(
             headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
         )
 
-    # Cache miss - buscar documento e streamer a resposta da IA
+    # 2. DB fallback: check processo_entendimentos table
+    try:
+        async with AsyncSessionLocal() as db:
+            stmt = select(ProcessoEntendimento).where(
+                ProcessoEntendimento.numero_processo == numero_processo,
+                ProcessoEntendimento.deletado_em.is_(None),
+            )
+            result = await db.execute(stmt)
+            entendimento_row = result.scalar_one_or_none()
+
+        if entendimento_row:
+            logger.debug(f"[stream] Retornando entendimento do DB para processo {numero_processo}")
+            resposta_ia = {"status": "ok", "resposta_ia": entendimento_row.conteudo}
+            resultado = {
+                "processo": {"numero": numero_processo, "id_unidade": id_unidade},
+                "primeiro_documento": {},
+                "resumo_combinado": resposta_ia,
+            }
+            # Re-populate Redis cache from DB
+            await cache.set(cache_key, resultado, ttl=CACHE_TTL)
+
+            async def db_generator():
+                yield _sse_event({"type": "done", "content": resultado})
+
+            return StreamingResponse(
+                db_generator(),
+                media_type="text/event-stream",
+                headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+            )
+    except Exception as e:
+        logger.warning(f"[stream] Erro ao consultar entendimento no DB: {str(e)}")
+
+    # 3. Cache + DB miss - buscar documento e streamer a resposta da IA
     async def stream_generator():
         try:
             primeiro = await listar_primeiro_documento(token, numero_processo, id_unidade)
@@ -510,6 +545,19 @@ async def resumo_completo_stream(
             }
 
             await cache.set(cache_key, resultado, ttl=CACHE_TTL)
+
+            # Persist entendimento to DB
+            try:
+                async with AsyncSessionLocal() as db:
+                    entendimento = ProcessoEntendimento(
+                        numero_processo=numero_processo,
+                        conteudo=full_text,
+                    )
+                    db.add(entendimento)
+                    await db.commit()
+                    logger.debug(f"[stream] Entendimento salvo no DB para processo {numero_processo}")
+            except Exception as db_err:
+                logger.warning(f"[stream] Erro ao salvar entendimento no DB: {str(db_err)}")
 
             yield _sse_event({"type": "done", "content": resultado})
 
@@ -649,12 +697,27 @@ async def resumo_situacao_stream(
 
     async def stream_generator():
         try:
-            # 1. Get cached entendimento
+            # 1. Get cached entendimento (Redis first, then DB fallback)
             resumo_cache_key = f"processo:{numero_processo}:resumo_completo"
             cached_resumo = await cache.get(resumo_cache_key)
             entendimento = ""
             if cached_resumo:
                 entendimento = cached_resumo.get("resumo_combinado", {}).get("resposta_ia", "")
+
+            if not entendimento:
+                try:
+                    async with AsyncSessionLocal() as db:
+                        stmt = select(ProcessoEntendimento).where(
+                            ProcessoEntendimento.numero_processo == numero_processo,
+                            ProcessoEntendimento.deletado_em.is_(None),
+                        )
+                        result = await db.execute(stmt)
+                        entendimento_row = result.scalar_one_or_none()
+                    if entendimento_row:
+                        entendimento = entendimento_row.conteudo
+                        logger.debug(f"[stream] Entendimento obtido do DB para situação atual do processo {numero_processo}")
+                except Exception as db_err:
+                    logger.warning(f"[stream] Erro ao buscar entendimento no DB: {str(db_err)}")
 
             if not entendimento:
                 yield _sse_event({"type": "error", "content": "Entendimento do processo não disponível. Gere o entendimento primeiro."})
@@ -689,13 +752,19 @@ async def resumo_situacao_stream(
                         if ultimo_doc_conteudo:
                             await cache.set(doc_cache_key, ultimo_doc_conteudo, ttl=CACHE_TTL)
 
-            # 4. Format andamentos text
+            # 4. Prefix document content with its ID
+            if ultimo_doc and ultimo_doc_conteudo:
+                doc_id = ultimo_doc.get("DocumentoFormatado", "")
+                if doc_id:
+                    ultimo_doc_conteudo = f"[Documento {doc_id}]\n{ultimo_doc_conteudo}"
+
+            # 5. Format andamentos text with activity IDs
             andamentos_texto = "\n".join(
-                f"- {a.get('DataHora', '')} | {a.get('Unidade', {}).get('Sigla', '')} | {a.get('Descricao', '')}"
+                f"- [Atividade {a.get('IdAndamento', '')}] {a.get('DataHora', '')} | {a.get('Unidade', {}).get('Sigla', '')} | {a.get('Descricao', '')}"
                 for a in ultimos_andamentos
             )
 
-            # 5. Stream the response
+            # 6. Stream the response
             accumulated = []
             async for chunk in enviar_situacao_atual_stream(entendimento, ultimo_doc_conteudo, andamentos_texto):
                 accumulated.append(chunk)

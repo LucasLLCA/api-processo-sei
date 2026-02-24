@@ -42,6 +42,14 @@ from .observacao import (
     ObservacaoResponse,
 )
 
+from .team_tag import (
+    TeamTagCreate,
+    TeamTagUpdate,
+    TeamTagResponse,
+    ProcessoTeamTagCreate,
+    ProcessoTeamTagResponse,
+)
+
 __all__ = [
     "HistoricoPesquisaCreate",
     "HistoricoPesquisaUpdate",
@@ -69,4 +77,9 @@ __all__ = [
     "CompartilhadoComMigoItem",
     "ObservacaoCreate",
     "ObservacaoResponse",
+    "TeamTagCreate",
+    "TeamTagUpdate",
+    "TeamTagResponse",
+    "ProcessoTeamTagCreate",
+    "ProcessoTeamTagResponse",
 ]

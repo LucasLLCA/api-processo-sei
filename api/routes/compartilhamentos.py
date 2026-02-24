@@ -8,12 +8,13 @@ from uuid import UUID
 import logging
 
 from ..database import get_db
-from ..models import Tag, ProcessoSalvo, Compartilhamento, Equipe, EquipeMembro
+from ..models import Tag, ProcessoSalvo, Compartilhamento, Equipe, EquipeMembro, TeamTag, ProcessoTeamTag
 from ..schemas import (
     CompartilhamentoCreate,
     CompartilhamentoResponse,
     CompartilhadoComMigoItem,
     ProcessoSalvoResponse,
+    TeamTagResponse,
 )
 
 router = APIRouter()
@@ -42,6 +43,20 @@ async def compartilhar_tag(
         )
         if not tag_q.scalar_one_or_none():
             raise HTTPException(status_code=403, detail="Você não é o proprietário desta tag")
+
+        # Verificar duplicata: mesmo tag_id + mesmo destino
+        dup_conditions = [
+            Compartilhamento.tag_id == dados.tag_id,
+            Compartilhamento.deletado_em.is_(None),
+        ]
+        if dados.equipe_destino_id:
+            dup_conditions.append(Compartilhamento.equipe_destino_id == dados.equipe_destino_id)
+        elif dados.usuario_destino:
+            dup_conditions.append(Compartilhamento.usuario_destino == dados.usuario_destino)
+
+        dup_q = await db.execute(select(Compartilhamento).where(and_(*dup_conditions)))
+        if dup_q.scalar_one_or_none():
+            raise HTTPException(status_code=409, detail="Este grupo já está compartilhado com este destino")
 
         compartilhamento = Compartilhamento(
             tag_id=dados.tag_id,
@@ -136,16 +151,39 @@ async def recebidos(
                 row = eq_q.first()
                 equipe_nome = row[0] if row else None
 
-            items.append(CompartilhadoComMigoItem(
-                compartilhamento_id=c.id,
-                tag_id=tag.id,
-                tag_nome=tag.nome,
-                tag_cor=tag.cor,
-                compartilhado_por=c.compartilhado_por,
-                equipe_nome=equipe_nome,
-                criado_em=c.criado_em,
-                processos=[ProcessoSalvoResponse.model_validate(p) for p in processos],
-            ))
+            # Enriquecer processos com team_tags se compartilhado via equipe
+            processos_data = []
+            for p in processos:
+                proc_dict = ProcessoSalvoResponse.model_validate(p).model_dump()
+                proc_dict["team_tags"] = []
+                if c.equipe_destino_id:
+                    ptag_q = await db.execute(
+                        select(TeamTag)
+                        .join(ProcessoTeamTag, ProcessoTeamTag.team_tag_id == TeamTag.id)
+                        .where(and_(
+                            ProcessoTeamTag.numero_processo == p.numero_processo,
+                            ProcessoTeamTag.deletado_em.is_(None),
+                            TeamTag.equipe_id == c.equipe_destino_id,
+                            TeamTag.deletado_em.is_(None),
+                        ))
+                    )
+                    proc_dict["team_tags"] = [
+                        TeamTagResponse.model_validate(t).model_dump()
+                        for t in ptag_q.scalars().all()
+                    ]
+                processos_data.append(proc_dict)
+
+            items.append({
+                "compartilhamento_id": str(c.id),
+                "tag_id": str(tag.id),
+                "tag_nome": tag.nome,
+                "tag_cor": tag.cor,
+                "compartilhado_por": c.compartilhado_por,
+                "equipe_nome": equipe_nome,
+                "equipe_destino_id": str(c.equipe_destino_id) if c.equipe_destino_id else None,
+                "criado_em": c.criado_em.isoformat() if c.criado_em else None,
+                "processos": processos_data,
+            })
 
         return {"status": "success", "data": items}
 

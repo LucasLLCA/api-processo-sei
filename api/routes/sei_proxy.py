@@ -1,9 +1,11 @@
 import asyncio
+import json
 import logging
 from fastapi import APIRouter, Header, HTTPException, Query
 from pydantic import BaseModel
+from starlette.responses import StreamingResponse
 from ..sei import (
-    login, listar_tarefa, listar_tarefa_parcial,
+    login, listar_tarefa, listar_tarefa_parcial, listar_tarefa_stream,
     listar_documentos, listar_documentos_parcial,
     consultar_procedimento, verificar_saude, assinar_documento,
 )
@@ -318,6 +320,76 @@ async def sei_assinar_documento(
     except Exception as e:
         logger.exception(f"POST /sei/documentos/{protocolo_documento}/assinar 500 — {type(e).__name__}: {e}")
         raise
+
+
+def _sse_event(data: dict) -> str:
+    """Formata um evento SSE."""
+    return f"data: {json.dumps(data, ensure_ascii=False)}\n\n"
+
+
+@router.get("/andamentos-stream/{numero_processo}")
+async def sei_andamentos_stream(
+    numero_processo: str,
+    id_unidade: str = Query(...),
+    x_sei_token: str = Header(..., alias="X-SEI-Token"),
+):
+    """
+    SSE endpoint for andamentos with progress events.
+    If cache hit, returns a single 'done' event instantly.
+    Otherwise streams progress events as batches complete.
+    """
+    numero_processo = normalizar_numero_processo(numero_processo)
+    cache_key = f"proxy:andamentos:{numero_processo}:{id_unidade}"
+
+    # Check cache first
+    cached = await cache.get(cache_key)
+    if cached:
+        logger.info(f"[andamentos-stream] Cache hit for processo={numero_processo}")
+
+        async def cached_generator():
+            yield _sse_event({"type": "done", "content": cached})
+
+        return StreamingResponse(
+            cached_generator(),
+            media_type="text/event-stream",
+            headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+        )
+
+    async def stream_generator():
+        try:
+            all_andamentos = None
+            async for event in listar_tarefa_stream(x_sei_token, numero_processo, id_unidade):
+                if event["type"] == "progress":
+                    yield _sse_event({"type": "progress", "content": {"loaded": event["loaded"], "total": event["total"]}})
+                elif event["type"] == "done":
+                    all_andamentos = event["andamentos"]
+                elif event["type"] == "error":
+                    yield _sse_event({"type": "error", "content": event["message"]})
+                    return
+
+            if all_andamentos is not None:
+                resultado = {
+                    "Info": {
+                        "Pagina": 1,
+                        "TotalPaginas": 1,
+                        "QuantidadeItens": len(all_andamentos),
+                        "TotalItens": len(all_andamentos),
+                        "NumeroProcesso": numero_processo,
+                        "Parcial": False,
+                    },
+                    "Andamentos": all_andamentos,
+                }
+                await cache.set(cache_key, resultado, ttl=CACHE_TTL_ANDAMENTOS)
+                yield _sse_event({"type": "done", "content": resultado})
+        except Exception as e:
+            logger.error(f"[andamentos-stream] Erro: {str(e)}", exc_info=True)
+            yield _sse_event({"type": "error", "content": f"Erro ao buscar andamentos: {str(e)}"})
+
+    return StreamingResponse(
+        stream_generator(),
+        media_type="text/event-stream",
+        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+    )
 
 
 @router.delete("/cache/{numero_processo}")

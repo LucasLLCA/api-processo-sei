@@ -12,6 +12,18 @@ logger = logging.getLogger(__name__)
 
 logger.info(f"OpenAI configurado - URL: {settings.OPENAI_BASE_URL}, API Key definida: {bool(settings.OPENAI_API_KEY)}")
 
+# ── Prompts de resumo de processo (entendimento) ──
+SYSTEM_RESUMO = (
+    "Assistente jurídico de processos administrativos.\n"
+    "Formato: 1 frase-síntese do processo + até 5 tópicos com '•' (1 frase curta cada).\n"
+    "Foque em: decisões, encaminhamentos, pareceres, objetos.\n"
+    "Ignore: números SEI, assinaturas eletrônicas, decretos de autenticação, nomes de signatários.\n"
+    "Sem repetição entre síntese e tópicos."
+)
+
+USER_RESUMO_HTML = "Resuma:\n{conteudo_md}"
+USER_RESUMO_PDF = "Resuma as páginas do documento PDF abaixo:"
+
 client = AsyncOpenAI(
     base_url=settings.OPENAI_BASE_URL,
     api_key=settings.OPENAI_API_KEY,
@@ -101,49 +113,32 @@ async def enviar_para_ia_conteudo_md(conteudo_md: str, tipo_arquivo: str = "html
     try:
         logger.debug(f"Enviando conteúdo para IA (tipo: {tipo_arquivo}). Modelo: {modelo}")
 
-        system_resumo = (
-            "Você é um assistente jurídico especializado em analisar processos administrativos. "
-            "Produza um resumo estruturado no seguinte formato:\n"
-            "1. Comece com UMA ÚNICA frase-síntese que resuma o processo como um todo.\n"
-            "2. Em seguida, liste os pontos principais em tópicos usando '•', um por linha.\n"
-            "Seja claro, objetivo e conciso. Não repita informações entre a frase-síntese e os tópicos.\n"
-            "IMPORTANTE: Foque no conteúdo substantivo — decisões, encaminhamentos, pareceres, objetos do processo. "
-            "NÃO inclua informações burocráticas como números de processo/SEI, assinaturas eletrônicas, "
-            "validações de decreto, nomes de signatários ou referências a normas de autenticação digital."
-        )
-
         if tipo_arquivo == "html":
             resposta = await client.chat.completions.create(
                 model=modelo,
                 messages=[
-                    {"role": "system", "content": system_resumo},
-                    {"role": "user", "content": f"Analise os documentos abaixo e produza o resumo estruturado:\n\nDocumentos:\n{conteudo_md}"}
+                    {"role": "system", "content": SYSTEM_RESUMO},
+                    {"role": "user", "content": USER_RESUMO_HTML.format(conteudo_md=conteudo_md)}
                 ],
                 temperature=0.7,
-                max_tokens=500,
+                max_tokens=350,
             )
         else:  # PDF
             try:
                 image_contents = await _pdf_para_imagens_base64(conteudo_md)
 
                 user_content = [
-                    {
-                        "type": "text",
-                        "text": "Analise as páginas do documento PDF abaixo e produza o resumo estruturado:"
-                    }
+                    {"type": "text", "text": USER_RESUMO_PDF}
                 ] + image_contents
 
                 resposta = await client.chat.completions.create(
                     model=modelo,
                     messages=[
-                        {"role": "system", "content": system_resumo},
-                        {
-                            "role": "user",
-                            "content": user_content
-                        }
+                        {"role": "system", "content": SYSTEM_RESUMO},
+                        {"role": "user", "content": user_content}
                     ],
                     temperature=0.7,
-                    max_tokens=500,
+                    max_tokens=350,
                 )
             except ImportError:
                 logger.error("pdf2image não está instalado. Instale com: pip install pdf2image")
@@ -177,32 +172,18 @@ async def enviar_para_ia_conteudo_md_stream(conteudo_md, tipo_arquivo: str = "ht
     else:
         return
 
-    system_resumo = (
-        "Você é um assistente jurídico especializado em analisar processos administrativos. "
-        "Produza um resumo estruturado no seguinte formato:\n"
-        "1. Comece com UMA ÚNICA frase-síntese que resuma o processo como um todo.\n"
-        "2. Em seguida, liste os pontos principais em tópicos usando '•', um por linha.\n"
-        "Seja claro, objetivo e conciso. Não repita informações entre a frase-síntese e os tópicos.\n"
-        "IMPORTANTE: Foque no conteúdo substantivo — decisões, encaminhamentos, pareceres, objetos do processo. "
-        "NÃO inclua informações burocráticas como números de processo/SEI, assinaturas eletrônicas, "
-        "validações de decreto, nomes de signatários ou referências a normas de autenticação digital."
-    )
-
     if tipo_arquivo == "html":
         messages = [
-            {"role": "system", "content": system_resumo},
-            {"role": "user", "content": f"Analise os documentos abaixo e produza o resumo estruturado:\n\nDocumentos:\n{conteudo_md}"}
+            {"role": "system", "content": SYSTEM_RESUMO},
+            {"role": "user", "content": USER_RESUMO_HTML.format(conteudo_md=conteudo_md)}
         ]
     else:  # PDF
         image_contents = await _pdf_para_imagens_base64(conteudo_md)
         user_content = [
-            {
-                "type": "text",
-                "text": "Analise as páginas do documento PDF abaixo e produza o resumo estruturado:"
-            }
+            {"type": "text", "text": USER_RESUMO_PDF}
         ] + image_contents
         messages = [
-            {"role": "system", "content": system_resumo},
+            {"role": "system", "content": SYSTEM_RESUMO},
             {"role": "user", "content": user_content}
         ]
 
@@ -210,7 +191,7 @@ async def enviar_para_ia_conteudo_md_stream(conteudo_md, tipo_arquivo: str = "ht
         model=modelo,
         messages=messages,
         temperature=0.7,
-        max_tokens=500,
+        max_tokens=350,
         stream=True,
     )
     async for chunk in stream:
@@ -230,7 +211,9 @@ async def enviar_situacao_atual_stream(entendimento: str, ultimo_doc_conteudo: s
         "1. Comece com UMA ÚNICA frase-síntese sobre o estado atual do processo.\n"
         "2. Em seguida, liste os pontos relevantes em tópicos usando '•', um por linha.\n"
         "IMPORTANTE: Cada tópico DEVE começar com a data em que o andamento ocorreu (formato DD/MM/AAAA), "
-        "seguido da descrição do que aconteceu. Exemplo: '• 15/03/2024 — Documento encaminhado para análise da SEAD.'\n"
+        "seguido da descrição do que aconteceu. "
+        "Referencie o ID do documento ou atividade entre parênteses ao citar informações. "
+        "Exemplo: '• 15/03/2024 — Documento encaminhado para análise da SEAD (Documento SEI-1234567).'\n"
         "Seja claro, objetivo e conciso."
     )
 

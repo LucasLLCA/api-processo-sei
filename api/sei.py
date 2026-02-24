@@ -764,6 +764,124 @@ async def listar_tarefa(token: str, protocolo: str, id_unidade: str):
         )
 
 
+async def listar_tarefa_stream(token: str, protocolo: str, id_unidade: str):
+    """
+    Async generator version of listar_tarefa that yields progress events
+    after each batch of pages completes. Used by the SSE endpoint.
+    Yields dicts: {"type": "progress", "loaded": N, "total": T}
+                  {"type": "done", "andamentos": [...]}
+                  {"type": "error", "message": "..."}
+    """
+    try:
+        url = f"{settings.SEI_BASE_URL}/unidades/{id_unidade}/procedimentos/andamentos"
+        params = {
+            "protocolo_procedimento": protocolo,
+            "sinal_atributos": "S",
+            "pagina": 1,
+            "quantidade": 10
+        }
+        headers = {"accept": "application/json", "token": f'"{token}"'}
+        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=60)
+
+        if response.status_code != 200:
+            yield {"type": "error", "message": f"Falha ao consultar andamentos no SEI (HTTP {response.status_code})"}
+            return
+
+        data = response.json()
+        total_itens = data.get("Info", {}).get("TotalItens", 0)
+        andamentos_primeira_pagina = data.get("Andamentos", [])
+
+        if total_itens == 0:
+            yield {"type": "done", "andamentos": []}
+            return
+
+        if total_itens <= 10:
+            yield {"type": "done", "andamentos": andamentos_primeira_pagina}
+            return
+
+        quantidade_por_pagina = 10
+        total_paginas = math.ceil(total_itens / quantidade_por_pagina)
+        batch_size = 20
+        max_retries = 3
+
+        logger.info(
+            f"Andamentos stream fetch: processo={protocolo} total={total_itens} "
+            f"paginas={total_paginas} batch_size={batch_size}"
+        )
+
+        resultados_por_pagina = {1: andamentos_primeira_pagina}
+
+        # Fetch last page
+        if total_paginas > 1:
+            ultima_pagina = await _buscar_pagina_andamentos(
+                token, protocolo, id_unidade, total_paginas, quantidade_por_pagina
+            )
+            if not isinstance(ultima_pagina, Exception) and ultima_pagina != []:
+                resultados_por_pagina[total_paginas] = ultima_pagina
+
+        # Yield initial progress
+        items_so_far = sum(len(v) for v in resultados_por_pagina.values())
+        yield {"type": "progress", "loaded": items_so_far, "total": total_itens}
+
+        # Middle pages
+        paginas_pendentes = [
+            p for p in range(2, total_paginas)
+            if p not in resultados_por_pagina
+        ]
+        if total_paginas not in resultados_por_pagina and total_paginas > 1:
+            paginas_pendentes.append(total_paginas)
+
+        for tentativa in range(max_retries):
+            if not paginas_pendentes:
+                break
+
+            if tentativa > 0:
+                logger.info(f"Stream retry {tentativa}/{max_retries}: refazendo {len(paginas_pendentes)} páginas falhadas")
+
+            paginas_falhadas = []
+
+            for i in range(0, len(paginas_pendentes), batch_size):
+                batch = paginas_pendentes[i:i + batch_size]
+                tarefas = [
+                    _buscar_pagina_andamentos(token, protocolo, id_unidade, pagina, quantidade_por_pagina)
+                    for pagina in batch
+                ]
+
+                resultados = await asyncio.gather(*tarefas, return_exceptions=True)
+
+                for j, resultado in enumerate(resultados):
+                    pagina = batch[j]
+                    if isinstance(resultado, Exception) or resultado == []:
+                        paginas_falhadas.append(pagina)
+                    else:
+                        resultados_por_pagina[pagina] = resultado
+
+                # Yield progress after each batch
+                items_so_far = sum(len(v) for v in resultados_por_pagina.values())
+                yield {"type": "progress", "loaded": items_so_far, "total": total_itens}
+
+            paginas_pendentes = paginas_falhadas
+
+        if paginas_pendentes:
+            yield {
+                "type": "error",
+                "message": f"Falha ao buscar {len(paginas_pendentes)} páginas de andamentos após {max_retries} tentativas.",
+            }
+            return
+
+        # Combine in page order
+        todas_tarefas = []
+        for pagina in sorted(resultados_por_pagina.keys()):
+            todas_tarefas.extend(resultados_por_pagina[pagina])
+
+        logger.info(f"Andamentos stream fetch complete: processo={protocolo} total={len(todas_tarefas)}")
+        yield {"type": "done", "andamentos": todas_tarefas}
+
+    except Exception as e:
+        logger.error(f"Erro no stream de andamentos: {str(e)}", exc_info=True)
+        yield {"type": "error", "message": f"Erro ao buscar andamentos: {str(e)}"}
+
+
 async def login(usuario: str, senha: str, orgao: str):
     """
     Autentica um usuário na API SEI.

@@ -9,7 +9,7 @@ from uuid import UUID
 import logging
 
 from ..database import get_db
-from ..models import Observacao
+from ..models import Observacao, EquipeMembro
 from ..schemas import ObservacaoCreate, ObservacaoResponse
 
 router = APIRouter()
@@ -27,16 +27,39 @@ def _strip_non_digits(value: str) -> str:
 )
 async def listar_observacoes(
     numero_processo: str,
+    equipe_id: UUID | None = Query(None, description="Filtrar por equipe (NULL = global)"),
+    usuario: str | None = Query(None, description="Usuario (obrigatorio se equipe_id)"),
     db: AsyncSession = Depends(get_db),
 ):
     try:
         numero_limpo = _strip_non_digits(numero_processo)
+
+        # Se equipe_id fornecido, verificar membership
+        if equipe_id is not None:
+            if not usuario:
+                raise HTTPException(status_code=400, detail="usuario e obrigatorio para observacoes de equipe")
+            membro_q = await db.execute(
+                select(EquipeMembro).where(and_(
+                    EquipeMembro.equipe_id == equipe_id,
+                    EquipeMembro.usuario == usuario,
+                    EquipeMembro.deletado_em.is_(None),
+                ))
+            )
+            if not membro_q.scalar_one_or_none():
+                raise HTTPException(status_code=403, detail="Voce nao e membro desta equipe")
+
+        conditions = [
+            Observacao.numero_processo == numero_limpo,
+            Observacao.deletado_em.is_(None),
+        ]
+        if equipe_id is not None:
+            conditions.append(Observacao.equipe_id == equipe_id)
+        else:
+            conditions.append(Observacao.equipe_id.is_(None))
+
         query = (
             select(Observacao)
-            .where(and_(
-                Observacao.numero_processo == numero_limpo,
-                Observacao.deletado_em.is_(None),
-            ))
+            .where(and_(*conditions))
             .order_by(Observacao.criado_em.asc())
         )
         result = await db.execute(query)
@@ -46,6 +69,8 @@ async def listar_observacoes(
             "status": "success",
             "data": [ObservacaoResponse.model_validate(o) for o in observacoes],
         }
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Erro ao listar observacoes: {e}")
         raise HTTPException(status_code=500, detail=str(e))
@@ -65,10 +90,24 @@ async def criar_observacao(
 ):
     try:
         numero_limpo = _strip_non_digits(numero_processo)
+
+        # Se equipe_id fornecido, verificar membership
+        if dados.equipe_id is not None:
+            membro_q = await db.execute(
+                select(EquipeMembro).where(and_(
+                    EquipeMembro.equipe_id == dados.equipe_id,
+                    EquipeMembro.usuario == usuario,
+                    EquipeMembro.deletado_em.is_(None),
+                ))
+            )
+            if not membro_q.scalar_one_or_none():
+                raise HTTPException(status_code=403, detail="Voce nao e membro desta equipe")
+
         observacao = Observacao(
             numero_processo=numero_limpo,
             usuario=usuario,
             conteudo=dados.conteudo,
+            equipe_id=dados.equipe_id,
         )
         db.add(observacao)
         await db.commit()

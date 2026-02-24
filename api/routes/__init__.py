@@ -8,6 +8,7 @@ from .equipes import router as equipes_router
 from .tags import router as tags_router
 from .compartilhamentos import router as compartilhamentos_router
 from .observacoes import router as observacoes_router
+from .team_tags import router as team_tags_router
 
 router = APIRouter()
 
@@ -20,3 +21,4 @@ router.include_router(equipes_router, prefix="/equipes", tags=["Equipes"])
 router.include_router(tags_router, prefix="/tags", tags=["Tags"])
 router.include_router(compartilhamentos_router, prefix="/compartilhamentos", tags=["Compartilhamentos"])
 router.include_router(observacoes_router, prefix="/observacoes", tags=["Observacoes"])
+router.include_router(team_tags_router, prefix="/equipes", tags=["Team Tags"])
