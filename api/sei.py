@@ -12,17 +12,22 @@ logger = logging.getLogger(__name__)
 
 # Cliente HTTP global com connection pool
 http_client = httpx.AsyncClient(
-    timeout=httpx.Timeout(60.0, connect=10.0),
+    timeout=httpx.Timeout(180.0, connect=10.0),
     limits=httpx.Limits(max_connections=100, max_keepalive_connections=20),
     http2=True
 )
 
+# Fixed retry config: 60s per attempt, 2s backoff between retries
+RETRY_TIMEOUT = 60
+RETRY_BACKOFF = 2
 
-async def _fazer_requisicao_com_retry(url: str, headers: dict, params: dict, max_tentativas: int = 3, timeout: int = 60):
+
+async def _fazer_requisicao_com_retry(url: str, headers: dict, params: dict, max_tentativas: int = 3, timeout: int = RETRY_TIMEOUT):
     """
     Faz uma requisição HTTP com retry automático em caso de falha de rede.
     Retorna imediatamente para respostas HTTP (inclusive 4xx/5xx).
     Só faz retry em timeout e erros de conexão.
+    Fixed 60s timeout per attempt, 2s backoff between retries.
     """
     for tentativa in range(max_tentativas):
         try:
@@ -36,10 +41,12 @@ async def _fazer_requisicao_com_retry(url: str, headers: dict, params: dict, max
         except httpx.TimeoutException as e:
             logger.warning(
                 f"TIMEOUT na tentativa {tentativa + 1}/{max_tentativas} "
+                f"(timeout={timeout}s) "
                 f"GET {url} params={params} — {type(e).__name__}: {e}"
             )
             if tentativa == max_tentativas - 1:
                 raise e
+            await asyncio.sleep(RETRY_BACKOFF)
         except httpx.ConnectError as e:
             logger.warning(
                 f"CONNECT_ERROR na tentativa {tentativa + 1}/{max_tentativas} "
@@ -47,6 +54,7 @@ async def _fazer_requisicao_com_retry(url: str, headers: dict, params: dict, max
             )
             if tentativa == max_tentativas - 1:
                 raise e
+            await asyncio.sleep(RETRY_BACKOFF)
         except httpx.RequestError as e:
             logger.error(
                 f"REQUEST_ERROR (não retentável) "
@@ -113,9 +121,9 @@ async def _buscar_pagina_documentos(token: str, protocolo: str, id_unidade: str,
             "sinal_campos": "N",
             "sinal_completo": "S"
         }
-        headers = {"accept": "application/json", "token": f'"{token}"'}
+        headers = {"accept": "application/json", "token": token}
 
-        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=60)
+        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3)
 
         if response.status_code != 200:
             logger.warning(
@@ -142,7 +150,7 @@ async def _buscar_pagina_documentos(token: str, protocolo: str, id_unidade: str,
 async def listar_documentos(token: str, protocolo: str, id_unidade: str):
     """
     Fetch all documents for a processo.
-    Strategy: first page + last page upfront, then middle pages in batches of 20.
+    Strategy: first page + last page upfront, then middle pages in batches of 10.
     Uses quantidade=10 per page to avoid SEI API timeouts on large processes.
     """
     try:
@@ -158,9 +166,9 @@ async def listar_documentos(token: str, protocolo: str, id_unidade: str):
             "sinal_campos": "N",
             "sinal_completo": "S"
         }
-        headers = {"accept": "application/json", "token": f'"{token}"'}
+        headers = {"accept": "application/json", "token": token}
         logger.debug(f"Fazendo requisição inicial de documentos para processo: {protocolo}")
-        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=60)
+        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3)
 
         if response.status_code != 200:
             _raise_sei_error(response, "Falha ao listar documentos no SEI")
@@ -177,7 +185,7 @@ async def listar_documentos(token: str, protocolo: str, id_unidade: str):
 
         quantidade_por_pagina = 10
         total_paginas = math.ceil(total_itens / quantidade_por_pagina)
-        batch_size = 20
+        batch_size = 10
         max_retries = 3
 
         logger.info(
@@ -290,8 +298,8 @@ async def listar_primeiro_documento(token: str, protocolo: str, id_unidade: str)
             "sinal_campos": "N",
             "sinal_completo": "S"
         }
-        headers = {"accept": "application/json", "token": f'"{token}"'}
-        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=60)
+        headers = {"accept": "application/json", "token": token}
+        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3)
 
         if response.status_code != 200:
             _raise_sei_error(response, "Falha ao listar documentos no SEI")
@@ -326,8 +334,8 @@ async def listar_ultimo_documento(token: str, protocolo: str, id_unidade: str):
             "sinal_campos": "N",
             "sinal_completo": "S"
         }
-        headers = {"accept": "application/json", "token": f'"{token}"'}
-        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=60)
+        headers = {"accept": "application/json", "token": token}
+        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3)
 
         if response.status_code != 200:
             logger.warning(f"Falha ao listar documentos para último documento (status {response.status_code})")
@@ -346,7 +354,7 @@ async def listar_ultimo_documento(token: str, protocolo: str, id_unidade: str):
 
         # Buscar a última página (qty=1, page=TotalItens => último item)
         params["pagina"] = total_itens
-        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=60)
+        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3)
 
         if response.status_code != 200:
             logger.warning(f"Falha ao buscar último documento na página {total_itens}")
@@ -372,8 +380,8 @@ async def listar_ultimos_andamentos(token: str, protocolo: str, id_unidade: str,
             "pagina": 1,
             "quantidade": 10
         }
-        headers = {"accept": "application/json", "token": f'"{token}"'}
-        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=60)
+        headers = {"accept": "application/json", "token": token}
+        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3)
 
         if response.status_code != 200:
             logger.warning(f"Falha ao listar andamentos para últimos {quantidade} (status {response.status_code})")
@@ -396,7 +404,7 @@ async def listar_ultimos_andamentos(token: str, protocolo: str, id_unidade: str,
 
         # Buscar última página
         params["pagina"] = total_paginas
-        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=60)
+        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3)
 
         if response.status_code != 200:
             logger.warning(f"Falha ao buscar última página de andamentos")
@@ -411,7 +419,7 @@ async def listar_ultimos_andamentos(token: str, protocolo: str, id_unidade: str,
         # Precisamos da penúltima página também
         if total_paginas >= 2:
             params["pagina"] = total_paginas - 1
-            response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=60)
+            response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3)
 
             if response.status_code == 200:
                 penultima = response.json().get("Andamentos", [])
@@ -436,9 +444,9 @@ async def _buscar_pagina_andamentos(token: str, protocolo: str, id_unidade: str,
             "pagina": pagina,
             "quantidade": quantidade_por_pagina
         }
-        headers = {"accept": "application/json", "token": f'"{token}"'}
+        headers = {"accept": "application/json", "token": token}
 
-        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=60)
+        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3)
 
         if response.status_code != 200:
             logger.warning(
@@ -476,8 +484,8 @@ async def listar_tarefa_parcial(token: str, protocolo: str, id_unidade: str):
             "pagina": 1,
             "quantidade": 10
         }
-        headers = {"accept": "application/json", "token": f'"{token}"'}
-        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=60)
+        headers = {"accept": "application/json", "token": token}
+        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3)
 
         if response.status_code != 200:
             _raise_sei_error(response, "Falha ao consultar andamentos no SEI")
@@ -561,13 +569,13 @@ async def listar_tarefa_parcial(token: str, protocolo: str, id_unidade: str):
 async def listar_documentos_parcial(token: str, protocolo: str, id_unidade: str):
     """
     Fetch first page + last page of documents for fast initial render.
-    Uses smaller page size (10) for the discovery request to avoid SEI timeouts
-    on processes with many documents.
+    Uses quantidade=10 per page. Returns only first+last page for any
+    process with >10 documents; the rest is fetched in background via
+    listar_documentos (batch_size=10).
     Returns (documentos, total_itens, parcial) tuple.
     """
     try:
         url = f"{settings.SEI_BASE_URL}/unidades/{id_unidade}/procedimentos/documentos"
-        # Use small page size for discovery to avoid timeout on large processes
         params = {
             "protocolo_procedimento": protocolo,
             "pagina": 1,
@@ -578,8 +586,8 @@ async def listar_documentos_parcial(token: str, protocolo: str, id_unidade: str)
             "sinal_campos": "N",
             "sinal_completo": "S"
         }
-        headers = {"accept": "application/json", "token": f'"{token}"'}
-        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=60)
+        headers = {"accept": "application/json", "token": token}
+        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3)
 
         if response.status_code != 200:
             _raise_sei_error(response, "Falha ao listar documentos no SEI")
@@ -591,30 +599,17 @@ async def listar_documentos_parcial(token: str, protocolo: str, id_unidade: str)
         if total_itens == 0:
             return [], 0, False
 
-        # Small process: fetch all remaining pages
+        # Small process: everything fits in one page
         if total_itens <= 10:
             return documentos_primeira_pagina, total_itens, False
 
+        # >10 docs: fetch only first + last page, mark as partial
         quantidade_por_pagina = 10
         total_paginas = math.ceil(total_itens / quantidade_por_pagina)
 
-        if total_paginas <= 10:
-            tarefas = [
-                _buscar_pagina_documentos(token, protocolo, id_unidade, pagina, quantidade_por_pagina)
-                for pagina in range(2, total_paginas + 1)
-            ]
-            resultados = await asyncio.gather(*tarefas, return_exceptions=True)
-            todos = documentos_primeira_pagina.copy()
-            for resultado in resultados:
-                if isinstance(resultado, Exception):
-                    continue
-                todos.extend(resultado)
-            return todos, total_itens, False
-
-        # Large: fetch first page (already have) + last page
         logger.info(
             f"Partial docs fetch: processo={protocolo} total_paginas={total_paginas} "
-            f"total_itens={total_itens} — fetching first + last page (qty={quantidade_por_pagina})"
+            f"total_itens={total_itens} — fetching first + last page only"
         )
 
         ultima_pagina_docs = await _buscar_pagina_documentos(
@@ -624,7 +619,7 @@ async def listar_documentos_parcial(token: str, protocolo: str, id_unidade: str)
         documentos = documentos_primeira_pagina + ultima_pagina_docs
         logger.info(
             f"Partial docs fetch complete: processo={protocolo} "
-            f"returned {len(documentos)} items"
+            f"returned {len(documentos)} items (first+last of {total_itens})"
         )
         return documentos, total_itens, True
 
@@ -649,8 +644,8 @@ async def listar_tarefa(token: str, protocolo: str, id_unidade: str):
             "pagina": 1,
             "quantidade": 10
         }
-        headers = {"accept": "application/json", "token": f'"{token}"'}
-        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=60)
+        headers = {"accept": "application/json", "token": token}
+        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3)
 
         if response.status_code != 200:
             _raise_sei_error(response, "Falha ao consultar andamentos no SEI")
@@ -780,8 +775,8 @@ async def listar_tarefa_stream(token: str, protocolo: str, id_unidade: str):
             "pagina": 1,
             "quantidade": 10
         }
-        headers = {"accept": "application/json", "token": f'"{token}"'}
-        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=60)
+        headers = {"accept": "application/json", "token": token}
+        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3)
 
         if response.status_code != 200:
             yield {"type": "error", "message": f"Falha ao consultar andamentos no SEI (HTTP {response.status_code})"}
@@ -971,9 +966,9 @@ async def consultar_procedimento(token: str, protocolo: str, id_unidade: str):
             "sinal_procedimentos_relacionados": "N",
             "sinal_procedimentos_anexados": "N",
         }
-        headers = {"accept": "application/json", "token": f'"{token}"'}
+        headers = {"accept": "application/json", "token": token}
 
-        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=60)
+        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3)
 
         if response.status_code != 200:
             _raise_sei_error(response, "Falha ao consultar procedimento no SEI")
@@ -1013,8 +1008,8 @@ async def consultar_documento(token: str, id_unidade: str, documento_formatado: 
         logger.debug(f"Consultando documento: {documento_formatado}")
         url = f"{settings.SEI_BASE_URL}/unidades/{id_unidade}/documentos"
         params = {"protocolo_documento": documento_formatado, "sinal_completo": "N"}
-        headers = {"accept": "application/json", "token": f'"{token}"'}
-        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=60)
+        headers = {"accept": "application/json", "token": token}
+        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3)
         if response.status_code != 200:
             _raise_sei_error(response, "Falha ao consultar documento no SEI")
         return response.json()
@@ -1044,7 +1039,7 @@ async def assinar_documento(
     """
     try:
         url = f"{settings.SEI_BASE_URL}/unidades/{id_unidade}/documentos/assinar"
-        headers = {"accept": "application/json", "token": f'"{token}"', "Content-Type": "application/json"}
+        headers = {"accept": "application/json", "token": token, "Content-Type": "application/json"}
         body = {
             "ProtocoloDocumento": protocolo_documento,
             "Orgao": orgao,
@@ -1097,9 +1092,9 @@ async def assinar_documento(
 async def baixar_documento(token: str, id_unidade: str, documento_formatado: str, numero_processo: str = None):
     try:
         url = f"{settings.SEI_BASE_URL}/unidades/{id_unidade}/documentos/baixar"
-        headers = {"accept": "application/json", "token": f'"{token}"'}
+        headers = {"accept": "application/json", "token": token}
         params = {"protocolo_documento": documento_formatado}
-        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3, timeout=60)
+        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3)
 
         if response.status_code != 200:
             _raise_sei_error(response, "Falha ao baixar documento do SEI")
