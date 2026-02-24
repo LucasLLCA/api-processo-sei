@@ -17,8 +17,8 @@ http_client = httpx.AsyncClient(
     http2=True
 )
 
-# Fixed retry config: 60s per attempt, 2s backoff between retries
-RETRY_TIMEOUT = 60
+# Fixed retry config: 120s per attempt (SEI docs endpoint takes ~80s), 2s backoff
+RETRY_TIMEOUT = 120
 RETRY_BACKOFF = 2
 
 
