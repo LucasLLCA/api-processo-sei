@@ -12,13 +12,13 @@ logger = logging.getLogger(__name__)
 
 # Cliente HTTP global com connection pool
 http_client = httpx.AsyncClient(
-    timeout=httpx.Timeout(180.0, connect=10.0),
+    timeout=httpx.Timeout(180.0, connect=30.0),
     limits=httpx.Limits(max_connections=100, max_keepalive_connections=20),
     http2=True
 )
 
 # Fixed retry config: 120s per attempt (SEI docs endpoint takes ~80s), 2s backoff
-RETRY_TIMEOUT = 120
+RETRY_TIMEOUT = 180
 RETRY_BACKOFF = 2
 
 

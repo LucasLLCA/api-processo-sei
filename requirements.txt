@@ -38,3 +38,6 @@ Pillow==10.4.0
 
 # JWE Authentication
 jwcrypto==1.5.6
+
+# Fernet encryption for stored credentials
+cryptography>=44.0.0

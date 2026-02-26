@@ -35,6 +35,7 @@ class Settings(BaseSettings):
     JWE_SECRET_KEY: str = ""  # 256-bit key, base64url-encoded
     JWE_TOKEN_TTL: int = 1800  # Token validity in seconds (default: 30 minutes)
     FRONTEND_BASE_URL: str = "http://localhost:3000"
+    FERNET_KEY: str = ""  # 32-byte URL-safe base64 key for credential encryption
 
     # Configurações PostgreSQL
     DATABASE_HOST: str = "localhost"

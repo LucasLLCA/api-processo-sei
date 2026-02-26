@@ -11,6 +11,7 @@ from .observacao import Observacao
 from .team_tag import TeamTag
 from .processo_team_tag import ProcessoTeamTag
 from .processo_entendimento import ProcessoEntendimento
+from .credencial_usuario import CredencialUsuario
 
 __all__ = [
     "HistoricoPesquisa",
@@ -23,4 +24,5 @@ __all__ = [
     "TeamTag",
     "ProcessoTeamTag",
     "ProcessoEntendimento",
+    "CredencialUsuario",
 ]

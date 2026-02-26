@@ -15,9 +15,11 @@ router = APIRouter()
 
 
 class GenerateURLRequest(BaseModel):
-    email: str
-    password: str
-    orgao: str
+    id_pessoa: int
+    usuario: str
+    id_orgao: int
+    id_pai: int | None = None
+    application: str | None = None
 
 
 class GenerateURLResponse(BaseModel):
@@ -83,9 +85,11 @@ async def generate_url(
     try:
         now = int(time.time())
         payload = {
-            "email": body.email,
-            "password": body.password,
-            "orgao": body.orgao,
+            "id_pessoa": body.id_pessoa,
+            "usuario": body.usuario,
+            "id_orgao": body.id_orgao,
+            "id_pai": body.id_pai,
+            "application": body.application,
             "iat": now,
             "exp": now + settings.JWE_TOKEN_TTL,
         }
