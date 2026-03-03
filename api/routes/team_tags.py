@@ -294,6 +294,47 @@ async def tag_processo(
 
 
 @router.delete(
+    "/{equipe_id}/tags/{tag_id}/processos/por-numero",
+    response_model=dict,
+    summary="Remover tag de um processo pelo numero do processo",
+)
+async def untag_processo_por_numero(
+    equipe_id: UUID,
+    tag_id: UUID,
+    numero_processo: str = Query(..., description="Numero do processo"),
+    usuario: str = Query(..., description="Usuario"),
+    db: AsyncSession = Depends(get_db),
+):
+    try:
+        await _verificar_membro(db, equipe_id, usuario)
+
+        numero_limpo = _strip_non_digits(numero_processo)
+
+        result = await db.execute(
+            select(ProcessoTeamTag).where(and_(
+                ProcessoTeamTag.team_tag_id == tag_id,
+                ProcessoTeamTag.numero_processo == numero_limpo,
+                ProcessoTeamTag.deletado_em.is_(None),
+            ))
+        )
+        assoc = result.scalar_one_or_none()
+        if not assoc:
+            raise HTTPException(status_code=404, detail="Associacao nao encontrada")
+
+        assoc.soft_delete()
+        await db.commit()
+
+        return {"status": "success", "message": "Tag removida do processo"}
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Erro ao remover tag do processo: {e}")
+        await db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.delete(
     "/{equipe_id}/tags/{tag_id}/processos/{processo_tag_id}",
     response_model=dict,
     summary="Remover tag de um processo",

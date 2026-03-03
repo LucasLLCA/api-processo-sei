@@ -19,6 +19,8 @@ from ..schemas import (
     EquipeDetalheResponse,
     ProcessoSalvoResponse,
     TeamTagResponse,
+    MoverProcessoKanban,
+    SalvarProcessoKanban,
 )
 
 router = APIRouter()
@@ -433,6 +435,155 @@ async def kanban_board(
         raise
     except Exception as e:
         logger.error(f"Erro ao buscar kanban: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post(
+    "/{equipe_id}/kanban/mover-processo",
+    response_model=dict,
+    summary="Mover processo entre colunas do kanban",
+)
+async def mover_processo_kanban(
+    equipe_id: UUID,
+    dados: MoverProcessoKanban,
+    usuario: str = Query(..., description="Usuario"),
+    db: AsyncSession = Depends(get_db),
+):
+    try:
+        await _get_equipe_como_membro(db, equipe_id, usuario)
+
+        # Buscar o processo de origem
+        proc_q = await db.execute(
+            select(ProcessoSalvo).where(and_(
+                ProcessoSalvo.id == dados.processo_id,
+                ProcessoSalvo.deletado_em.is_(None),
+            ))
+        )
+        processo = proc_q.scalar_one_or_none()
+        if not processo:
+            raise HTTPException(status_code=404, detail="Processo nao encontrado")
+
+        tag_id_origem = processo.tag_id
+
+        # Verificar que a tag de origem esta compartilhada com esta equipe
+        comp_origem_q = await db.execute(
+            select(Compartilhamento).where(and_(
+                Compartilhamento.equipe_destino_id == equipe_id,
+                Compartilhamento.tag_id == tag_id_origem,
+                Compartilhamento.deletado_em.is_(None),
+            ))
+        )
+        if not comp_origem_q.scalar_one_or_none():
+            raise HTTPException(status_code=403, detail="Processo nao pertence a uma coluna compartilhada com esta equipe")
+
+        # Verificar que a tag de destino esta compartilhada com esta equipe
+        comp_destino_q = await db.execute(
+            select(Compartilhamento).where(and_(
+                Compartilhamento.equipe_destino_id == equipe_id,
+                Compartilhamento.tag_id == dados.tag_id_destino,
+                Compartilhamento.deletado_em.is_(None),
+            ))
+        )
+        if not comp_destino_q.scalar_one_or_none():
+            raise HTTPException(status_code=403, detail="Grupo de destino nao pertence a esta equipe")
+
+        # Verificar duplicata no destino
+        dup_q = await db.execute(
+            select(ProcessoSalvo).where(and_(
+                ProcessoSalvo.tag_id == dados.tag_id_destino,
+                ProcessoSalvo.numero_processo == processo.numero_processo,
+                ProcessoSalvo.deletado_em.is_(None),
+            ))
+        )
+        if dup_q.scalar_one_or_none():
+            raise HTTPException(status_code=409, detail="Processo ja existe no grupo de destino")
+
+        # Mover: soft-delete na origem e criar no destino
+        processo.soft_delete()
+        novo_processo = ProcessoSalvo(
+            tag_id=dados.tag_id_destino,
+            numero_processo=processo.numero_processo,
+            numero_processo_formatado=processo.numero_processo_formatado,
+            nota=processo.nota,
+        )
+        db.add(novo_processo)
+        await db.commit()
+        await db.refresh(novo_processo)
+
+        logger.info(f"Processo movido: {processo.numero_processo} de tag={tag_id_origem} para tag={dados.tag_id_destino} por {usuario}")
+
+        return {
+            "status": "success",
+            "data": ProcessoSalvoResponse.model_validate(novo_processo),
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Erro ao mover processo no kanban: {e}")
+        await db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.post(
+    "/{equipe_id}/kanban/salvar-processo",
+    response_model=dict,
+    status_code=201,
+    summary="Salvar processo em coluna do kanban da equipe",
+)
+async def salvar_processo_kanban(
+    equipe_id: UUID,
+    dados: SalvarProcessoKanban,
+    usuario: str = Query(..., description="Usuario"),
+    db: AsyncSession = Depends(get_db),
+):
+    try:
+        await _get_equipe_como_membro(db, equipe_id, usuario)
+
+        # Verificar que a tag de destino esta compartilhada com esta equipe
+        comp_q = await db.execute(
+            select(Compartilhamento).where(and_(
+                Compartilhamento.equipe_destino_id == equipe_id,
+                Compartilhamento.tag_id == dados.tag_id_destino,
+                Compartilhamento.deletado_em.is_(None),
+            ))
+        )
+        if not comp_q.scalar_one_or_none():
+            raise HTTPException(status_code=403, detail="Grupo de destino nao pertence a esta equipe")
+
+        # Verificar duplicata
+        dup_q = await db.execute(
+            select(ProcessoSalvo).where(and_(
+                ProcessoSalvo.tag_id == dados.tag_id_destino,
+                ProcessoSalvo.numero_processo == dados.numero_processo,
+                ProcessoSalvo.deletado_em.is_(None),
+            ))
+        )
+        if dup_q.scalar_one_or_none():
+            raise HTTPException(status_code=409, detail="Processo ja existe neste grupo")
+
+        novo_processo = ProcessoSalvo(
+            tag_id=dados.tag_id_destino,
+            numero_processo=dados.numero_processo,
+            numero_processo_formatado=dados.numero_processo_formatado,
+            nota=dados.nota,
+        )
+        db.add(novo_processo)
+        await db.commit()
+        await db.refresh(novo_processo)
+
+        logger.info(f"Processo salvo no kanban: {dados.numero_processo} em tag={dados.tag_id_destino} por {usuario}")
+
+        return {
+            "status": "success",
+            "data": ProcessoSalvoResponse.model_validate(novo_processo),
+        }
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Erro ao salvar processo no kanban: {e}")
+        await db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
 
 

@@ -20,6 +20,8 @@ from .equipe import (
     MembroResponse,
     EquipeResponse,
     EquipeDetalheResponse,
+    MoverProcessoKanban,
+    SalvarProcessoKanban,
 )
 
 from .tag import (
@@ -66,6 +68,8 @@ __all__ = [
     "MembroResponse",
     "EquipeResponse",
     "EquipeDetalheResponse",
+    "MoverProcessoKanban",
+    "SalvarProcessoKanban",
     "TagCreate",
     "TagUpdate",
     "TagResponse",

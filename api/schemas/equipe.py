@@ -54,3 +54,15 @@ class EquipeDetalheResponse(BaseModel):
     membros: list[MembroResponse] = []
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class MoverProcessoKanban(BaseModel):
+    processo_id: UUID
+    tag_id_destino: UUID
+
+
+class SalvarProcessoKanban(BaseModel):
+    tag_id_destino: UUID
+    numero_processo: str
+    numero_processo_formatado: Optional[str] = None
+    nota: Optional[str] = None
