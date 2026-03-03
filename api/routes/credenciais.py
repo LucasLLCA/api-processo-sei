@@ -1,6 +1,7 @@
 """
 Rotas para gerenciamento de credenciais SEI armazenadas.
 """
+import asyncio
 import logging
 from datetime import datetime
 
@@ -68,27 +69,44 @@ async def auto_login(body: AutoLoginRequest, db: AsyncSession = Depends(get_db))
     if cred is None:
         raise HTTPException(status_code=404, detail="Credenciais não encontradas")
 
+    logger.info(f"auto-login tentativa: usuario_sei={cred.usuario_sei}, orgao={cred.orgao}, id_pessoa={body.id_pessoa}")
+
     try:
         senha = decrypt_password(cred.senha_encrypted)
+        logger.info(f"auto-login senha decriptada: '{senha[:2]}***' (len={len(senha)})")
     except Exception:
         logger.error(f"Falha ao decriptar senha para id_pessoa={body.id_pessoa}")
         cred.soft_delete()
         await db.flush()
         raise HTTPException(status_code=410, detail="Credenciais corrompidas e removidas")
 
-    try:
-        data = await sei.login(cred.usuario_sei, senha, cred.orgao)
-        return data
-    except HTTPException as e:
-        if e.status_code == 401:
-            # Credenciais inválidas (senha alterada, etc) — soft delete
-            cred.soft_delete()
-            await db.flush()
-            raise HTTPException(status_code=401, detail=e.detail)
-        if e.status_code >= 500:
-            # Erro do serviço SEI — não deletar credenciais
-            raise HTTPException(status_code=502, detail="Serviço SEI indisponível")
-        raise
+    max_retries = 3
+    last_error = None
+    for attempt in range(1, max_retries + 1):
+        try:
+            data = await sei.login(cred.usuario_sei, senha, cred.orgao)
+            return data
+        except HTTPException as e:
+            logger.error(f"auto-login SEI falhou para id_pessoa={body.id_pessoa} (tentativa {attempt}/{max_retries}): status={e.status_code} detail={e.detail}")
+            if e.status_code == 401:
+                # Credenciais inválidas (senha alterada, etc) — soft delete
+                cred.soft_delete()
+                await db.flush()
+                raise HTTPException(status_code=401, detail=e.detail)
+            if e.status_code >= 500:
+                last_error = e
+                if attempt < max_retries:
+                    await asyncio.sleep(2 * attempt)
+                    continue
+                raise HTTPException(status_code=502, detail=f"Serviço SEI indisponível após {max_retries} tentativas: {e.detail}")
+            raise
+        except Exception as e:
+            logger.error(f"auto-login erro inesperado para id_pessoa={body.id_pessoa} (tentativa {attempt}/{max_retries}): {type(e).__name__}: {e}")
+            last_error = e
+            if attempt < max_retries:
+                await asyncio.sleep(2 * attempt)
+                continue
+            raise HTTPException(status_code=502, detail=f"Erro inesperado após {max_retries} tentativas: {type(e).__name__}: {e}")
 
 
 @router.post("/embed-login")

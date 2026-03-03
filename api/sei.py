@@ -890,11 +890,7 @@ async def login(usuario: str, senha: str, orgao: str):
 
         response = await http_client.post(url, headers=headers, json=body, timeout=30)
 
-        logger.info(
-            f"SEI login response: status={response.status_code} "
-            f"headers={dict(response.headers)} "
-            f"body={response.text[:1000]}"
-        )
+        logger.info(f"SEI login response: status={response.status_code}")
 
         if response.status_code != 200:
             logger.error(

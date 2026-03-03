@@ -30,6 +30,9 @@ class Settings(BaseSettings):
     REDIS_USERNAME: str = "default"
     REDIS_PASSWORD: str = ""
 
+    # Gestor API
+    GESTOR_API_URL: str = ""
+
     # JWE Authentication
     AUTH_API_KEY: str = ""
     JWE_SECRET_KEY: str = ""  # 256-bit key, base64url-encoded

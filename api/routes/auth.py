@@ -8,6 +8,7 @@ from pydantic import BaseModel
 from jwcrypto import jwe, jwk
 
 from ..config import settings
+from ..gestor import decode_jwe
 
 logger = logging.getLogger(__name__)
 
@@ -37,6 +38,10 @@ class RefreshTokenResponse(BaseModel):
     expires_at: int
 
 
+class DecodeTokenRequest(BaseModel):
+    token: str
+
+
 def _get_jwk_key() -> jwk.JWK:
     """Decode JWE_SECRET_KEY and return a JWK symmetric key."""
     key_bytes = base64.urlsafe_b64decode(settings.JWE_SECRET_KEY)
@@ -54,14 +59,6 @@ def _encrypt_payload(payload: dict) -> str:
         recipient=key,
     )
     return jwe_token.serialize(compact=True)
-
-
-def _decrypt_token(token: str) -> dict:
-    """Decrypt a compact JWE token and return the payload dict."""
-    key = _get_jwk_key()
-    jwe_token = jwe.JWE()
-    jwe_token.deserialize(token, key)
-    return json.loads(jwe_token.payload.decode("utf-8"))
 
 
 @router.post("/generate-url", response_model=GenerateURLResponse)
@@ -118,18 +115,11 @@ async def refresh_token(body: RefreshTokenRequest):
     refreshed iat/exp timestamps. No API key required — possession of a
     valid token is proof of authorization.
     """
-    if not settings.JWE_SECRET_KEY:
-        raise HTTPException(status_code=500, detail="JWE_SECRET_KEY not configured")
+    payload = await decode_jwe(body.token)
+    if payload is None:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
 
-    try:
-        payload = _decrypt_token(body.token)
-    except Exception:
-        raise HTTPException(status_code=401, detail="Invalid token")
-
-    # Reject expired tokens
     now = int(time.time())
-    if payload.get("exp", 0) < now:
-        raise HTTPException(status_code=401, detail="Token expired")
 
     # Re-issue with fresh timestamps
     try:
@@ -143,3 +133,15 @@ async def refresh_token(body: RefreshTokenRequest):
     except Exception as e:
         logger.error(f"Error refreshing JWE token: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail="Failed to refresh token")
+
+
+@router.post("/decode-token")
+async def decode_token(body: DecodeTokenRequest):
+    """
+    Decode a JWE token via the Gestor API and return the payload.
+    Used by the frontend to extract embed user identity from the auth cookie.
+    """
+    payload = await decode_jwe(body.token)
+    if payload is None:
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
+    return payload
