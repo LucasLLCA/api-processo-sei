@@ -1,7 +1,7 @@
 """
 Model SQLAlchemy para credenciais SEI armazenadas por usuário
 """
-from sqlalchemy import Column, String, Text, Integer, TIMESTAMP, Index, text
+from sqlalchemy import Column, String, Text, BigInteger, TIMESTAMP, Index, text
 from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime
 import uuid
@@ -23,7 +23,7 @@ class CredencialUsuario(Base):
         server_default=text("gen_random_uuid()"),
     )
 
-    id_pessoa = Column(Integer, nullable=False)
+    id_pessoa = Column(BigInteger, nullable=False)
     usuario_sei = Column(String(100), nullable=False)
     senha_encrypted = Column(Text, nullable=False)
     orgao = Column(String(50), nullable=False)
