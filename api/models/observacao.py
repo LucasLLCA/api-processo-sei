@@ -3,6 +3,7 @@ Model SQLAlchemy para observacoes de processos
 """
 from sqlalchemy import Column, String, Text, TIMESTAMP, Index, ForeignKey, text
 from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import relationship
 from datetime import datetime
 import uuid
 
@@ -13,7 +14,9 @@ class Observacao(Base):
     """
     Model para observacoes sobre processos
 
-    Implementa soft delete atraves do campo deletado_em
+    Implementa soft delete atraves do campo deletado_em.
+    Suporta respostas via parent_id (auto-referencia).
+    Suporta mencoes via relationship com ObservacaoMencao.
     """
     __tablename__ = "observacoes"
 
@@ -37,11 +40,26 @@ class Observacao(Base):
         comment="Usuario autor da observacao"
     )
 
+    escopo = Column(
+        String(10),
+        nullable=False,
+        default='global',
+        server_default='global',
+        comment="Escopo da observacao: pessoal | equipe | global"
+    )
+
     equipe_id = Column(
         UUID(as_uuid=True),
         ForeignKey("equipes.id", ondelete="SET NULL"),
         nullable=True,
-        comment="ID da equipe (NULL = global, non-NULL = team-scoped)"
+        comment="ID da equipe (obrigatorio quando escopo=equipe)"
+    )
+
+    parent_id = Column(
+        UUID(as_uuid=True),
+        ForeignKey("observacoes.id", ondelete="SET NULL"),
+        nullable=True,
+        comment="ID da observacao pai (quando for uma resposta)"
     )
 
     conteudo = Column(
@@ -70,6 +88,24 @@ class Observacao(Base):
         comment="Data e hora da exclusao (soft delete)"
     )
 
+    # Respostas: obs filhas que apontam para esta como parent
+    respostas = relationship(
+        "Observacao",
+        primaryjoin="and_(Observacao.parent_id == foreign(Observacao.id), Observacao.deletado_em == None)",
+        order_by="Observacao.criado_em",
+        lazy="selectin",
+        uselist=True,
+    )
+
+    # Mencoes: usuarios mencionados nesta obs
+    mencoes = relationship(
+        "ObservacaoMencao",
+        back_populates="observacao",
+        foreign_keys="ObservacaoMencao.observacao_id",
+        lazy="selectin",
+        cascade="all, delete-orphan",
+    )
+
     __table_args__ = (
         Index(
             'idx_observacao_processo',
@@ -85,6 +121,17 @@ class Observacao(Base):
             'idx_observacao_equipe',
             'equipe_id',
             postgresql_where=text("deletado_em IS NULL AND equipe_id IS NOT NULL")
+        ),
+        Index(
+            'idx_observacao_escopo',
+            'numero_processo',
+            'escopo',
+            postgresql_where=text("deletado_em IS NULL")
+        ),
+        Index(
+            'idx_observacao_parent',
+            'parent_id',
+            postgresql_where=text("parent_id IS NOT NULL AND deletado_em IS NULL")
         ),
         {'comment': 'Tabela de observacoes sobre processos'}
     )

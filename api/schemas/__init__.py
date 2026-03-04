@@ -42,6 +42,7 @@ from .compartilhamento import (
 from .observacao import (
     ObservacaoCreate,
     ObservacaoResponse,
+    ObservacaoMencaoResponse,
 )
 
 from .team_tag import (
@@ -81,6 +82,7 @@ __all__ = [
     "CompartilhadoComMigoItem",
     "ObservacaoCreate",
     "ObservacaoResponse",
+    "ObservacaoMencaoResponse",
     "TeamTagCreate",
     "TeamTagUpdate",
     "TeamTagResponse",
