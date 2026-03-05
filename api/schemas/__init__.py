@@ -20,6 +20,8 @@ from .equipe import (
     MembroResponse,
     EquipeResponse,
     EquipeDetalheResponse,
+    MoverProcessoKanban,
+    SalvarProcessoKanban,
 )
 
 from .tag import (
@@ -40,6 +42,7 @@ from .compartilhamento import (
 from .observacao import (
     ObservacaoCreate,
     ObservacaoResponse,
+    ObservacaoMencaoResponse,
 )
 
 from .team_tag import (
@@ -66,6 +69,8 @@ __all__ = [
     "MembroResponse",
     "EquipeResponse",
     "EquipeDetalheResponse",
+    "MoverProcessoKanban",
+    "SalvarProcessoKanban",
     "TagCreate",
     "TagUpdate",
     "TagResponse",
@@ -77,6 +82,7 @@ __all__ = [
     "CompartilhadoComMigoItem",
     "ObservacaoCreate",
     "ObservacaoResponse",
+    "ObservacaoMencaoResponse",
     "TeamTagCreate",
     "TeamTagUpdate",
     "TeamTagResponse",
