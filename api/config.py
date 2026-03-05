@@ -32,6 +32,7 @@ class Settings(BaseSettings):
 
     # Gestor API
     GESTOR_API_URL: str = ""
+    GESTOR_API_TOKEN: str = ""
 
     # JWE Authentication
     AUTH_API_KEY: str = ""

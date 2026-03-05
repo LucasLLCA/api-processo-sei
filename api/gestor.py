@@ -17,9 +17,13 @@ async def decode_jwe(token: str) -> dict | None:
         return None
 
     url = f"{settings.GESTOR_API_URL.rstrip('/')}/embed/decode"
+    headers: dict[str, str] = {"Content-Type": "application/json"}
+    if settings.GESTOR_API_TOKEN:
+        headers["Authorization"] = f"Bearer {settings.GESTOR_API_TOKEN}"
+
     try:
         async with httpx.AsyncClient(timeout=10) as client:
-            resp = await client.post(url, json={"token": token, "application": "visualizador"})
+            resp = await client.post(url, json={"token": token, "application": "visualizador"}, headers=headers)
         if resp.status_code != 200:
             logger.warning("Gestor decode returned %s: %s", resp.status_code, resp.text)
             return None
