@@ -877,69 +877,79 @@ async def listar_tarefa_stream(token: str, protocolo: str, id_unidade: str):
         yield {"type": "error", "message": f"Erro ao buscar andamentos: {str(e)}"}
 
 
-async def login(usuario: str, senha: str, orgao: str):
+async def login(usuario: str, senha: str, orgao: str, max_tentativas: int = 3):
     """
     Autentica um usuário na API SEI.
     Retorna a resposta bruta (Token, Login, Unidades).
-    Sem retry - falha rápida em credenciais inválidas.
+    Retry em erros de conexão/timeout - falha rápida em credenciais inválidas (401).
     """
-    try:
-        url = f"{settings.SEI_BASE_URL}/orgaos/usuarios/login"
-        headers = {"accept": "application/json", "Content-Type": "application/json"}
-        body = {"Usuario": usuario, "Senha": senha, "Orgao": orgao}
+    url = f"{settings.SEI_BASE_URL}/orgaos/usuarios/login"
+    headers = {"accept": "application/json", "Content-Type": "application/json"}
+    body = {"Usuario": usuario, "Senha": senha, "Orgao": orgao}
+    last_error = None
 
-        response = await http_client.post(url, headers=headers, json=body, timeout=30)
-
-        logger.info(f"SEI login response: status={response.status_code}")
-
-        if response.status_code != 200:
-            logger.error(
-                f"SEI login FAILED: status={response.status_code} "
-                f"user={usuario} orgao={orgao} "
-                f"response_body={response.text[:2000]}"
-            )
-
-        if response.status_code == 401:
-            try:
-                data = response.json()
-                message = data.get("Message", "Credenciais inválidas")
-            except Exception:
-                message = "Credenciais inválidas"
-            raise HTTPException(status_code=401, detail=message)
-
-        if response.status_code != 200:
-            raise HTTPException(
-                status_code=response.status_code,
-                detail=ErrorDetail(
-                    type=ErrorType.EXTERNAL_SERVICE_ERROR,
-                    message="Falha ao autenticar no SEI",
-                    details={"status_code": response.status_code, "response": response.text}
-                ).dict()
-            )
-
+    for tentativa in range(max_tentativas):
         try:
-            return response.json()
-        except Exception as e:
-            logger.error(f"SEI login retornou resposta não-JSON (status 200): {response.text[:200]}")
-            raise HTTPException(
-                status_code=502,
-                detail=ErrorDetail(
-                    type=ErrorType.EXTERNAL_SERVICE_ERROR,
-                    message="Resposta inválida do serviço SEI",
-                    details={"error": "Resposta não é JSON válido"}
-                ).dict()
+            response = await http_client.post(url, headers=headers, json=body, timeout=30)
+
+            logger.info(f"SEI login response: status={response.status_code} (tentativa {tentativa + 1}/{max_tentativas})")
+
+            if response.status_code != 200:
+                logger.error(
+                    f"SEI login FAILED: status={response.status_code} "
+                    f"user={usuario} orgao={orgao} "
+                    f"response_body={response.text[:2000]}"
+                )
+
+            if response.status_code == 401:
+                try:
+                    data = response.json()
+                    message = data.get("Message", "Credenciais inválidas")
+                except Exception:
+                    message = "Credenciais inválidas"
+                raise HTTPException(status_code=401, detail=message)
+
+            if response.status_code != 200:
+                raise HTTPException(
+                    status_code=response.status_code,
+                    detail=ErrorDetail(
+                        type=ErrorType.EXTERNAL_SERVICE_ERROR,
+                        message="Falha ao autenticar no SEI",
+                        details={"status_code": response.status_code, "response": response.text}
+                    ).dict()
+                )
+
+            try:
+                return response.json()
+            except Exception as e:
+                logger.error(f"SEI login retornou resposta não-JSON (status 200): {response.text[:200]}")
+                raise HTTPException(
+                    status_code=502,
+                    detail=ErrorDetail(
+                        type=ErrorType.EXTERNAL_SERVICE_ERROR,
+                        message="Resposta inválida do serviço SEI",
+                        details={"error": "Resposta não é JSON válido"}
+                    ).dict()
+                )
+        except HTTPException:
+            raise
+        except httpx.RequestError as e:
+            last_error = e
+            logger.warning(
+                f"SEI login conexão falhou tentativa {tentativa + 1}/{max_tentativas} "
+                f"user={usuario} orgao={orgao} — {type(e).__name__}: {e}"
             )
-    except HTTPException:
-        raise
-    except httpx.RequestError as e:
-        raise HTTPException(
-            status_code=500,
-            detail=ErrorDetail(
-                type=ErrorType.EXTERNAL_SERVICE_ERROR,
-                message="Erro ao conectar com o serviço SEI para login",
-                details={"error": str(e)}
-            ).dict()
-        )
+            if tentativa < max_tentativas - 1:
+                await asyncio.sleep(RETRY_BACKOFF)
+
+    raise HTTPException(
+        status_code=500,
+        detail=ErrorDetail(
+            type=ErrorType.EXTERNAL_SERVICE_ERROR,
+            message="Erro ao conectar com o serviço SEI para login",
+            details={"error": str(last_error), "tentativas": max_tentativas}
+        ).dict()
+    )
 
 
 async def consultar_procedimento(token: str, protocolo: str, id_unidade: str):
