@@ -319,6 +319,21 @@ def gerar_chave_andamento(numero_processo: str) -> str:
     return f"andamento:{normalizar_numero_processo(numero_processo)}"
 
 
+def gerar_chave_historico(usuario: str, limit: int = 50, offset: int = 0) -> str:
+    """
+    Gera chave de cache para histórico de pesquisas de um usuário
+
+    Args:
+        usuario: Identificador do usuário
+        limit: Limite de registros
+        offset: Offset de paginação
+
+    Returns:
+        Chave formatada para cache
+    """
+    return f"historico:{usuario}:{limit}:{offset}"
+
+
 def gerar_chave_resumo(numero_processo: str) -> str:
     """
     Gera chave de cache para resumo de processo

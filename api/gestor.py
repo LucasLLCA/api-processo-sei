@@ -19,7 +19,7 @@ async def decode_jwe(token: str) -> dict | None:
     url = f"{settings.GESTOR_API_URL.rstrip('/')}/embed/decode"
     headers: dict[str, str] = {"Content-Type": "application/json"}
     if settings.GESTOR_API_TOKEN:
-        headers["Authorization"] = f"Bearer {settings.GESTOR_API_TOKEN}"
+        headers["X-API-KEY"] = settings.GESTOR_API_TOKEN
 
     try:
         async with httpx.AsyncClient(timeout=10) as client:

@@ -12,6 +12,7 @@ import logging
 from ..database import get_db
 from ..models import HistoricoPesquisa
 from ..normalization import normalizar_numero_processo
+from ..cache import cache, gerar_chave_historico
 from ..schemas import (
     HistoricoPesquisaCreate,
     HistoricoPesquisaUpdate,
@@ -69,6 +70,9 @@ async def criar_historico(
             await db.commit()
             await db.refresh(existente)
 
+            # Invalidate Redis cache for this user
+            await cache.clear_pattern(f"historico:{dados.usuario}:*")
+
             logger.info(
                 f"Histórico atualizado (dedup): processo={dados.numero_processo}, "
                 f"usuario={dados.usuario}"
@@ -91,6 +95,9 @@ async def criar_historico(
         db.add(novo_historico)
         await db.commit()
         await db.refresh(novo_historico)
+
+        # Invalidate Redis cache for this user
+        await cache.clear_pattern(f"historico:{dados.usuario}:*")
 
         logger.info(
             f"Histórico criado: processo={dados.numero_processo}, "
@@ -126,6 +133,15 @@ async def listar_historico_usuario(
 ):
     """Lista o histórico de pesquisas de um usuário"""
     try:
+        # Check Redis cache first (only for default non-deleted queries)
+        cache_key = None
+        if not incluir_deletados:
+            cache_key = gerar_chave_historico(usuario, limit, offset)
+            cached = await cache.get(cache_key)
+            if cached is not None:
+                logger.debug(f"[CACHE HIT] historico para {usuario}")
+                return cached
+
         # Query base
         base_query = select(HistoricoPesquisa).where(
             HistoricoPesquisa.usuario == usuario
@@ -150,7 +166,7 @@ async def listar_historico_usuario(
         result = await db.execute(query)
         pesquisas = result.scalars().all()
 
-        return {
+        response_data = {
             "status": "success",
             "data": HistoricoPesquisaList(
                 usuario=usuario,
@@ -163,6 +179,12 @@ async def listar_historico_usuario(
                 ]
             )
         }
+
+        # Cache for 10 minutes
+        if cache_key:
+            await cache.set(cache_key, response_data, ttl=600)
+
+        return response_data
 
     except Exception as e:
         logger.error(f"Erro ao listar histórico: {str(e)}")
@@ -385,8 +407,12 @@ async def deletar_pesquisa(
             )
 
         # Soft delete
+        usuario = historico.usuario
         historico.soft_delete()
         await db.commit()
+
+        # Invalidate Redis cache for this user
+        await cache.clear_pattern(f"historico:{usuario}:*")
 
         logger.info(f"Pesquisa deletada: id={id}")
 
