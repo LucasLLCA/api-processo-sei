@@ -24,6 +24,7 @@ class CredencialUsuario(Base):
     )
 
     id_pessoa = Column(BigInteger, nullable=False)
+    cpf = Column(String(20), nullable=True)  # CPF from JWE usuario field
     usuario_sei = Column(String(100), nullable=False)
     senha_encrypted = Column(Text, nullable=False)
     orgao = Column(String(50), nullable=False)

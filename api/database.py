@@ -3,6 +3,7 @@ Configuração do banco de dados com SQLAlchemy
 """
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase
+import sqlalchemy
 from .config import settings
 import logging
 
@@ -57,6 +58,15 @@ async def init_db():
     """Inicializa o banco de dados criando todas as tabelas"""
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+        # Add cpf column if it doesn't exist (safe for existing tables)
+        await conn.execute(
+            sqlalchemy.text("""
+                DO $$ BEGIN
+                    ALTER TABLE credenciais_usuario ADD COLUMN cpf VARCHAR(20);
+                EXCEPTION WHEN duplicate_column THEN NULL;
+                END $$;
+            """)
+        )
     logger.info("Banco de dados inicializado")
 
 

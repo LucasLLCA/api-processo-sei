@@ -32,6 +32,7 @@ class AutoLoginRequest(BaseModel):
 
 class EmbedLoginRequest(BaseModel):
     id_pessoa: int
+    cpf: str | None = None  # CPF from JWE usuario field
     usuario_sei: str
     senha: str
     orgao: str
@@ -85,6 +86,9 @@ async def auto_login(body: AutoLoginRequest, db: AsyncSession = Depends(get_db))
     for attempt in range(1, max_retries + 1):
         try:
             data = await sei.login(cred.usuario_sei, senha, cred.orgao)
+            # Include stored email so frontend uses it (not the CPF from JWE)
+            data["usuario_sei"] = cred.usuario_sei
+            data["orgao"] = cred.orgao
             return data
         except HTTPException as e:
             logger.error(f"auto-login SEI falhou para id_pessoa={body.id_pessoa} (tentativa {attempt}/{max_retries}): status={e.status_code} detail={e.detail}")
@@ -126,6 +130,7 @@ async def embed_login(body: EmbedLoginRequest, db: AsyncSession = Depends(get_db
 
     new_cred = CredencialUsuario(
         id_pessoa=body.id_pessoa,
+        cpf=body.cpf,
         usuario_sei=body.usuario_sei,
         senha_encrypted=encrypt_password(body.senha),
         orgao=body.orgao,
@@ -133,4 +138,7 @@ async def embed_login(body: EmbedLoginRequest, db: AsyncSession = Depends(get_db
     db.add(new_cred)
     await db.flush()
 
+    # Include email so frontend uses it (not the CPF from JWE)
+    data["usuario_sei"] = body.usuario_sei
+    data["orgao"] = body.orgao
     return data
