@@ -180,9 +180,13 @@ async def listar_historico_usuario(
             )
         }
 
-        # Cache for 10 minutes
+        # Cache for 10 minutes (serialize Pydantic model to dict for Redis)
         if cache_key:
-            await cache.set(cache_key, response_data, ttl=600)
+            cache_data = {
+                "status": "success",
+                "data": response_data["data"].model_dump(mode="json"),
+            }
+            await cache.set(cache_key, cache_data, ttl=600)
 
         return response_data
 
