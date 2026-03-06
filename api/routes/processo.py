@@ -4,7 +4,7 @@ import logging
 from fastapi import APIRouter, Header, HTTPException, Query
 from sqlalchemy import select
 from starlette.responses import StreamingResponse
-from ..sei import listar_documentos, listar_primeiro_documento, listar_ultimo_documento, listar_ultimos_andamentos, listar_tarefa, consultar_documento, baixar_documento
+from ..sei import listar_documentos, listar_primeiro_documento, listar_ultimo_documento, listar_ultimos_andamentos, listar_tarefa, consultar_documento, baixar_documento, contar_andamentos
 from ..openai_client import (
     enviar_para_ia_conteudo, enviar_para_ia_conteudo_md, enviar_documento_ia_conteudo,
     enviar_para_ia_conteudo_md_stream, enviar_documento_ia_conteudo_stream,
@@ -15,6 +15,7 @@ from ..cache import cache, gerar_chave_processo, gerar_chave_documento, gerar_ch
 from ..normalization import normalizar_numero_processo
 from ..database import AsyncSessionLocal
 from ..models.processo_entendimento import ProcessoEntendimento
+from ..models.processo_situacao import ProcessoSituacao
 
 logger = logging.getLogger(__name__)
 
@@ -660,28 +661,25 @@ async def resumo_situacao_stream(
 ):
     """
     Versão streaming (SSE) da situação atual do processo.
-    Combina o entendimento existente, último documento e últimos andamentos
-    para gerar um resumo da situação corrente.
+    Validated by TotalItens — if unchanged, returns stored version from DB/cache
+    without calling the LLM. Regenerated when TotalItens changes.
     """
     token = x_sei_token or token
     if not token:
         raise HTTPException(status_code=401, detail="Token de autenticação não fornecido")
     numero_processo = normalizar_numero_processo(numero_processo)
 
-    SITUACAO_CACHE_TTL = 86400  # 24h
+    SITUACAO_CACHE_TTL = 2_592_000  # 1 month
 
     cache_key = f"processo:{numero_processo}:situacao_atual"
 
-    # Fetch last 3 andamentos to build a fingerprint
-    ultimos_andamentos = await listar_ultimos_andamentos(token, numero_processo, id_unidade, quantidade=3)
-    andamentos_fingerprint = "|".join(
-        a.get("IdAndamento", "") for a in ultimos_andamentos
-    )
+    # Step 1: Get current TotalItens for validation
+    current_total = await contar_andamentos(token, numero_processo, id_unidade)
 
-    # Check cache — return if fingerprint matches (no new andamentos)
+    # Step 2: Check Redis cache — return if TotalItens matches
     cached_result = await cache.get(cache_key)
-    if cached_result and cached_result.get("_fingerprint") == andamentos_fingerprint:
-        logger.debug(f"[stream] Retornando situação atual do cache para processo {numero_processo} (fingerprint match)")
+    if cached_result and cached_result.get("_total_andamentos") == current_total:
+        logger.debug(f"[stream] Retornando situação atual do cache para processo {numero_processo} (total_andamentos={current_total})")
 
         async def cached_generator():
             yield _sse_event({"type": "done", "content": {
@@ -694,6 +692,43 @@ async def resumo_situacao_stream(
             media_type="text/event-stream",
             headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
         )
+
+    # Step 3: Check DB — return if stored situação matches current TotalItens
+    try:
+        async with AsyncSessionLocal() as db:
+            stmt = select(ProcessoSituacao).where(
+                ProcessoSituacao.numero_processo == numero_processo,
+                ProcessoSituacao.total_andamentos == current_total,
+                ProcessoSituacao.deletado_em.is_(None),
+            )
+            result = await db.execute(stmt)
+            situacao_row = result.scalar_one_or_none()
+
+        if situacao_row:
+            logger.debug(f"[stream] Retornando situação do DB para processo {numero_processo} (total_andamentos={current_total})")
+            # Re-populate Redis cache
+            await cache.set(cache_key, {
+                "status": "ok",
+                "situacao_atual": situacao_row.conteudo,
+                "_total_andamentos": current_total,
+            }, ttl=SITUACAO_CACHE_TTL)
+
+            async def db_generator():
+                yield _sse_event({"type": "done", "content": {
+                    "status": "ok",
+                    "situacao_atual": situacao_row.conteudo,
+                }})
+
+            return StreamingResponse(
+                db_generator(),
+                media_type="text/event-stream",
+                headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
+            )
+    except Exception as e:
+        logger.warning(f"[stream] Erro ao consultar situação no DB: {str(e)}")
+
+    # Step 4: TotalItens changed or no stored situação — generate via LLM
+    ultimos_andamentos = await listar_ultimos_andamentos(token, numero_processo, id_unidade, quantidade=3)
 
     async def stream_generator():
         try:
@@ -723,7 +758,7 @@ async def resumo_situacao_stream(
                 yield _sse_event({"type": "error", "content": "Entendimento do processo não disponível. Gere o entendimento primeiro."})
                 return
 
-            # 2. Fetch last document (andamentos already fetched above)
+            # 2. Fetch last document
             ultimo_doc = await listar_ultimo_documento(token, numero_processo, id_unidade)
 
             # 3. Process last document content with smart caching
@@ -732,7 +767,6 @@ async def resumo_situacao_stream(
                 doc_id = ultimo_doc.get("DocumentoFormatado", "")
                 doc_cache_key = f"processo:{numero_processo}:ultimo_doc:{doc_id}"
 
-                # Check document-level cache first
                 cached_doc_content = await cache.get(doc_cache_key)
                 if cached_doc_content:
                     ultimo_doc_conteudo = cached_doc_content
@@ -748,7 +782,6 @@ async def resumo_situacao_stream(
                                 ultimo_doc_conteudo = "(Documento PDF - conteúdo binário não disponível em texto)"
                         else:
                             ultimo_doc_conteudo = md
-                        # Cache document content by doc_id
                         if ultimo_doc_conteudo:
                             await cache.set(doc_cache_key, ultimo_doc_conteudo, ttl=CACHE_TTL)
 
@@ -772,13 +805,38 @@ async def resumo_situacao_stream(
 
             full_text = "".join(accumulated)
 
+            # 7. Persist to Redis cache
             resultado = {
                 "status": "ok",
                 "situacao_atual": full_text,
-                "_fingerprint": andamentos_fingerprint,
+                "_total_andamentos": current_total,
             }
-
             await cache.set(cache_key, resultado, ttl=SITUACAO_CACHE_TTL)
+
+            # 8. Persist to DB (soft-delete old, insert new)
+            try:
+                ultimo_id = ultimos_andamentos[-1].get("IdAndamento", "") if ultimos_andamentos else ""
+                async with AsyncSessionLocal() as db:
+                    # Soft-delete existing row for this processo
+                    old_stmt = select(ProcessoSituacao).where(
+                        ProcessoSituacao.numero_processo == numero_processo,
+                        ProcessoSituacao.deletado_em.is_(None),
+                    )
+                    old_result = await db.execute(old_stmt)
+                    existing = old_result.scalar_one_or_none()
+                    if existing:
+                        existing.soft_delete()
+
+                    db.add(ProcessoSituacao(
+                        numero_processo=numero_processo,
+                        total_andamentos=current_total,
+                        ultimo_andamento_id=ultimo_id,
+                        conteudo=full_text,
+                    ))
+                    await db.commit()
+                    logger.debug(f"[stream] Situação atual salva no DB para processo {numero_processo} (total_andamentos={current_total})")
+            except Exception as db_err:
+                logger.warning(f"[stream] Erro ao salvar situação no DB: {str(db_err)}")
 
             yield _sse_event({"type": "done", "content": {
                 "status": "ok",

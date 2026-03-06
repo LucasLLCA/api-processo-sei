@@ -432,7 +432,7 @@ async def listar_ultimos_andamentos(token: str, protocolo: str, id_unidade: str,
         return []
 
 
-async def _buscar_pagina_andamentos(token: str, protocolo: str, id_unidade: str, pagina: int, quantidade_por_pagina: int):
+async def buscar_pagina_andamentos(token: str, protocolo: str, id_unidade: str, pagina: int, quantidade_por_pagina: int):
     """
     Função auxiliar para buscar uma página específica de andamentos com retry
     """
@@ -470,89 +470,79 @@ async def _buscar_pagina_andamentos(token: str, protocolo: str, id_unidade: str,
         return []
 
 
+async def contar_andamentos(token: str, protocolo: str, id_unidade: str) -> int:
+    """
+    Metadata-only request with quantidade=0 to discover TotalItens
+    without transferring any andamento data.
+    """
+    url = f"{settings.SEI_BASE_URL}/unidades/{id_unidade}/procedimentos/andamentos"
+    headers = {"accept": "application/json", "token": token}
+    response = await _fazer_requisicao_com_retry(
+        url, headers,
+        {"protocolo_procedimento": protocolo, "sinal_atributos": "S", "pagina": 1, "quantidade": 0},
+        max_tentativas=3,
+    )
+    if response.status_code != 200:
+        _raise_sei_error(response, "Falha ao consultar andamentos no SEI")
+    return response.json().get("Info", {}).get("TotalItens", 0)
+
+
 async def listar_tarefa_parcial(token: str, protocolo: str, id_unidade: str):
     """
-    Fetch first 5 + last 5 pages of andamentos (≤100 items) for fast initial render.
+    Fast initial fetch of andamentos using a two-step strategy:
+    1. quantidade=0 request to discover TotalItens without transferring data
+    2. One or two parallel fetches with quantidade=40 depending on total size
+
     Returns (andamentos, total_itens, parcial) tuple.
-    If total_paginas <= 10, returns all data with parcial=False.
+    - TotalItens <= 40:  1 fetch, parcial=False (all data)
+    - TotalItens <= 80:  1 fetch (40 items), parcial=True (rest in background)
+    - TotalItens > 80:   2 parallel fetches (80 items), parcial=True
     """
+    FETCH_SIZE = 40
+
     try:
         url = f"{settings.SEI_BASE_URL}/unidades/{id_unidade}/procedimentos/andamentos"
-        params = {
-            "protocolo_procedimento": protocolo,
-            "sinal_atributos": "S",
-            "pagina": 1,
-            "quantidade": 10
-        }
         headers = {"accept": "application/json", "token": token}
-        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3)
+
+        # Step 1: Metadata-only request to discover total items count
+        response = await _fazer_requisicao_com_retry(
+            url, headers,
+            {"protocolo_procedimento": protocolo, "sinal_atributos": "S", "pagina": 1, "quantidade": 0},
+            max_tentativas=3,
+        )
 
         if response.status_code != 200:
             _raise_sei_error(response, "Falha ao consultar andamentos no SEI")
 
         data = response.json()
         total_itens = data.get("Info", {}).get("TotalItens", 0)
-        andamentos_primeira_pagina = data.get("Andamentos", [])
 
         if total_itens == 0:
             return [], 0, False
 
-        quantidade_por_pagina = 10
-        total_paginas = math.ceil(total_itens / quantidade_por_pagina)
+        # Step 2: Fetch initial data based on total size
+        if total_itens <= FETCH_SIZE:
+            # Single fetch gets everything
+            andamentos = await buscar_pagina_andamentos(token, protocolo, id_unidade, 1, FETCH_SIZE)
+            return andamentos, total_itens, False
 
-        # Small process: fetch all pages (no benefit to partial)
-        if total_paginas <= 10:
-            if total_paginas == 1:
-                return andamentos_primeira_pagina, total_itens, False
+        if total_itens <= FETCH_SIZE * 2:
+            # Single fetch for fast initial render, rest in background
+            logger.info(
+                f"Partial fetch (1x{FETCH_SIZE}): processo={protocolo} total_itens={total_itens}"
+            )
+            andamentos = await buscar_pagina_andamentos(token, protocolo, id_unidade, 1, FETCH_SIZE)
+            return andamentos, total_itens, True
 
-            tarefas = [
-                _buscar_pagina_andamentos(token, protocolo, id_unidade, pagina, quantidade_por_pagina)
-                for pagina in range(2, total_paginas + 1)
-            ]
-            resultados = await asyncio.gather(*tarefas, return_exceptions=True)
-            todas = andamentos_primeira_pagina.copy()
-            for resultado in resultados:
-                if isinstance(resultado, Exception):
-                    continue
-                todas.extend(resultado)
-            return todas, total_itens, False
-
-        # Large process: fetch pages 2-5 + last 5 pages
+        # TotalItens > 80: two parallel fetches for fast initial render
         logger.info(
-            f"Partial fetch: processo={protocolo} total_paginas={total_paginas} "
-            f"total_itens={total_itens} — fetching first 5 + last 5 pages"
+            f"Partial fetch (2x{FETCH_SIZE}): processo={protocolo} total_itens={total_itens}"
         )
-
-        first_pages = list(range(2, 6))  # pages 2,3,4,5
-        last_pages = list(range(total_paginas - 4, total_paginas + 1))  # last 5 pages
-
-        # Deduplicate in case of overlap (e.g. total_paginas=12)
-        all_pages = sorted(set(first_pages + last_pages))
-
-        tarefas = [
-            _buscar_pagina_andamentos(token, protocolo, id_unidade, pagina, quantidade_por_pagina)
-            for pagina in all_pages
-        ]
-        resultados = await asyncio.gather(*tarefas, return_exceptions=True)
-
-        # Combine: page 1 data + first pages data
-        primeiros = andamentos_primeira_pagina.copy()
-        ultimos = []
-
-        for i, pagina in enumerate(all_pages):
-            resultado = resultados[i]
-            if isinstance(resultado, Exception):
-                continue
-            if pagina <= 5:
-                primeiros.extend(resultado)
-            else:
-                ultimos.extend(resultado)
-
-        andamentos = primeiros + ultimos
-        logger.info(
-            f"Partial fetch complete: processo={protocolo} "
-            f"returned {len(andamentos)} items (first {len(primeiros)} + last {len(ultimos)})"
+        page1, page2 = await asyncio.gather(
+            buscar_pagina_andamentos(token, protocolo, id_unidade, 1, FETCH_SIZE),
+            buscar_pagina_andamentos(token, protocolo, id_unidade, 2, FETCH_SIZE),
         )
+        andamentos = page1 + page2
         return andamentos, total_itens, True
 
     except httpx.RequestError as e:
@@ -676,7 +666,7 @@ async def listar_tarefa(token: str, protocolo: str, id_unidade: str):
         resultados_por_pagina = {1: andamentos_primeira_pagina}
 
         if total_paginas > 1:
-            ultima_pagina = await _buscar_pagina_andamentos(
+            ultima_pagina = await buscar_pagina_andamentos(
                 token, protocolo, id_unidade, total_paginas, quantidade_por_pagina
             )
             if isinstance(ultima_pagina, Exception) or ultima_pagina == []:
@@ -705,7 +695,7 @@ async def listar_tarefa(token: str, protocolo: str, id_unidade: str):
             for i in range(0, len(paginas_pendentes), batch_size):
                 batch = paginas_pendentes[i:i + batch_size]
                 tarefas = [
-                    _buscar_pagina_andamentos(token, protocolo, id_unidade, pagina, quantidade_por_pagina)
+                    buscar_pagina_andamentos(token, protocolo, id_unidade, pagina, quantidade_por_pagina)
                     for pagina in batch
                 ]
 
@@ -808,7 +798,7 @@ async def listar_tarefa_stream(token: str, protocolo: str, id_unidade: str):
 
         # Fetch last page
         if total_paginas > 1:
-            ultima_pagina = await _buscar_pagina_andamentos(
+            ultima_pagina = await buscar_pagina_andamentos(
                 token, protocolo, id_unidade, total_paginas, quantidade_por_pagina
             )
             if not isinstance(ultima_pagina, Exception) and ultima_pagina != []:
@@ -838,7 +828,7 @@ async def listar_tarefa_stream(token: str, protocolo: str, id_unidade: str):
             for i in range(0, len(paginas_pendentes), batch_size):
                 batch = paginas_pendentes[i:i + batch_size]
                 tarefas = [
-                    _buscar_pagina_andamentos(token, protocolo, id_unidade, pagina, quantidade_por_pagina)
+                    buscar_pagina_andamentos(token, protocolo, id_unidade, pagina, quantidade_por_pagina)
                     for pagina in batch
                 ]
 
