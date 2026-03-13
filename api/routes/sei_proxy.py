@@ -9,6 +9,7 @@ from ..sei import (
     login, contar_andamentos, buscar_pagina_andamentos,
     listar_documentos, listar_documentos_parcial,
     consultar_procedimento, verificar_saude, assinar_documento,
+    consultar_documento,
 )
 from ..cache import cache
 from ..normalization import normalizar_numero_processo
@@ -20,11 +21,44 @@ router = APIRouter()
 # Cache TTLs for proxy endpoints
 CACHE_TTL_ANDAMENTOS = 2_592_000   # 1 month
 CACHE_TTL_UNIDADES = 86400         # 1 day
-CACHE_TTL_DOCUMENTOS = 86400       # 1 day
 
 # Andamentos page size (matches listar_tarefa_parcial FETCH_SIZE)
 ANDAMENTOS_PAGE_SIZE = 40
 ANDAMENTOS_BATCH_SIZE = 5  # parallel pages per batch
+
+# Task types that reference documents
+DOC_TASK_PREFIXES = (
+    "GERACAO-DOCUMENTO",
+    "ASSINATURA-DOCUMENTO",
+    "DOCUMENTO-INCLUIDO-EM-BLOCO",
+    "DOCUMENTO-RETIRADO-DO-BLOCO",
+)
+
+
+def _extract_documents_from_andamentos(andamentos: list) -> dict:
+    """
+    Extract unique DocumentoFormatado IDs from andamentos with document-related tasks.
+    Filters by Tarefa type, then takes the first Atributo's Valor from each match.
+    Returns dict with primeiro, ultimo, and all unique doc IDs in order.
+    """
+    seen = set()
+    ordered = []
+    for a in andamentos:
+        tarefa = a.get("Tarefa", "")
+        if not any(tarefa.startswith(p) for p in DOC_TASK_PREFIXES):
+            continue
+        attrs = a.get("Atributos") or []
+        if attrs:
+            val = attrs[0].get("Valor", "")
+            if val and val not in seen:
+                seen.add(val)
+                ordered.append(val)
+    return {
+        "todos": ordered,
+        "primeiro": ordered[0] if ordered else None,
+        "ultimo": ordered[-1] if ordered else None,
+        "total": len(ordered),
+    }
 
 
 def _build_andamentos_result(andamentos: list, total_itens: int, numero_processo: str) -> dict:
@@ -101,6 +135,7 @@ async def sei_andamentos(
     id_unidade: str = Query(...),
     x_sei_token: str = Header(..., alias="X-SEI-Token"),
     parcial: bool = Query(False),
+    extrair_documentos: bool = Query(False),
 ):
     """
     Proxy para buscar andamentos de um processo com cache incremental.
@@ -118,10 +153,31 @@ async def sei_andamentos(
 
     if current_total == 0:
         resultado = _build_andamentos_result([], 0, numero_processo)
+        if extrair_documentos:
+            resultado["DocumentosExtraidos"] = _extract_documents_from_andamentos([])
         await cache.set(cache_key, resultado, ttl=CACHE_TTL_ANDAMENTOS)
         return resultado
 
     total_pages = math.ceil(current_total / ANDAMENTOS_PAGE_SIZE)
+
+    def _add_doc_extraction(resultado: dict, andamentos_for_extraction: list = None):
+        """Add DocumentosExtraidos to result if flag is set."""
+        if extrair_documentos:
+            source = andamentos_for_extraction or resultado.get("Andamentos", [])
+            resultado["DocumentosExtraidos"] = _extract_documents_from_andamentos(source)
+
+    async def _fetch_last_page_for_extraction(andamentos: list) -> list:
+        """Fetch last page and combine with existing andamentos for doc extraction."""
+        if not extrair_documentos or total_pages <= 2:
+            return andamentos
+        try:
+            last_page = await buscar_pagina_andamentos(
+                x_sei_token, numero_processo, id_unidade, total_pages, ANDAMENTOS_PAGE_SIZE,
+            )
+            return andamentos + last_page
+        except Exception:
+            logger.warning(f"Failed to fetch last page for doc extraction: {numero_processo}")
+            return andamentos
 
     # Step 2: Check cache
     cached = await cache.get(cache_key)
@@ -134,6 +190,7 @@ async def sei_andamentos(
         if cached_total == current_total:
             # TotalItens unchanged
             if cached_is_full:
+                _add_doc_extraction(cached)
                 return cached
 
             # Partial cache, same total — serve cached, background fill remaining
@@ -142,6 +199,8 @@ async def sei_andamentos(
                     x_sei_token, numero_processo, id_unidade, cache_key,
                     cached["Andamentos"], cached_count, current_total,
                 ))
+                extraction_source = await _fetch_last_page_for_extraction(cached["Andamentos"])
+                _add_doc_extraction(cached, extraction_source)
                 return cached
 
             # Caller wants full — fetch remaining synchronously
@@ -152,6 +211,7 @@ async def sei_andamentos(
             )
             all_andamentos = cached["Andamentos"][:cached_complete_pages * ANDAMENTOS_PAGE_SIZE] + remaining
             resultado = _build_andamentos_result(all_andamentos, current_total, numero_processo)
+            _add_doc_extraction(resultado)
             await cache.set(cache_key, resultado, ttl=CACHE_TTL_ANDAMENTOS)
             return resultado
 
@@ -171,6 +231,8 @@ async def sei_andamentos(
                     x_sei_token, numero_processo, id_unidade, cache_key,
                     reusable, len(reusable), current_total,
                 ))
+                extraction_source = await _fetch_last_page_for_extraction(reusable)
+                _add_doc_extraction(resultado, extraction_source)
                 return resultado
 
             # Full request — fetch all missing synchronously
@@ -180,6 +242,7 @@ async def sei_andamentos(
             )
             all_andamentos = reusable + remaining
             resultado = _build_andamentos_result(all_andamentos, current_total, numero_processo)
+            _add_doc_extraction(resultado)
             await cache.set(cache_key, resultado, ttl=CACHE_TTL_ANDAMENTOS)
             return resultado
 
@@ -198,15 +261,26 @@ async def sei_andamentos(
                 x_sei_token, numero_processo, id_unidade, 1, ANDAMENTOS_PAGE_SIZE,
             )
             resultado = _build_andamentos_result(andamentos, current_total, numero_processo)
+            _add_doc_extraction(resultado)
             await cache.set(cache_key, resultado, ttl=CACHE_TTL_ANDAMENTOS)
             return resultado
 
         if current_total <= ANDAMENTOS_PAGE_SIZE * 2:
-            # 1 fetch for initial render, background fill rest
-            andamentos = await buscar_pagina_andamentos(
-                x_sei_token, numero_processo, id_unidade, 1, ANDAMENTOS_PAGE_SIZE,
-            )
-            resultado = _build_andamentos_result(andamentos, current_total, numero_processo)
+            # 1-2 pages total: fetch page 1 (+ last page for extraction if needed)
+            if extrair_documentos and total_pages == 2:
+                page1, last_page = await asyncio.gather(
+                    buscar_pagina_andamentos(x_sei_token, numero_processo, id_unidade, 1, ANDAMENTOS_PAGE_SIZE),
+                    buscar_pagina_andamentos(x_sei_token, numero_processo, id_unidade, total_pages, ANDAMENTOS_PAGE_SIZE),
+                )
+                andamentos = page1
+                resultado = _build_andamentos_result(andamentos, current_total, numero_processo)
+                _add_doc_extraction(resultado, page1 + last_page)
+            else:
+                andamentos = await buscar_pagina_andamentos(
+                    x_sei_token, numero_processo, id_unidade, 1, ANDAMENTOS_PAGE_SIZE,
+                )
+                resultado = _build_andamentos_result(andamentos, current_total, numero_processo)
+                _add_doc_extraction(resultado)
             await cache.set(cache_key, resultado, ttl=CACHE_TTL_ANDAMENTOS)
             asyncio.create_task(_background_fill_andamentos(
                 x_sei_token, numero_processo, id_unidade, cache_key,
@@ -214,13 +288,24 @@ async def sei_andamentos(
             ))
             return resultado
 
-        # > 80 items: 2 parallel fetches for initial render
-        page1, page2 = await asyncio.gather(
-            buscar_pagina_andamentos(x_sei_token, numero_processo, id_unidade, 1, ANDAMENTOS_PAGE_SIZE),
-            buscar_pagina_andamentos(x_sei_token, numero_processo, id_unidade, 2, ANDAMENTOS_PAGE_SIZE),
-        )
-        andamentos = page1 + page2
-        resultado = _build_andamentos_result(andamentos, current_total, numero_processo)
+        # > 80 items: pages 1+2 for timeline, + last page for doc extraction
+        if extrair_documentos:
+            page1, page2, last_page = await asyncio.gather(
+                buscar_pagina_andamentos(x_sei_token, numero_processo, id_unidade, 1, ANDAMENTOS_PAGE_SIZE),
+                buscar_pagina_andamentos(x_sei_token, numero_processo, id_unidade, 2, ANDAMENTOS_PAGE_SIZE),
+                buscar_pagina_andamentos(x_sei_token, numero_processo, id_unidade, total_pages, ANDAMENTOS_PAGE_SIZE),
+            )
+            andamentos = page1 + page2
+            resultado = _build_andamentos_result(andamentos, current_total, numero_processo)
+            _add_doc_extraction(resultado, page1 + page2 + last_page)
+        else:
+            page1, page2 = await asyncio.gather(
+                buscar_pagina_andamentos(x_sei_token, numero_processo, id_unidade, 1, ANDAMENTOS_PAGE_SIZE),
+                buscar_pagina_andamentos(x_sei_token, numero_processo, id_unidade, 2, ANDAMENTOS_PAGE_SIZE),
+            )
+            andamentos = page1 + page2
+            resultado = _build_andamentos_result(andamentos, current_total, numero_processo)
+            _add_doc_extraction(resultado)
         await cache.set(cache_key, resultado, ttl=CACHE_TTL_ANDAMENTOS)
         asyncio.create_task(_background_fill_andamentos(
             x_sei_token, numero_processo, id_unidade, cache_key,
@@ -233,6 +318,7 @@ async def sei_andamentos(
         x_sei_token, numero_processo, id_unidade, 1, total_pages,
     )
     resultado = _build_andamentos_result(all_andamentos, current_total, numero_processo)
+    _add_doc_extraction(resultado)
     await cache.set(cache_key, resultado, ttl=CACHE_TTL_ANDAMENTOS)
     return resultado
 
@@ -270,6 +356,21 @@ async def _background_fill_andamentos(
             )
     except Exception as e:
         logger.error(f"Background fill failed: {numero_processo} — {e}")
+
+
+@router.get("/andamentos-count/{numero_processo}")
+async def sei_andamentos_count(
+    numero_processo: str,
+    id_unidade: str = Query(...),
+    x_sei_token: str = Header(..., alias="X-SEI-Token"),
+):
+    """
+    Lightweight metadata-only request returning just TotalItens.
+    Uses quantidade=0 internally — no andamento data is transferred.
+    """
+    numero_processo = normalizar_numero_processo(numero_processo)
+    total = await contar_andamentos(x_sei_token, numero_processo, id_unidade)
+    return {"total_itens": total}
 
 
 @router.get("/unidades-abertas/{numero_processo}")
@@ -598,6 +699,26 @@ async def sei_invalidar_cache(numero_processo: str):
         "message": f"Cache proxy do processo {numero_processo} invalidado",
         "keys_deleted": deleted,
     }
+
+
+@router.get("/documento/{documento_formatado}")
+async def sei_consultar_documento(
+    documento_formatado: str,
+    id_unidade: str = Query(...),
+    x_sei_token: str = Header(..., alias="X-SEI-Token"),
+):
+    """
+    Proxy para consultar metadados de um documento específico no SEI.
+    Retorna informações como Serie, Assinaturas, LinkAcesso, etc.
+    """
+    try:
+        result = await consultar_documento(x_sei_token, id_unidade, documento_formatado)
+        return result
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.exception(f"GET /sei/documento/{documento_formatado} 500 — {type(e).__name__}: {e}")
+        raise
 
 
 @router.get("/health")

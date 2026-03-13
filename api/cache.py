@@ -334,6 +334,19 @@ def gerar_chave_historico(usuario: str, limit: int = 50, offset: int = 0) -> str
     return f"historico:{usuario}:{limit}:{offset}"
 
 
+def gerar_chave_login(id_pessoa: int) -> str:
+    """
+    Gera chave de cache para resposta de login de um usuário
+
+    Args:
+        id_pessoa: ID da pessoa (do token JWE)
+
+    Returns:
+        Chave formatada para cache
+    """
+    return f"login_response:{id_pessoa}"
+
+
 def gerar_chave_resumo(numero_processo: str) -> str:
     """
     Gera chave de cache para resumo de processo

@@ -4,7 +4,7 @@ import logging
 from fastapi import APIRouter, Header, HTTPException, Query
 from sqlalchemy import select
 from starlette.responses import StreamingResponse
-from ..sei import listar_documentos, listar_primeiro_documento, listar_ultimo_documento, listar_ultimos_andamentos, listar_tarefa, consultar_documento, baixar_documento, contar_andamentos
+from ..sei import listar_ultimos_andamentos, consultar_documento, baixar_documento, contar_andamentos
 from ..openai_client import (
     enviar_para_ia_conteudo, enviar_para_ia_conteudo_md, enviar_documento_ia_conteudo,
     enviar_para_ia_conteudo_md_stream, enviar_documento_ia_conteudo_stream,
@@ -31,6 +31,7 @@ async def andamento(
     id_unidade: str,
     token: str = Query(default=None),
     x_sei_token: str = Header(default=None, alias="X-SEI-Token"),
+    ultimo_doc_formatado: str = Query(default=None),
 ):
     """
     Retorna o andamento atual do processo e um resumo do último documento.
@@ -56,28 +57,20 @@ async def andamento(
             logger.debug(f"Retornando andamento do cache para processo {numero_processo}")
             return Retorno(status="ok", andamento=cached_result.get("andamento"), resumo=cached_result.get("resumo"))
 
-        # Busca documentos e andamentos em paralelo
-        documentos, andamentos = await asyncio.gather(
-            listar_documentos(token, numero_processo, id_unidade),
-            listar_tarefa(token, numero_processo, id_unidade)
-        )
-
-        if not documentos:
+        if not ultimo_doc_formatado:
             raise HTTPException(
-                status_code=404,
+                status_code=400,
                 detail=ErrorDetail(
                     type=ErrorType.NOT_FOUND,
-                    message="Nenhum documento encontrado para este processo",
+                    message="ultimo_doc_formatado é obrigatório",
                     details={"numero_processo": numero_processo}
                 ).dict()
             )
 
-        ultimo = documentos[-1]
-
         # Consulta documento e baixa conteúdo em paralelo
         doc_ultimo, md_ultimo = await asyncio.gather(
-            consultar_documento(token, id_unidade, ultimo["DocumentoFormatado"]),
-            baixar_documento(token, id_unidade, ultimo["DocumentoFormatado"], numero_processo)
+            consultar_documento(token, id_unidade, ultimo_doc_formatado),
+            baixar_documento(token, id_unidade, ultimo_doc_formatado, numero_processo)
         )
 
         # Envia para IA
@@ -116,6 +109,8 @@ async def resumo(
     id_unidade: str,
     token: str = Query(default=None),
     x_sei_token: str = Header(default=None, alias="X-SEI-Token"),
+    primeiro_doc_formatado: str = Query(default=None),
+    ultimo_doc_formatado: str = Query(default=None),
 ):
     """
     Retorna um resumo do processo, incluindo o primeiro e último documento.
@@ -141,27 +136,22 @@ async def resumo(
             logger.debug(f"Retornando resumo do cache para processo {numero_processo}")
             return Retorno(status="ok", resumo=cached_result)
 
-        documentos = await listar_documentos(token, numero_processo, id_unidade)
-
-        if not documentos:
+        if not primeiro_doc_formatado or not ultimo_doc_formatado:
             raise HTTPException(
-                status_code=404,
+                status_code=400,
                 detail=ErrorDetail(
                     type=ErrorType.NOT_FOUND,
-                    message="Nenhum documento encontrado para este processo",
+                    message="primeiro_doc_formatado e ultimo_doc_formatado são obrigatórios",
                     details={"numero_processo": numero_processo}
                 ).dict()
             )
 
-        primeiro = documentos[0]
-        ultimo = documentos[-1]
-
         # Busca todos os dados em paralelo
         doc_primeiro, doc_ultimo, md_primeiro, md_ultimo = await asyncio.gather(
-            consultar_documento(token, id_unidade, primeiro["DocumentoFormatado"]),
-            consultar_documento(token, id_unidade, ultimo["DocumentoFormatado"]),
-            baixar_documento(token, id_unidade, primeiro["DocumentoFormatado"], numero_processo),
-            baixar_documento(token, id_unidade, ultimo["DocumentoFormatado"], numero_processo)
+            consultar_documento(token, id_unidade, primeiro_doc_formatado),
+            consultar_documento(token, id_unidade, ultimo_doc_formatado),
+            baixar_documento(token, id_unidade, primeiro_doc_formatado, numero_processo),
+            baixar_documento(token, id_unidade, ultimo_doc_formatado, numero_processo)
         )
 
         # Envia para IA em paralelo
@@ -206,6 +196,7 @@ async def resumo_completo(
     id_unidade: str,
     token: str = Query(default=None),
     x_sei_token: str = Header(default=None, alias="X-SEI-Token"),
+    primeiro_doc_formatado: str = Query(default=None),
 ):
     """
     Retorna uma análise completa do processo, combinando o primeiro e último documento.
@@ -231,15 +222,12 @@ async def resumo_completo(
             logger.debug(f"Retornando resultado do cache para processo {numero_processo}")
             return Retorno(status="ok", resumo=cached_result)
 
-        # Busca apenas o primeiro documento (não precisa de todos)
-        primeiro = await listar_primeiro_documento(token, numero_processo, id_unidade)
-
-        if not primeiro:
+        if not primeiro_doc_formatado:
             raise HTTPException(
-                status_code=404,
+                status_code=400,
                 detail=ErrorDetail(
                     type=ErrorType.NOT_FOUND,
-                    message="Nenhum documento encontrado para este processo",
+                    message="primeiro_doc_formatado é obrigatório",
                     details={"numero_processo": numero_processo}
                 ).dict()
             )
@@ -247,12 +235,12 @@ async def resumo_completo(
         cache_key = cache_key_base
 
         logger.debug(f"Iniciando processamento do processo {numero_processo}")
-        logger.debug(f"Primeiro documento: {primeiro['DocumentoFormatado']}")
+        logger.debug(f"Primeiro documento: {primeiro_doc_formatado}")
 
         # Busca todos os dados em paralelo
         results = await asyncio.gather(
-            consultar_documento(token, id_unidade, primeiro["DocumentoFormatado"]),
-            baixar_documento(token, id_unidade, primeiro["DocumentoFormatado"], numero_processo),
+            consultar_documento(token, id_unidade, primeiro_doc_formatado),
+            baixar_documento(token, id_unidade, primeiro_doc_formatado, numero_processo),
             return_exceptions=True
         )
 
@@ -436,6 +424,7 @@ async def resumo_completo_stream(
     id_unidade: str,
     token: str = Query(default=None),
     x_sei_token: str = Header(default=None, alias="X-SEI-Token"),
+    primeiro_doc_formatado: str = Query(default=None),
 ):
     """
     Versão streaming (SSE) do resumo-completo.
@@ -498,15 +487,13 @@ async def resumo_completo_stream(
     # 3. Cache + DB miss - buscar documento e streamer a resposta da IA
     async def stream_generator():
         try:
-            primeiro = await listar_primeiro_documento(token, numero_processo, id_unidade)
-
-            if not primeiro:
-                yield _sse_event({"type": "error", "content": "Nenhum documento encontrado para este processo"})
+            if not primeiro_doc_formatado:
+                yield _sse_event({"type": "error", "content": "primeiro_doc_formatado é obrigatório"})
                 return
 
             results = await asyncio.gather(
-                consultar_documento(token, id_unidade, primeiro["DocumentoFormatado"]),
-                baixar_documento(token, id_unidade, primeiro["DocumentoFormatado"], numero_processo),
+                consultar_documento(token, id_unidade, primeiro_doc_formatado),
+                baixar_documento(token, id_unidade, primeiro_doc_formatado, numero_processo),
                 return_exceptions=True,
             )
 
@@ -658,6 +645,7 @@ async def resumo_situacao_stream(
     id_unidade: str,
     token: str = Query(default=None),
     x_sei_token: str = Header(default=None, alias="X-SEI-Token"),
+    ultimo_doc_formatado: str = Query(default=None),
 ):
     """
     Versão streaming (SSE) da situação atual do processo.
@@ -669,7 +657,7 @@ async def resumo_situacao_stream(
         raise HTTPException(status_code=401, detail="Token de autenticação não fornecido")
     numero_processo = normalizar_numero_processo(numero_processo)
 
-    SITUACAO_CACHE_TTL = 2_592_000  # 1 month
+    SITUACAO_CACHE_TTL = 172_800  # 48 hours
 
     cache_key = f"processo:{numero_processo}:situacao_atual"
 
@@ -758,21 +746,17 @@ async def resumo_situacao_stream(
                 yield _sse_event({"type": "error", "content": "Entendimento do processo não disponível. Gere o entendimento primeiro."})
                 return
 
-            # 2. Fetch last document
-            ultimo_doc = await listar_ultimo_documento(token, numero_processo, id_unidade)
-
-            # 3. Process last document content with smart caching
+            # 2. Process last document content with smart caching
             ultimo_doc_conteudo = ""
-            if ultimo_doc:
-                doc_id = ultimo_doc.get("DocumentoFormatado", "")
-                doc_cache_key = f"processo:{numero_processo}:ultimo_doc:{doc_id}"
+            if ultimo_doc_formatado:
+                doc_cache_key = f"processo:{numero_processo}:ultimo_doc:{ultimo_doc_formatado}"
 
                 cached_doc_content = await cache.get(doc_cache_key)
                 if cached_doc_content:
                     ultimo_doc_conteudo = cached_doc_content
-                    logger.debug(f"[stream] Último documento {doc_id} retornado do cache")
+                    logger.debug(f"[stream] Último documento {ultimo_doc_formatado} retornado do cache")
                 else:
-                    md = await baixar_documento(token, id_unidade, doc_id, numero_processo)
+                    md = await baixar_documento(token, id_unidade, ultimo_doc_formatado, numero_processo)
                     if md:
                         if isinstance(md, dict):
                             tipo = md.get("tipo", "html")
@@ -785,11 +769,9 @@ async def resumo_situacao_stream(
                         if ultimo_doc_conteudo:
                             await cache.set(doc_cache_key, ultimo_doc_conteudo, ttl=CACHE_TTL)
 
-            # 4. Prefix document content with its ID
-            if ultimo_doc and ultimo_doc_conteudo:
-                doc_id = ultimo_doc.get("DocumentoFormatado", "")
-                if doc_id:
-                    ultimo_doc_conteudo = f"[Documento {doc_id}]\n{ultimo_doc_conteudo}"
+            # 3. Prefix document content with its ID
+            if ultimo_doc_formatado and ultimo_doc_conteudo:
+                ultimo_doc_conteudo = f"[Documento {ultimo_doc_formatado}]\n{ultimo_doc_conteudo}"
 
             # 5. Format andamentos text with activity IDs
             andamentos_texto = "\n".join(

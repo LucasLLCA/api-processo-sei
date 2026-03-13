@@ -3,7 +3,7 @@ Rotas para gerenciamento de credenciais SEI armazenadas.
 """
 import asyncio
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
@@ -13,11 +13,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from ..database import get_db
 from ..crypto import encrypt_password, decrypt_password
 from ..models.credencial_usuario import CredencialUsuario
+from ..cache import cache, gerar_chave_login
 from .. import sei
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
+
+# Cache TTL: 20h (72000s) — leaves ≥4h of SEI token validity (token is valid 24h)
+LOGIN_CACHE_TTL = 72000
 
 
 # --------------- Request / Response schemas ---------------
@@ -62,43 +66,58 @@ async def check_credentials(id_pessoa: int, db: AsyncSession = Depends(get_db)):
 @router.post("/auto-login")
 async def auto_login(body: AutoLoginRequest, db: AsyncSession = Depends(get_db)):
     """
-    Busca credenciais armazenadas, decripta e faz login no SEI.
-    - 401 do SEI → soft-delete das credenciais + retorna 401.
+    Busca resposta de login em cache Redis. Se cache miss, decripta credenciais
+    armazenadas e faz login no SEI, cacheando o resultado.
+    - 401 do SEI → soft-delete das credenciais + limpa cache + retorna 401.
     - Erro de rede → não deleta, retorna 502.
     """
+    # 1. Try cache first — skip DB/SEI entirely on hit
+    cache_key = gerar_chave_login(body.id_pessoa)
+    cached = await cache.get(cache_key)
+    if cached and "response" in cached:
+        logger.info(f"auto-login cache hit para id_pessoa={body.id_pessoa}, cached_at={cached.get('cached_at')}")
+        return cached["response"]
+
+    # 2. Cache miss — need credentials from DB
     cred = await _get_active_credential(db, body.id_pessoa)
     if cred is None:
         raise HTTPException(status_code=404, detail="Credenciais não encontradas")
 
-    logger.info(f"auto-login tentativa: usuario_sei={cred.usuario_sei}, orgao={cred.orgao}, id_pessoa={body.id_pessoa}")
+    logger.info(f"auto-login cache miss, tentando SEI: usuario_sei={cred.usuario_sei}, orgao={cred.orgao}, id_pessoa={body.id_pessoa}")
 
     try:
         senha = decrypt_password(cred.senha_encrypted)
-        logger.info(f"auto-login senha decriptada: '{senha[:2]}***' (len={len(senha)})")
     except Exception:
         logger.error(f"Falha ao decriptar senha para id_pessoa={body.id_pessoa}")
         cred.soft_delete()
         await db.flush()
         raise HTTPException(status_code=410, detail="Credenciais corrompidas e removidas")
 
+    # 3. Login to SEI with retries
     max_retries = 3
-    last_error = None
     for attempt in range(1, max_retries + 1):
         try:
             data = await sei.login(cred.usuario_sei, senha, cred.orgao)
             # Include stored email so frontend uses it (not the CPF from JWE)
             data["usuario_sei"] = cred.usuario_sei
             data["orgao"] = cred.orgao
+
+            # 4. Cache the successful response
+            await cache.set(cache_key, {
+                "response": data,
+                "cached_at": datetime.now(timezone.utc).isoformat(),
+            }, ttl=LOGIN_CACHE_TTL)
+            logger.info(f"auto-login cached para id_pessoa={body.id_pessoa}")
+
             return data
         except HTTPException as e:
             logger.error(f"auto-login SEI falhou para id_pessoa={body.id_pessoa} (tentativa {attempt}/{max_retries}): status={e.status_code} detail={e.detail}")
-            if e.status_code == 401:
-                # Credenciais inválidas (senha alterada, etc) — soft delete
+            if e.status_code in (401, 422):
                 cred.soft_delete()
                 await db.flush()
-                raise HTTPException(status_code=401, detail=e.detail)
+                await cache.delete(cache_key)
+                raise HTTPException(status_code=e.status_code, detail=e.detail)
             if e.status_code >= 500:
-                last_error = e
                 if attempt < max_retries:
                     await asyncio.sleep(2 * attempt)
                     continue
@@ -106,7 +125,6 @@ async def auto_login(body: AutoLoginRequest, db: AsyncSession = Depends(get_db))
             raise
         except Exception as e:
             logger.error(f"auto-login erro inesperado para id_pessoa={body.id_pessoa} (tentativa {attempt}/{max_retries}): {type(e).__name__}: {e}")
-            last_error = e
             if attempt < max_retries:
                 await asyncio.sleep(2 * attempt)
                 continue
@@ -117,6 +135,7 @@ async def auto_login(body: AutoLoginRequest, db: AsyncSession = Depends(get_db))
 async def embed_login(body: EmbedLoginRequest, db: AsyncSession = Depends(get_db)):
     """
     Valida credenciais contra o SEI, criptografa a senha e armazena/atualiza no banco.
+    Cacheia a resposta de login no Redis para auto-login futuro.
     Retorna a resposta raw do SEI login em caso de sucesso.
     """
     # 1. Validar contra o SEI (raises HTTPException on failure)
@@ -141,4 +160,13 @@ async def embed_login(body: EmbedLoginRequest, db: AsyncSession = Depends(get_db
     # Include email so frontend uses it (not the CPF from JWE)
     data["usuario_sei"] = body.usuario_sei
     data["orgao"] = body.orgao
+
+    # 3. Cache the login response for future auto-logins
+    cache_key = gerar_chave_login(body.id_pessoa)
+    await cache.set(cache_key, {
+        "response": data,
+        "cached_at": datetime.now(timezone.utc).isoformat(),
+    }, ttl=LOGIN_CACHE_TTL)
+    logger.info(f"embed-login cached para id_pessoa={body.id_pessoa}")
+
     return data
