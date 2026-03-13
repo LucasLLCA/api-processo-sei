@@ -9,7 +9,7 @@ from uuid import UUID
 import logging
 
 from ..database import get_db
-from ..models import Equipe, EquipeMembro, Compartilhamento, Tag, ProcessoSalvo, TeamTag, ProcessoTeamTag
+from ..models import Equipe, EquipeMembro, Tag, ProcessoSalvo, TeamTag, ProcessoTeamTag
 from ..schemas import (
     EquipeCreate,
     EquipeUpdate,
@@ -357,25 +357,17 @@ async def kanban_board(
             membros=[MembroResponse.model_validate(m) for m in membros],
         )
 
-        # Buscar compartilhamentos para esta equipe
-        comp_q = await db.execute(
-            select(Compartilhamento).where(and_(
-                Compartilhamento.equipe_destino_id == equipe_id,
-                Compartilhamento.deletado_em.is_(None),
-            )).order_by(Compartilhamento.criado_em.asc())
+        # Buscar grupos (tags) desta equipe
+        tags_q = await db.execute(
+            select(Tag).where(and_(
+                Tag.equipe_id == equipe_id,
+                Tag.deletado_em.is_(None),
+            )).order_by(Tag.criado_em.asc())
         )
-        compartilhamentos = comp_q.scalars().all()
+        tags = tags_q.scalars().all()
 
         colunas = []
-        for c in compartilhamentos:
-            # Buscar tag (grupo de processos)
-            tag_q = await db.execute(
-                select(Tag).where(and_(Tag.id == c.tag_id, Tag.deletado_em.is_(None)))
-            )
-            tag = tag_q.scalar_one_or_none()
-            if not tag:
-                continue
-
+        for tag in tags:
             # Buscar processos da tag
             proc_q = await db.execute(
                 select(ProcessoSalvo).where(and_(
@@ -405,11 +397,10 @@ async def kanban_board(
                 processos_com_tags.append(proc_data)
 
             colunas.append({
-                "compartilhamento_id": str(c.id),
                 "tag_id": str(tag.id),
                 "tag_nome": tag.nome,
                 "tag_cor": tag.cor,
-                "compartilhado_por": c.compartilhado_por,
+                "criado_por": tag.usuario,
                 "processos": processos_com_tags,
             })
 
@@ -465,26 +456,26 @@ async def mover_processo_kanban(
 
         tag_id_origem = processo.tag_id
 
-        # Verificar que a tag de origem esta compartilhada com esta equipe
-        comp_origem_q = await db.execute(
-            select(Compartilhamento).where(and_(
-                Compartilhamento.equipe_destino_id == equipe_id,
-                Compartilhamento.tag_id == tag_id_origem,
-                Compartilhamento.deletado_em.is_(None),
+        # Verificar que a tag de origem pertence a esta equipe
+        tag_origem_q = await db.execute(
+            select(Tag).where(and_(
+                Tag.id == tag_id_origem,
+                Tag.equipe_id == equipe_id,
+                Tag.deletado_em.is_(None),
             ))
         )
-        if not comp_origem_q.scalar_one_or_none():
-            raise HTTPException(status_code=403, detail="Processo nao pertence a uma coluna compartilhada com esta equipe")
+        if not tag_origem_q.scalar_one_or_none():
+            raise HTTPException(status_code=403, detail="Processo nao pertence a um grupo desta equipe")
 
-        # Verificar que a tag de destino esta compartilhada com esta equipe
-        comp_destino_q = await db.execute(
-            select(Compartilhamento).where(and_(
-                Compartilhamento.equipe_destino_id == equipe_id,
-                Compartilhamento.tag_id == dados.tag_id_destino,
-                Compartilhamento.deletado_em.is_(None),
+        # Verificar que a tag de destino pertence a esta equipe
+        tag_destino_q = await db.execute(
+            select(Tag).where(and_(
+                Tag.id == dados.tag_id_destino,
+                Tag.equipe_id == equipe_id,
+                Tag.deletado_em.is_(None),
             ))
         )
-        if not comp_destino_q.scalar_one_or_none():
+        if not tag_destino_q.scalar_one_or_none():
             raise HTTPException(status_code=403, detail="Grupo de destino nao pertence a esta equipe")
 
         # Verificar duplicata no destino
@@ -540,15 +531,15 @@ async def salvar_processo_kanban(
     try:
         await _get_equipe_como_membro(db, equipe_id, usuario)
 
-        # Verificar que a tag de destino esta compartilhada com esta equipe
-        comp_q = await db.execute(
-            select(Compartilhamento).where(and_(
-                Compartilhamento.equipe_destino_id == equipe_id,
-                Compartilhamento.tag_id == dados.tag_id_destino,
-                Compartilhamento.deletado_em.is_(None),
+        # Verificar que a tag de destino pertence a esta equipe
+        tag_q = await db.execute(
+            select(Tag).where(and_(
+                Tag.id == dados.tag_id_destino,
+                Tag.equipe_id == equipe_id,
+                Tag.deletado_em.is_(None),
             ))
         )
-        if not comp_q.scalar_one_or_none():
+        if not tag_q.scalar_one_or_none():
             raise HTTPException(status_code=403, detail="Grupo de destino nao pertence a esta equipe")
 
         # Verificar duplicata

@@ -1,7 +1,7 @@
 """empty message
 
 Revision ID: f2a51ee6c308
-Revises: 010_add_cpf_credenciais
+Revises: 012_grupos_equipe
 Create Date: 2026-03-06 13:27:06.655018
 
 """
@@ -13,7 +13,7 @@ from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
 revision: str = 'f2a51ee6c308'
-down_revision: Union[str, None] = '010_add_cpf_credenciais'
+down_revision: Union[str, None] = '012_grupos_equipe'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
@@ -321,8 +321,8 @@ def upgrade() -> None:
                existing_server_default=sa.text('gen_random_uuid()'))
     op.alter_column('team_tags', 'equipe_id',
                existing_type=sa.UUID(),
-               comment='ID da equipe dona da tag',
-               existing_nullable=False)
+               comment='ID da equipe dona da tag (NULL = tag pessoal)',
+               existing_nullable=True)
     op.alter_column('team_tags', 'nome',
                existing_type=sa.VARCHAR(length=100),
                comment='Nome da tag',
@@ -389,8 +389,8 @@ def downgrade() -> None:
     op.alter_column('team_tags', 'equipe_id',
                existing_type=sa.UUID(),
                comment=None,
-               existing_comment='ID da equipe dona da tag',
-               existing_nullable=False)
+               existing_comment='ID da equipe dona da tag (NULL = tag pessoal)',
+               existing_nullable=True)
     op.alter_column('team_tags', 'id',
                existing_type=sa.UUID(),
                comment=None,

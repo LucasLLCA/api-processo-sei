@@ -266,15 +266,15 @@ async def sei_andamentos(
             return resultado
 
         if current_total <= ANDAMENTOS_PAGE_SIZE * 2:
-            # 1-2 pages total: fetch page 1 (+ last page for extraction if needed)
-            if extrair_documentos and total_pages == 2:
+            # 1-2 pages total: fetch both pages when possible
+            if total_pages == 2:
                 page1, last_page = await asyncio.gather(
                     buscar_pagina_andamentos(x_sei_token, numero_processo, id_unidade, 1, ANDAMENTOS_PAGE_SIZE),
                     buscar_pagina_andamentos(x_sei_token, numero_processo, id_unidade, total_pages, ANDAMENTOS_PAGE_SIZE),
                 )
-                andamentos = page1
+                andamentos = page1 + last_page
                 resultado = _build_andamentos_result(andamentos, current_total, numero_processo)
-                _add_doc_extraction(resultado, page1 + last_page)
+                _add_doc_extraction(resultado)
             else:
                 andamentos = await buscar_pagina_andamentos(
                     x_sei_token, numero_processo, id_unidade, 1, ANDAMENTOS_PAGE_SIZE,
@@ -282,34 +282,30 @@ async def sei_andamentos(
                 resultado = _build_andamentos_result(andamentos, current_total, numero_processo)
                 _add_doc_extraction(resultado)
             await cache.set(cache_key, resultado, ttl=CACHE_TTL_ANDAMENTOS)
-            asyncio.create_task(_background_fill_andamentos(
-                x_sei_token, numero_processo, id_unidade, cache_key,
-                andamentos, len(andamentos), current_total,
-            ))
+            # All data fetched — no background fill needed when total_pages == 2
+            if total_pages != 2:
+                asyncio.create_task(_background_fill_andamentos(
+                    x_sei_token, numero_processo, id_unidade, cache_key,
+                    andamentos, len(andamentos), current_total,
+                ))
             return resultado
 
-        # > 80 items: pages 1+2 for timeline, + last page for doc extraction
-        if extrair_documentos:
-            page1, page2, last_page = await asyncio.gather(
-                buscar_pagina_andamentos(x_sei_token, numero_processo, id_unidade, 1, ANDAMENTOS_PAGE_SIZE),
-                buscar_pagina_andamentos(x_sei_token, numero_processo, id_unidade, 2, ANDAMENTOS_PAGE_SIZE),
-                buscar_pagina_andamentos(x_sei_token, numero_processo, id_unidade, total_pages, ANDAMENTOS_PAGE_SIZE),
-            )
-            andamentos = page1 + page2
-            resultado = _build_andamentos_result(andamentos, current_total, numero_processo)
-            _add_doc_extraction(resultado, page1 + page2 + last_page)
-        else:
-            page1, page2 = await asyncio.gather(
-                buscar_pagina_andamentos(x_sei_token, numero_processo, id_unidade, 1, ANDAMENTOS_PAGE_SIZE),
-                buscar_pagina_andamentos(x_sei_token, numero_processo, id_unidade, 2, ANDAMENTOS_PAGE_SIZE),
-            )
-            andamentos = page1 + page2
-            resultado = _build_andamentos_result(andamentos, current_total, numero_processo)
-            _add_doc_extraction(resultado)
+        # > 80 items: pages 1+2 for recent andamentos, + last page for oldest (includes PROCESSO GERADO)
+        page1, page2, last_page = await asyncio.gather(
+            buscar_pagina_andamentos(x_sei_token, numero_processo, id_unidade, 1, ANDAMENTOS_PAGE_SIZE),
+            buscar_pagina_andamentos(x_sei_token, numero_processo, id_unidade, 2, ANDAMENTOS_PAGE_SIZE),
+            buscar_pagina_andamentos(x_sei_token, numero_processo, id_unidade, total_pages, ANDAMENTOS_PAGE_SIZE),
+        )
+        # Return all fetched pages to client (newest + oldest), but background fill
+        # only knows about the contiguous pages 1-2 to avoid duplicate/out-of-order issues
+        andamentos_for_result = page1 + page2 + last_page
+        andamentos_contiguous = page1 + page2
+        resultado = _build_andamentos_result(andamentos_for_result, current_total, numero_processo)
+        _add_doc_extraction(resultado)
         await cache.set(cache_key, resultado, ttl=CACHE_TTL_ANDAMENTOS)
         asyncio.create_task(_background_fill_andamentos(
             x_sei_token, numero_processo, id_unidade, cache_key,
-            andamentos, len(andamentos), current_total,
+            andamentos_contiguous, len(andamentos_contiguous), current_total,
         ))
         return resultado
 

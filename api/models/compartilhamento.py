@@ -66,7 +66,7 @@ class Compartilhamento(Base):
         comment="Data e hora da exclusão (soft delete)"
     )
 
-    tag = relationship("Tag", back_populates="compartilhamentos")
+    tag = relationship("Tag")
     equipe_destino = relationship("Equipe", foreign_keys=[equipe_destino_id])
 
     __table_args__ = (

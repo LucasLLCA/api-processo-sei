@@ -1,5 +1,5 @@
 """
-Schemas Pydantic para team tags e processo_team_tags
+Schemas Pydantic para tags e processo_team_tags
 """
 import re
 from pydantic import BaseModel, Field, ConfigDict, field_validator
@@ -20,7 +20,7 @@ class TeamTagUpdate(BaseModel):
 
 class TeamTagResponse(BaseModel):
     id: UUID
-    equipe_id: UUID
+    equipe_id: Optional[UUID] = None
     nome: str
     cor: Optional[str] = None
     criado_por: str

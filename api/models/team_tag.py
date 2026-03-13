@@ -1,5 +1,7 @@
 """
-Model SQLAlchemy para tags de equipe (rotulos no kanban)
+Model SQLAlchemy para tags (rotulos aplicaveis a processos).
+
+Tags podem ser pessoais (equipe_id IS NULL) ou de equipe (equipe_id set).
 """
 from sqlalchemy import Column, String, TIMESTAMP, Index, ForeignKey, text
 from sqlalchemy.dialects.postgresql import UUID
@@ -12,9 +14,10 @@ from ..database import Base
 
 class TeamTag(Base):
     """
-    Model para tags de equipe — rotulos coloridos aplicaveis a processos no kanban.
+    Model para tags — rotulos coloridos aplicaveis a processos.
 
-    Escopadas por equipe. Qualquer membro pode criar.
+    Quando equipe_id is NULL: tag pessoal, visivel apenas para criado_por.
+    Quando equipe_id is set: tag de equipe, visivel para membros.
     Implementa soft delete atraves do campo deletado_em.
     """
     __tablename__ = "team_tags"
@@ -24,14 +27,14 @@ class TeamTag(Base):
         primary_key=True,
         default=uuid.uuid4,
         server_default=text("gen_random_uuid()"),
-        comment="Identificador unico da team tag"
+        comment="Identificador unico da tag"
     )
 
     equipe_id = Column(
         UUID(as_uuid=True),
         ForeignKey("equipes.id", ondelete="CASCADE"),
-        nullable=False,
-        comment="ID da equipe dona da tag"
+        nullable=True,
+        comment="ID da equipe dona da tag (NULL = tag pessoal)"
     )
 
     nome = Column(
@@ -75,18 +78,31 @@ class TeamTag(Base):
     processos = relationship("ProcessoTeamTag", back_populates="team_tag", lazy="selectin")
 
     __table_args__ = (
+        # Team tags: unique name per team
         Index(
             'uq_team_tag_equipe_nome',
             'equipe_id', 'nome',
             unique=True,
-            postgresql_where=text("deletado_em IS NULL")
+            postgresql_where=text("deletado_em IS NULL AND equipe_id IS NOT NULL")
+        ),
+        # Personal tags: unique name per user
+        Index(
+            'uq_team_tag_pessoal_nome',
+            'criado_por', 'nome',
+            unique=True,
+            postgresql_where=text("deletado_em IS NULL AND equipe_id IS NULL")
         ),
         Index(
             'idx_team_tag_equipe',
             'equipe_id',
             postgresql_where=text("deletado_em IS NULL")
         ),
-        {'comment': 'Tags de equipe para rotular processos no kanban'}
+        Index(
+            'idx_team_tag_pessoal',
+            'criado_por',
+            postgresql_where=text("deletado_em IS NULL AND equipe_id IS NULL")
+        ),
+        {'comment': 'Tags para rotular processos (pessoais ou de equipe)'}
     )
 
     def __repr__(self) -> str:

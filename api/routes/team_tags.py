@@ -1,5 +1,9 @@
 """
-Rotas para gerenciamento de tags de equipe (rotulos no kanban)
+Rotas para gerenciamento de tags (rotulos em processos).
+
+Tags podem ser pessoais (sem equipe_id) ou de equipe (com equipe_id).
+- Pessoais: visiveis apenas para o usuario que criou.
+- De equipe: visiveis para todos os membros da equipe.
 """
 import re
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -7,6 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, and_
 from datetime import datetime
 from uuid import UUID
+from typing import Optional
 import logging
 
 from ..database import get_db
@@ -46,31 +51,66 @@ async def _verificar_membro(db: AsyncSession, equipe_id: UUID, usuario: str):
         raise HTTPException(status_code=403, detail="Voce nao e membro desta equipe")
 
 
+async def _verificar_acesso_tag(db: AsyncSession, tag: TeamTag, usuario: str):
+    """Verifica que o usuario tem acesso a tag (dono ou membro da equipe)."""
+    if tag.equipe_id:
+        await _verificar_membro(db, tag.equipe_id, usuario)
+    elif tag.criado_por != usuario:
+        raise HTTPException(status_code=403, detail="Voce nao tem acesso a esta tag")
+
+
+async def _get_tag(db: AsyncSession, tag_id: UUID) -> TeamTag:
+    """Busca tag ativa por ID."""
+    result = await db.execute(
+        select(TeamTag).where(and_(
+            TeamTag.id == tag_id,
+            TeamTag.deletado_em.is_(None),
+        ))
+    )
+    tag = result.scalar_one_or_none()
+    if not tag:
+        raise HTTPException(status_code=404, detail="Tag nao encontrada")
+    return tag
+
+
 @router.post(
-    "/{equipe_id}/tags",
+    "",
     response_model=dict,
     status_code=201,
-    summary="Criar tag de equipe",
+    summary="Criar tag",
 )
-async def criar_team_tag(
-    equipe_id: UUID,
+async def criar_tag(
     dados: TeamTagCreate,
     usuario: str = Query(..., description="Usuario criador"),
+    equipe_id: Optional[UUID] = Query(None, description="ID da equipe (omitir para tag pessoal)"),
     db: AsyncSession = Depends(get_db),
 ):
     try:
-        await _verificar_membro(db, equipe_id, usuario)
+        if equipe_id:
+            await _verificar_membro(db, equipe_id, usuario)
 
-        # Verificar duplicata
-        existente = await db.execute(
-            select(TeamTag).where(and_(
-                TeamTag.equipe_id == equipe_id,
-                TeamTag.nome == dados.nome,
-                TeamTag.deletado_em.is_(None),
-            ))
-        )
-        if existente.scalar_one_or_none():
-            raise HTTPException(status_code=409, detail="Ja existe uma tag com este nome nesta equipe")
+            # Verificar duplicata na equipe
+            existente = await db.execute(
+                select(TeamTag).where(and_(
+                    TeamTag.equipe_id == equipe_id,
+                    TeamTag.nome == dados.nome,
+                    TeamTag.deletado_em.is_(None),
+                ))
+            )
+            if existente.scalar_one_or_none():
+                raise HTTPException(status_code=409, detail="Ja existe uma tag com este nome nesta equipe")
+        else:
+            # Verificar duplicata pessoal
+            existente = await db.execute(
+                select(TeamTag).where(and_(
+                    TeamTag.equipe_id.is_(None),
+                    TeamTag.criado_por == usuario,
+                    TeamTag.nome == dados.nome,
+                    TeamTag.deletado_em.is_(None),
+                ))
+            )
+            if existente.scalar_one_or_none():
+                raise HTTPException(status_code=409, detail="Ja existe uma tag pessoal com este nome")
 
         tag = TeamTag(
             equipe_id=equipe_id,
@@ -82,7 +122,8 @@ async def criar_team_tag(
         await db.commit()
         await db.refresh(tag)
 
-        logger.info(f"Team tag criada: equipe={equipe_id}, nome={dados.nome}, por={usuario}")
+        scope = f"equipe={equipe_id}" if equipe_id else "pessoal"
+        logger.info(f"Tag criada: {scope}, nome={dados.nome}, por={usuario}")
 
         return {
             "status": "success",
@@ -92,32 +133,43 @@ async def criar_team_tag(
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Erro ao criar team tag: {e}")
+        logger.error(f"Erro ao criar tag: {e}")
         await db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.get(
-    "/{equipe_id}/tags",
+    "",
     response_model=dict,
-    summary="Listar tags da equipe",
+    summary="Listar tags",
 )
-async def listar_team_tags(
-    equipe_id: UUID,
+async def listar_tags(
     usuario: str = Query(..., description="Usuario"),
+    equipe_id: Optional[UUID] = Query(None, description="ID da equipe (omitir para tags pessoais)"),
     db: AsyncSession = Depends(get_db),
 ):
     try:
-        await _verificar_membro(db, equipe_id, usuario)
+        if equipe_id:
+            await _verificar_membro(db, equipe_id, usuario)
+            query = (
+                select(TeamTag)
+                .where(and_(
+                    TeamTag.equipe_id == equipe_id,
+                    TeamTag.deletado_em.is_(None),
+                ))
+                .order_by(TeamTag.nome.asc())
+            )
+        else:
+            query = (
+                select(TeamTag)
+                .where(and_(
+                    TeamTag.equipe_id.is_(None),
+                    TeamTag.criado_por == usuario,
+                    TeamTag.deletado_em.is_(None),
+                ))
+                .order_by(TeamTag.nome.asc())
+            )
 
-        query = (
-            select(TeamTag)
-            .where(and_(
-                TeamTag.equipe_id == equipe_id,
-                TeamTag.deletado_em.is_(None),
-            ))
-            .order_by(TeamTag.nome.asc())
-        )
         result = await db.execute(query)
         tags = result.scalars().all()
 
@@ -129,48 +181,48 @@ async def listar_team_tags(
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Erro ao listar team tags: {e}")
+        logger.error(f"Erro ao listar tags: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.patch(
-    "/{equipe_id}/tags/{tag_id}",
+    "/{tag_id}",
     response_model=dict,
-    summary="Atualizar tag de equipe",
+    summary="Atualizar tag",
 )
-async def atualizar_team_tag(
-    equipe_id: UUID,
+async def atualizar_tag(
     tag_id: UUID,
     dados: TeamTagUpdate,
     usuario: str = Query(..., description="Usuario"),
     db: AsyncSession = Depends(get_db),
 ):
     try:
-        await _verificar_membro(db, equipe_id, usuario)
-
-        result = await db.execute(
-            select(TeamTag).where(and_(
-                TeamTag.id == tag_id,
-                TeamTag.equipe_id == equipe_id,
-                TeamTag.deletado_em.is_(None),
-            ))
-        )
-        tag = result.scalar_one_or_none()
-        if not tag:
-            raise HTTPException(status_code=404, detail="Tag nao encontrada")
+        tag = await _get_tag(db, tag_id)
+        await _verificar_acesso_tag(db, tag, usuario)
 
         if dados.nome is not None:
             # Verificar duplicata do novo nome
-            dup = await db.execute(
-                select(TeamTag).where(and_(
-                    TeamTag.equipe_id == equipe_id,
-                    TeamTag.nome == dados.nome,
-                    TeamTag.id != tag_id,
-                    TeamTag.deletado_em.is_(None),
-                ))
-            )
+            if tag.equipe_id:
+                dup = await db.execute(
+                    select(TeamTag).where(and_(
+                        TeamTag.equipe_id == tag.equipe_id,
+                        TeamTag.nome == dados.nome,
+                        TeamTag.id != tag_id,
+                        TeamTag.deletado_em.is_(None),
+                    ))
+                )
+            else:
+                dup = await db.execute(
+                    select(TeamTag).where(and_(
+                        TeamTag.equipe_id.is_(None),
+                        TeamTag.criado_por == usuario,
+                        TeamTag.nome == dados.nome,
+                        TeamTag.id != tag_id,
+                        TeamTag.deletado_em.is_(None),
+                    ))
+                )
             if dup.scalar_one_or_none():
-                raise HTTPException(status_code=409, detail="Ja existe uma tag com este nome nesta equipe")
+                raise HTTPException(status_code=409, detail="Ja existe uma tag com este nome")
             tag.nome = dados.nome
 
         if dados.cor is not None:
@@ -188,35 +240,24 @@ async def atualizar_team_tag(
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Erro ao atualizar team tag: {e}")
+        logger.error(f"Erro ao atualizar tag: {e}")
         await db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.delete(
-    "/{equipe_id}/tags/{tag_id}",
+    "/{tag_id}",
     response_model=dict,
-    summary="Excluir tag de equipe (soft delete)",
+    summary="Excluir tag (soft delete)",
 )
-async def deletar_team_tag(
-    equipe_id: UUID,
+async def deletar_tag(
     tag_id: UUID,
     usuario: str = Query(..., description="Usuario"),
     db: AsyncSession = Depends(get_db),
 ):
     try:
-        await _verificar_membro(db, equipe_id, usuario)
-
-        result = await db.execute(
-            select(TeamTag).where(and_(
-                TeamTag.id == tag_id,
-                TeamTag.equipe_id == equipe_id,
-                TeamTag.deletado_em.is_(None),
-            ))
-        )
-        tag = result.scalar_one_or_none()
-        if not tag:
-            raise HTTPException(status_code=404, detail="Tag nao encontrada")
+        tag = await _get_tag(db, tag_id)
+        await _verificar_acesso_tag(db, tag, usuario)
 
         tag.soft_delete()
         await db.commit()
@@ -226,37 +267,26 @@ async def deletar_team_tag(
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Erro ao deletar team tag: {e}")
+        logger.error(f"Erro ao deletar tag: {e}")
         await db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.post(
-    "/{equipe_id}/tags/{tag_id}/processos",
+    "/{tag_id}/processos",
     response_model=dict,
     status_code=201,
     summary="Associar tag a um processo",
 )
 async def tag_processo(
-    equipe_id: UUID,
     tag_id: UUID,
     dados: ProcessoTeamTagCreate,
     usuario: str = Query(..., description="Usuario"),
     db: AsyncSession = Depends(get_db),
 ):
     try:
-        await _verificar_membro(db, equipe_id, usuario)
-
-        # Verificar que a tag pertence a equipe
-        tag_q = await db.execute(
-            select(TeamTag).where(and_(
-                TeamTag.id == tag_id,
-                TeamTag.equipe_id == equipe_id,
-                TeamTag.deletado_em.is_(None),
-            ))
-        )
-        if not tag_q.scalar_one_or_none():
-            raise HTTPException(status_code=404, detail="Tag nao encontrada")
+        tag = await _get_tag(db, tag_id)
+        await _verificar_acesso_tag(db, tag, usuario)
 
         numero_limpo = _strip_non_digits(dados.numero_processo)
 
@@ -294,19 +324,19 @@ async def tag_processo(
 
 
 @router.delete(
-    "/{equipe_id}/tags/{tag_id}/processos/por-numero",
+    "/{tag_id}/processos/por-numero",
     response_model=dict,
     summary="Remover tag de um processo pelo numero do processo",
 )
 async def untag_processo_por_numero(
-    equipe_id: UUID,
     tag_id: UUID,
     numero_processo: str = Query(..., description="Numero do processo"),
     usuario: str = Query(..., description="Usuario"),
     db: AsyncSession = Depends(get_db),
 ):
     try:
-        await _verificar_membro(db, equipe_id, usuario)
+        tag = await _get_tag(db, tag_id)
+        await _verificar_acesso_tag(db, tag, usuario)
 
         numero_limpo = _strip_non_digits(numero_processo)
 
@@ -335,19 +365,19 @@ async def untag_processo_por_numero(
 
 
 @router.delete(
-    "/{equipe_id}/tags/{tag_id}/processos/{processo_tag_id}",
+    "/{tag_id}/processos/{processo_tag_id}",
     response_model=dict,
     summary="Remover tag de um processo",
 )
 async def untag_processo(
-    equipe_id: UUID,
     tag_id: UUID,
     processo_tag_id: UUID,
     usuario: str = Query(..., description="Usuario"),
     db: AsyncSession = Depends(get_db),
 ):
     try:
-        await _verificar_membro(db, equipe_id, usuario)
+        tag = await _get_tag(db, tag_id)
+        await _verificar_acesso_tag(db, tag, usuario)
 
         result = await db.execute(
             select(ProcessoTeamTag).where(and_(
@@ -374,31 +404,44 @@ async def untag_processo(
 
 
 @router.get(
-    "/{equipe_id}/tags/por-processo/{numero_processo}",
+    "/por-processo/{numero_processo}",
     response_model=dict,
-    summary="Tags de equipe de um processo",
+    summary="Tags de um processo",
 )
 async def tags_por_processo(
-    equipe_id: UUID,
     numero_processo: str,
     usuario: str = Query(..., description="Usuario"),
+    equipe_id: Optional[UUID] = Query(None, description="ID da equipe (omitir para tags pessoais)"),
     db: AsyncSession = Depends(get_db),
 ):
     try:
-        await _verificar_membro(db, equipe_id, usuario)
-
         numero_limpo = _strip_non_digits(numero_processo)
 
-        query = (
-            select(ProcessoTeamTag)
-            .join(TeamTag, ProcessoTeamTag.team_tag_id == TeamTag.id)
-            .where(and_(
-                ProcessoTeamTag.numero_processo == numero_limpo,
-                ProcessoTeamTag.deletado_em.is_(None),
-                TeamTag.equipe_id == equipe_id,
-                TeamTag.deletado_em.is_(None),
-            ))
-        )
+        if equipe_id:
+            await _verificar_membro(db, equipe_id, usuario)
+            query = (
+                select(ProcessoTeamTag)
+                .join(TeamTag, ProcessoTeamTag.team_tag_id == TeamTag.id)
+                .where(and_(
+                    ProcessoTeamTag.numero_processo == numero_limpo,
+                    ProcessoTeamTag.deletado_em.is_(None),
+                    TeamTag.equipe_id == equipe_id,
+                    TeamTag.deletado_em.is_(None),
+                ))
+            )
+        else:
+            query = (
+                select(ProcessoTeamTag)
+                .join(TeamTag, ProcessoTeamTag.team_tag_id == TeamTag.id)
+                .where(and_(
+                    ProcessoTeamTag.numero_processo == numero_limpo,
+                    ProcessoTeamTag.deletado_em.is_(None),
+                    TeamTag.equipe_id.is_(None),
+                    TeamTag.criado_por == usuario,
+                    TeamTag.deletado_em.is_(None),
+                ))
+            )
+
         result = await db.execute(query)
         assocs = result.scalars().all()
 
