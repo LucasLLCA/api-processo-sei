@@ -143,8 +143,9 @@ async def embed_login(body: EmbedLoginRequest, db: AsyncSession = Depends(get_db
     # 1. Validar contra o SEI (raises HTTPException on failure)
     data = await sei.login(body.usuario_sei, body.senha, body.orgao)
 
-    # 2. Upsert — soft-delete existing, then insert new
+    # 2. Upsert — soft-delete existing, then insert new (preserving papel_global)
     existing = await _get_active_credential(db, body.id_pessoa)
+    preserved_papel = existing.papel_global if existing else "user"
     if existing:
         existing.soft_delete()
         await db.flush()
@@ -155,6 +156,7 @@ async def embed_login(body: EmbedLoginRequest, db: AsyncSession = Depends(get_db
         usuario_sei=body.usuario_sei,
         senha_encrypted=encrypt_password(body.senha),
         orgao=body.orgao,
+        papel_global=preserved_papel,
     )
     db.add(new_cred)
     await db.flush()
