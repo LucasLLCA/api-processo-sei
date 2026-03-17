@@ -1,14 +1,21 @@
 import asyncio
 import base64
 import logging
+import time
 from io import BytesIO
 
 import httpx
 from openai import AsyncOpenAI
+from opentelemetry import trace
 from fastapi import HTTPException
 from .config import settings
+from .telemetry import (
+    llm_request_duration, llm_token_usage, llm_timeout_counter,
+    pdf_processing_duration,
+)
 
 logger = logging.getLogger(__name__)
+tracer = trace.get_tracer("api.openai_client")
 
 logger.info(f"OpenAI configurado - URL: {settings.OPENAI_BASE_URL}, API Key definida: {bool(settings.OPENAI_API_KEY)}")
 
@@ -62,32 +69,56 @@ async def _pdf_para_imagens_base64(pdf_bytes: bytes, max_pages: int = 5) -> list
     Wrapper async que executa a conversão PDF→imagens em thread separada
     para não bloquear o event loop.
     """
-    return await asyncio.to_thread(_pdf_para_imagens_base64_sync, pdf_bytes, max_pages)
+    with tracer.start_as_current_span("pdf.convert_to_images", attributes={
+        "pdf.input_size_bytes": len(pdf_bytes),
+        "pdf.max_pages": max_pages,
+    }) as span:
+        start = time.monotonic()
+        result = await asyncio.to_thread(_pdf_para_imagens_base64_sync, pdf_bytes, max_pages)
+        pdf_processing_duration.record(time.monotonic() - start)
+        span.set_attribute("pdf.output_page_count", len(result))
+        return result
 
 
 async def enviar_para_ia_conteudo(conteudo_md: str) -> dict:
     if not conteudo_md.strip():
         return {"status": "erro", "resposta_ia": "Conteúdo Markdown vazio"}
 
-    try:
-        logger.debug(f"Enviando conteúdo para IA. Tamanho: {len(conteudo_md)} caracteres")
-        resposta = await client.chat.completions.create(
-            model=settings.OPENAI_MODEL,
-            messages=[
-                {"role": "system", "content": "Você é um assistente jurídico especializado..."},
-                {"role": "user", "content": f"Leia cuidadosamente o documento Markdown abaixo e produza um relatório detalhado...\n\nDocumento:\n\n{conteudo_md}"}
-            ],
-            temperature=0.7,
-        )
-        logger.debug("Resposta da IA recebida com sucesso")
-        return {"status": "ok", "resposta_ia": resposta.choices[0].message.content.strip()}
+    with tracer.start_as_current_span("llm.chat_completion", attributes={
+        "llm.model": settings.OPENAI_MODEL,
+        "llm.input.type": "html",
+        "llm.input.length": len(conteudo_md),
+    }) as span:
+        start = time.monotonic()
+        try:
+            logger.debug(f"Enviando conteúdo para IA. Tamanho: {len(conteudo_md)} caracteres")
+            resposta = await client.chat.completions.create(
+                model=settings.OPENAI_MODEL,
+                messages=[
+                    {"role": "system", "content": "Você é um assistente jurídico especializado..."},
+                    {"role": "user", "content": f"Leia cuidadosamente o documento Markdown abaixo e produza um relatório detalhado...\n\nDocumento:\n\n{conteudo_md}"}
+                ],
+                temperature=0.7,
+            )
+            elapsed = time.monotonic() - start
+            llm_request_duration.record(elapsed, {"llm.model": settings.OPENAI_MODEL, "llm.input_type": "html"})
+            if resposta.usage:
+                span.set_attribute("llm.usage.total_tokens", resposta.usage.total_tokens)
+                llm_token_usage.add(resposta.usage.total_tokens, {"llm.model": settings.OPENAI_MODEL})
+            logger.debug("Resposta da IA recebida com sucesso")
+            return {"status": "ok", "resposta_ia": resposta.choices[0].message.content.strip()}
 
-    except httpx.TimeoutException as e:
-        logger.error(f"Timeout ao consultar IA após {settings.OPENAI_TIMEOUT}s: {str(e)}")
-        raise HTTPException(status_code=504, detail=f"Timeout ao consultar IA: a requisição excedeu {settings.OPENAI_TIMEOUT}s")
-    except Exception as e:
-        logger.error(f"Falha ao consultar IA: {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Erro ao consultar IA: {str(e)}")
+        except httpx.TimeoutException as e:
+            span.set_status(trace.StatusCode.ERROR, "LLM timeout")
+            span.record_exception(e)
+            llm_timeout_counter.add(1, {"llm.model": settings.OPENAI_MODEL})
+            logger.error(f"Timeout ao consultar IA após {settings.OPENAI_TIMEOUT}s: {str(e)}")
+            raise HTTPException(status_code=504, detail=f"Timeout ao consultar IA: a requisição excedeu {settings.OPENAI_TIMEOUT}s")
+        except Exception as e:
+            span.set_status(trace.StatusCode.ERROR, str(e))
+            span.record_exception(e)
+            logger.error(f"Falha ao consultar IA: {str(e)}")
+            raise HTTPException(status_code=500, detail=f"Erro ao consultar IA: {str(e)}")
 
 
 async def enviar_para_ia_conteudo_md(conteudo_md: str, tipo_arquivo: str = "html") -> dict:
@@ -110,52 +141,68 @@ async def enviar_para_ia_conteudo_md(conteudo_md: str, tipo_arquivo: str = "html
     else:
         return {"status": "erro", "resposta_ia": f"Tipo de arquivo não suportado: {tipo_arquivo}"}
 
-    try:
-        logger.debug(f"Enviando conteúdo para IA (tipo: {tipo_arquivo}). Modelo: {modelo}")
+    with tracer.start_as_current_span("llm.chat_completion", attributes={
+        "llm.model": modelo,
+        "llm.input.type": tipo_arquivo,
+        "llm.max_tokens": 350,
+    }) as span:
+        start = time.monotonic()
+        try:
+            logger.debug(f"Enviando conteúdo para IA (tipo: {tipo_arquivo}). Modelo: {modelo}")
 
-        if tipo_arquivo == "html":
-            resposta = await client.chat.completions.create(
-                model=modelo,
-                messages=[
-                    {"role": "system", "content": SYSTEM_RESUMO},
-                    {"role": "user", "content": USER_RESUMO_HTML.format(conteudo_md=conteudo_md)}
-                ],
-                temperature=0.7,
-                max_tokens=350,
-            )
-        else:  # PDF
-            try:
-                image_contents = await _pdf_para_imagens_base64(conteudo_md)
-
-                user_content = [
-                    {"type": "text", "text": USER_RESUMO_PDF}
-                ] + image_contents
-
+            if tipo_arquivo == "html":
                 resposta = await client.chat.completions.create(
                     model=modelo,
                     messages=[
                         {"role": "system", "content": SYSTEM_RESUMO},
-                        {"role": "user", "content": user_content}
+                        {"role": "user", "content": USER_RESUMO_HTML.format(conteudo_md=conteudo_md)}
                     ],
                     temperature=0.7,
                     max_tokens=350,
                 )
-            except ImportError:
-                logger.error("pdf2image não está instalado. Instale com: pip install pdf2image")
-                return {"status": "erro", "resposta_ia": "Erro: biblioteca pdf2image não disponível para processar PDF"}
-            except Exception as pdf_error:
-                logger.error(f"Erro ao processar PDF: {str(pdf_error)}")
-                return {"status": "erro", "resposta_ia": f"Erro ao processar PDF: {str(pdf_error)}"}
+            else:  # PDF
+                try:
+                    image_contents = await _pdf_para_imagens_base64(conteudo_md)
 
-        logger.debug(f"Resposta da IA (tipo: {tipo_arquivo}) recebida com sucesso")
-        return {"status": "ok", "resposta_ia": resposta.choices[0].message.content.strip()}
+                    user_content = [
+                        {"type": "text", "text": USER_RESUMO_PDF}
+                    ] + image_contents
 
-    except httpx.TimeoutException as e:
-        logger.error(f"Timeout ao consultar IA (tipo: {tipo_arquivo}) após {settings.OPENAI_TIMEOUT}s: {str(e)}")
-        raise HTTPException(status_code=504, detail=f"Timeout ao consultar IA: a requisição excedeu {settings.OPENAI_TIMEOUT}s")
-    except Exception as e:
-        logger.error(f"Falha ao consultar IA (tipo: {tipo_arquivo}): {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Erro ao consultar IA: {str(e)}")
+                    resposta = await client.chat.completions.create(
+                        model=modelo,
+                        messages=[
+                            {"role": "system", "content": SYSTEM_RESUMO},
+                            {"role": "user", "content": user_content}
+                        ],
+                        temperature=0.7,
+                        max_tokens=350,
+                    )
+                except ImportError:
+                    logger.error("pdf2image não está instalado. Instale com: pip install pdf2image")
+                    return {"status": "erro", "resposta_ia": "Erro: biblioteca pdf2image não disponível para processar PDF"}
+                except Exception as pdf_error:
+                    logger.error(f"Erro ao processar PDF: {str(pdf_error)}")
+                    return {"status": "erro", "resposta_ia": f"Erro ao processar PDF: {str(pdf_error)}"}
+
+            elapsed = time.monotonic() - start
+            llm_request_duration.record(elapsed, {"llm.model": modelo, "llm.input_type": tipo_arquivo})
+            if resposta.usage:
+                span.set_attribute("llm.usage.total_tokens", resposta.usage.total_tokens)
+                llm_token_usage.add(resposta.usage.total_tokens, {"llm.model": modelo})
+            logger.debug(f"Resposta da IA (tipo: {tipo_arquivo}) recebida com sucesso")
+            return {"status": "ok", "resposta_ia": resposta.choices[0].message.content.strip()}
+
+        except httpx.TimeoutException as e:
+            span.set_status(trace.StatusCode.ERROR, "LLM timeout")
+            span.record_exception(e)
+            llm_timeout_counter.add(1, {"llm.model": modelo})
+            logger.error(f"Timeout ao consultar IA (tipo: {tipo_arquivo}) após {settings.OPENAI_TIMEOUT}s: {str(e)}")
+            raise HTTPException(status_code=504, detail=f"Timeout ao consultar IA: a requisição excedeu {settings.OPENAI_TIMEOUT}s")
+        except Exception as e:
+            span.set_status(trace.StatusCode.ERROR, str(e))
+            span.record_exception(e)
+            logger.error(f"Falha ao consultar IA (tipo: {tipo_arquivo}): {str(e)}")
+            raise HTTPException(status_code=500, detail=f"Erro ao consultar IA: {str(e)}")
 
 
 async def enviar_para_ia_conteudo_md_stream(conteudo_md, tipo_arquivo: str = "html"):
@@ -187,16 +234,27 @@ async def enviar_para_ia_conteudo_md_stream(conteudo_md, tipo_arquivo: str = "ht
             {"role": "user", "content": user_content}
         ]
 
-    stream = await client.chat.completions.create(
-        model=modelo,
-        messages=messages,
-        temperature=0.7,
-        max_tokens=350,
-        stream=True,
-    )
-    async for chunk in stream:
-        if chunk.choices and chunk.choices[0].delta.content:
-            yield chunk.choices[0].delta.content
+    with tracer.start_as_current_span("llm.chat_completion.stream", attributes={
+        "llm.model": modelo,
+        "llm.input.type": tipo_arquivo,
+        "llm.function": "resumo_conteudo",
+    }) as span:
+        start = time.monotonic()
+        chunk_count = 0
+        stream = await client.chat.completions.create(
+            model=modelo,
+            messages=messages,
+            temperature=0.7,
+            max_tokens=350,
+            stream=True,
+        )
+        async for chunk in stream:
+            if chunk.choices and chunk.choices[0].delta.content:
+                chunk_count += 1
+                yield chunk.choices[0].delta.content
+        elapsed = time.monotonic() - start
+        span.set_attribute("llm.response.chunk_count", chunk_count)
+        llm_request_duration.record(elapsed, {"llm.model": modelo, "llm.input_type": tipo_arquivo})
 
 
 async def enviar_situacao_atual_stream(entendimento: str, ultimo_doc_conteudo: str, ultimos_andamentos_texto: str):
@@ -228,16 +286,27 @@ async def enviar_situacao_atual_stream(entendimento: str, ultimo_doc_conteudo: s
         },
     ]
 
-    stream = await client.chat.completions.create(
-        model=settings.OPENAI_MODEL_TEXTO,
-        messages=messages,
-        temperature=0.7,
-        max_tokens=500,
-        stream=True,
-    )
-    async for chunk in stream:
-        if chunk.choices and chunk.choices[0].delta.content:
-            yield chunk.choices[0].delta.content
+    with tracer.start_as_current_span("llm.chat_completion.stream", attributes={
+        "llm.model": settings.OPENAI_MODEL_TEXTO,
+        "llm.function": "situacao_atual",
+        "llm.max_tokens": 500,
+    }) as span:
+        start = time.monotonic()
+        chunk_count = 0
+        stream = await client.chat.completions.create(
+            model=settings.OPENAI_MODEL_TEXTO,
+            messages=messages,
+            temperature=0.7,
+            max_tokens=500,
+            stream=True,
+        )
+        async for chunk in stream:
+            if chunk.choices and chunk.choices[0].delta.content:
+                chunk_count += 1
+                yield chunk.choices[0].delta.content
+        elapsed = time.monotonic() - start
+        span.set_attribute("llm.response.chunk_count", chunk_count)
+        llm_request_duration.record(elapsed, {"llm.model": settings.OPENAI_MODEL_TEXTO, "llm.input_type": "text"})
 
 
 async def enviar_documento_ia_conteudo_stream(conteudo_md, tipo_arquivo: str = "html"):
@@ -272,15 +341,26 @@ async def enviar_documento_ia_conteudo_stream(conteudo_md, tipo_arquivo: str = "
             {"role": "user", "content": user_content}
         ]
 
-    stream = await client.chat.completions.create(
-        model=modelo,
-        messages=messages,
-        temperature=0.7,
-        stream=True,
-    )
-    async for chunk in stream:
-        if chunk.choices and chunk.choices[0].delta.content:
-            yield chunk.choices[0].delta.content
+    with tracer.start_as_current_span("llm.chat_completion.stream", attributes={
+        "llm.model": modelo,
+        "llm.input.type": tipo_arquivo,
+        "llm.function": "resumo_documento",
+    }) as span:
+        start = time.monotonic()
+        chunk_count = 0
+        stream = await client.chat.completions.create(
+            model=modelo,
+            messages=messages,
+            temperature=0.7,
+            stream=True,
+        )
+        async for chunk in stream:
+            if chunk.choices and chunk.choices[0].delta.content:
+                chunk_count += 1
+                yield chunk.choices[0].delta.content
+        elapsed = time.monotonic() - start
+        span.set_attribute("llm.response.chunk_count", chunk_count)
+        llm_request_duration.record(elapsed, {"llm.model": modelo, "llm.input_type": tipo_arquivo})
 
 
 async def enviar_documento_ia_conteudo(conteudo_md: str, tipo_arquivo: str = "html") -> dict:
@@ -303,53 +383,69 @@ async def enviar_documento_ia_conteudo(conteudo_md: str, tipo_arquivo: str = "ht
     else:
         return {"status": "erro", "resposta_ia": f"Tipo de arquivo não suportado: {tipo_arquivo}"}
 
-    try:
-        logger.debug(f"Enviando documento para IA (tipo: {tipo_arquivo}). Modelo: {modelo}")
+    with tracer.start_as_current_span("llm.chat_completion", attributes={
+        "llm.model": modelo,
+        "llm.input.type": tipo_arquivo,
+        "llm.function": "resumo_documento",
+    }) as span:
+        start = time.monotonic()
+        try:
+            logger.debug(f"Enviando documento para IA (tipo: {tipo_arquivo}). Modelo: {modelo}")
 
-        if tipo_arquivo == "html":
-            resposta = await client.chat.completions.create(
-                model=modelo,
-                messages=[
-                    {"role": "system", "content": "Você é um assistente jurídico especializado..."},
-                    {"role": "user", "content": f"Leia cuidadosamente o documento Markdown abaixo e produza um resumo de maximo 300 caracteres...\n\nDocumento:\n\n{conteudo_md}"}
-                ],
-                temperature=0.7,
-            )
-        else:  # PDF
-            try:
-                image_contents = await _pdf_para_imagens_base64(conteudo_md)
-
-                user_content = [
-                    {
-                        "type": "text",
-                        "text": "Leia cuidadosamente as páginas do documento PDF abaixo e produza um resumo de máximo 300 caracteres:"
-                    }
-                ] + image_contents
-
+            if tipo_arquivo == "html":
                 resposta = await client.chat.completions.create(
                     model=modelo,
                     messages=[
                         {"role": "system", "content": "Você é um assistente jurídico especializado..."},
-                        {
-                            "role": "user",
-                            "content": user_content
-                        }
+                        {"role": "user", "content": f"Leia cuidadosamente o documento Markdown abaixo e produza um resumo de maximo 300 caracteres...\n\nDocumento:\n\n{conteudo_md}"}
                     ],
                     temperature=0.7,
                 )
-            except ImportError:
-                logger.error("pdf2image não está instalado. Instale com: pip install pdf2image")
-                return {"status": "erro", "resposta_ia": "Erro: biblioteca pdf2image não disponível para processar PDF"}
-            except Exception as pdf_error:
-                logger.error(f"Erro ao processar PDF: {str(pdf_error)}")
-                return {"status": "erro", "resposta_ia": f"Erro ao processar PDF: {str(pdf_error)}"}
+            else:  # PDF
+                try:
+                    image_contents = await _pdf_para_imagens_base64(conteudo_md)
 
-        logger.debug(f"Resposta da IA (tipo: {tipo_arquivo}) recebida com sucesso")
-        return {"status": "ok", "resposta_ia": resposta.choices[0].message.content.strip()}
+                    user_content = [
+                        {
+                            "type": "text",
+                            "text": "Leia cuidadosamente as páginas do documento PDF abaixo e produza um resumo de máximo 300 caracteres:"
+                        }
+                    ] + image_contents
 
-    except httpx.TimeoutException as e:
-        logger.error(f"Timeout ao consultar IA (tipo: {tipo_arquivo}) após {settings.OPENAI_TIMEOUT}s: {str(e)}")
-        raise HTTPException(status_code=504, detail=f"Timeout ao consultar IA: a requisição excedeu {settings.OPENAI_TIMEOUT}s")
-    except Exception as e:
-        logger.error(f"Falha ao consultar IA (tipo: {tipo_arquivo}): {str(e)}")
-        raise HTTPException(status_code=500, detail=f"Erro ao consultar IA: {str(e)}")
+                    resposta = await client.chat.completions.create(
+                        model=modelo,
+                        messages=[
+                            {"role": "system", "content": "Você é um assistente jurídico especializado..."},
+                            {
+                                "role": "user",
+                                "content": user_content
+                            }
+                        ],
+                        temperature=0.7,
+                    )
+                except ImportError:
+                    logger.error("pdf2image não está instalado. Instale com: pip install pdf2image")
+                    return {"status": "erro", "resposta_ia": "Erro: biblioteca pdf2image não disponível para processar PDF"}
+                except Exception as pdf_error:
+                    logger.error(f"Erro ao processar PDF: {str(pdf_error)}")
+                    return {"status": "erro", "resposta_ia": f"Erro ao processar PDF: {str(pdf_error)}"}
+
+            elapsed = time.monotonic() - start
+            llm_request_duration.record(elapsed, {"llm.model": modelo, "llm.input_type": tipo_arquivo})
+            if resposta.usage:
+                span.set_attribute("llm.usage.total_tokens", resposta.usage.total_tokens)
+                llm_token_usage.add(resposta.usage.total_tokens, {"llm.model": modelo})
+            logger.debug(f"Resposta da IA (tipo: {tipo_arquivo}) recebida com sucesso")
+            return {"status": "ok", "resposta_ia": resposta.choices[0].message.content.strip()}
+
+        except httpx.TimeoutException as e:
+            span.set_status(trace.StatusCode.ERROR, "LLM timeout")
+            span.record_exception(e)
+            llm_timeout_counter.add(1, {"llm.model": modelo})
+            logger.error(f"Timeout ao consultar IA (tipo: {tipo_arquivo}) após {settings.OPENAI_TIMEOUT}s: {str(e)}")
+            raise HTTPException(status_code=504, detail=f"Timeout ao consultar IA: a requisição excedeu {settings.OPENAI_TIMEOUT}s")
+        except Exception as e:
+            span.set_status(trace.StatusCode.ERROR, str(e))
+            span.record_exception(e)
+            logger.error(f"Falha ao consultar IA (tipo: {tipo_arquivo}): {str(e)}")
+            raise HTTPException(status_code=500, detail=f"Erro ao consultar IA: {str(e)}")

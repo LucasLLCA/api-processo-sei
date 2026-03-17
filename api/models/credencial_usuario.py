@@ -28,6 +28,12 @@ class CredencialUsuario(Base):
     usuario_sei = Column(String(100), nullable=False)
     senha_encrypted = Column(Text, nullable=False)
     orgao = Column(String(50), nullable=False)
+    papel_global = Column(
+        String(20),
+        nullable=False,
+        server_default=text("'user'"),
+        comment="Papel global do usuário (admin, beta, user)",
+    )
 
     criado_em = Column(
         TIMESTAMP(timezone=True),

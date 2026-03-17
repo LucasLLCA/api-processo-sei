@@ -5,6 +5,7 @@ import logging
 from typing import Optional, Any
 from .config import settings
 from .normalization import normalizar_numero_processo
+from .telemetry import cache_hit_counter, cache_miss_counter, cache_set_failure_counter
 
 logger = logging.getLogger(__name__)
 
@@ -93,10 +94,13 @@ class RedisCache:
             return None
 
         try:
+            key_prefix = key.split(":")[0]
             value = await self.redis_client.get(key)
             if value:
+                cache_hit_counter.add(1, {"cache.key_prefix": key_prefix})
                 logger.debug(f"[CACHE HIT] Chave: {key}")
                 return orjson.loads(value)
+            cache_miss_counter.add(1, {"cache.key_prefix": key_prefix})
             logger.debug(f"[CACHE MISS] Chave: {key}")
             return None
         except (ConnectionError, TimeoutError, OSError) as e:
@@ -133,7 +137,11 @@ class RedisCache:
         if not self._connected:
             await self.connect()
 
+        key_prefix = key.split(":")[0]
+
         if self.redis_client is None:
+            logger.warning(f"[CACHE SET FAIL] Chave: {key} — Redis indisponível")
+            cache_set_failure_counter.add(1, {"cache.key_prefix": key_prefix, "cache.failure_reason": "unavailable"})
             return False
 
         try:
@@ -146,6 +154,7 @@ class RedisCache:
             try:
                 await self._reconnect()
                 if self.redis_client is None:
+                    cache_set_failure_counter.add(1, {"cache.key_prefix": key_prefix, "cache.failure_reason": "reconnect_failed"})
                     return False
                 serialized_value = orjson.dumps(value).decode('utf-8')
                 await self.redis_client.setex(key, ttl, serialized_value)
@@ -153,10 +162,12 @@ class RedisCache:
                 return True
             except Exception:
                 self._connected = False
+                cache_set_failure_counter.add(1, {"cache.key_prefix": key_prefix, "cache.failure_reason": "reconnect_error"})
                 return False
         except Exception as e:
             logger.warning(f"Erro ao definir cache para chave {key}: {str(e)}")
             self._connected = False
+            cache_set_failure_counter.add(1, {"cache.key_prefix": key_prefix, "cache.failure_reason": "error"})
             return False
 
     async def delete(self, key: str) -> bool:

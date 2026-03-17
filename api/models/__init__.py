@@ -14,6 +14,11 @@ from .processo_team_tag import ProcessoTeamTag
 from .processo_entendimento import ProcessoEntendimento
 from .processo_situacao import ProcessoSituacao
 from .credencial_usuario import CredencialUsuario
+from .configuracao_horas import ConfiguracaoHorasAndamento
+from .fluxo import Fluxo
+from .fluxo_node import FluxoNode
+from .fluxo_edge import FluxoEdge
+from .fluxo_processo import FluxoProcesso
 
 __all__ = [
     "HistoricoPesquisa",
@@ -29,4 +34,9 @@ __all__ = [
     "ProcessoEntendimento",
     "ProcessoSituacao",
     "CredencialUsuario",
+    "ConfiguracaoHorasAndamento",
+    "Fluxo",
+    "FluxoNode",
+    "FluxoEdge",
+    "FluxoProcesso",
 ]

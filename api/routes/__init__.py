@@ -10,6 +10,7 @@ from .compartilhamentos import router as compartilhamentos_router
 from .observacoes import router as observacoes_router
 from .team_tags import router as team_tags_router
 from .credenciais import router as credenciais_router
+from .fluxos import router as fluxos_router
 
 router = APIRouter()
 
@@ -24,3 +25,4 @@ router.include_router(compartilhamentos_router, prefix="/compartilhamentos", tag
 router.include_router(observacoes_router, prefix="/observacoes", tags=["Observacoes"])
 router.include_router(team_tags_router, prefix="/tags", tags=["Tags"])
 router.include_router(credenciais_router, prefix="/credenciais", tags=["Credenciais"])
+router.include_router(fluxos_router, prefix="/fluxos", tags=["Fluxos de Processos"])

@@ -1,20 +1,25 @@
 import re
+import time
 import httpx
 import math
 import asyncio
 import logging
+from opentelemetry import trace
 from fastapi import HTTPException
 from .schemas_legacy import ErrorDetail, ErrorType
 from .utils import converte_html_para_markdown_memoria
 from .config import settings
+from .telemetry import sei_retry_counter, sei_request_duration
 
 logger = logging.getLogger(__name__)
+tracer = trace.get_tracer("api.sei")
 
 # Cliente HTTP global com connection pool
 http_client = httpx.AsyncClient(
     timeout=httpx.Timeout(180.0, connect=30.0),
     limits=httpx.Limits(max_connections=100, max_keepalive_connections=20),
-    http2=True
+    http2=True,
+    verify=False
 )
 
 # Fixed retry config: 120s per attempt (SEI docs endpoint takes ~80s), 2s backoff
@@ -29,38 +34,60 @@ async def _fazer_requisicao_com_retry(url: str, headers: dict, params: dict, max
     Só faz retry em timeout e erros de conexão.
     Fixed 60s timeout per attempt, 2s backoff between retries.
     """
-    for tentativa in range(max_tentativas):
-        try:
-            response = await http_client.get(url, headers=headers, params=params, timeout=timeout)
-            if response.status_code >= 400:
+    # Extract URL path for metric labels (avoid leaking full URL with tokens)
+    url_path = url.replace(settings.SEI_BASE_URL, "")
+    with tracer.start_as_current_span("sei.api_call_with_retry", attributes={
+        "sei.url_path": url_path,
+        "sei.max_retries": max_tentativas,
+        "sei.timeout_per_attempt": timeout,
+    }) as span:
+        start = time.monotonic()
+        for tentativa in range(max_tentativas):
+            try:
+                response = await http_client.get(url, headers=headers, params=params, timeout=timeout)
+                elapsed = time.monotonic() - start
+                span.set_attribute("sei.attempt_count", tentativa + 1)
+                span.set_attribute("sei.response.status_code", response.status_code)
+                sei_request_duration.record(elapsed, {"sei.url_path": url_path})
+                if response.status_code >= 400:
+                    logger.warning(
+                        f"HTTP {response.status_code} "
+                        f"GET {url} params={params} — body={response.text[:500]}"
+                    )
+                return response
+            except httpx.TimeoutException as e:
+                sei_retry_counter.add(1, {"sei.url_path": url_path, "sei.reason": "timeout"})
+                span.add_event("sei.retry", {"attempt": tentativa + 1, "reason": "timeout"})
                 logger.warning(
-                    f"HTTP {response.status_code} "
-                    f"GET {url} params={params} — body={response.text[:500]}"
+                    f"TIMEOUT na tentativa {tentativa + 1}/{max_tentativas} "
+                    f"(timeout={timeout}s) "
+                    f"GET {url} params={params} — {type(e).__name__}: {e}"
                 )
-            return response
-        except httpx.TimeoutException as e:
-            logger.warning(
-                f"TIMEOUT na tentativa {tentativa + 1}/{max_tentativas} "
-                f"(timeout={timeout}s) "
-                f"GET {url} params={params} — {type(e).__name__}: {e}"
-            )
-            if tentativa == max_tentativas - 1:
+                if tentativa == max_tentativas - 1:
+                    span.set_status(trace.StatusCode.ERROR, "SEI timeout after retries")
+                    span.record_exception(e)
+                    raise e
+                await asyncio.sleep(RETRY_BACKOFF)
+            except httpx.ConnectError as e:
+                sei_retry_counter.add(1, {"sei.url_path": url_path, "sei.reason": "connect_error"})
+                span.add_event("sei.retry", {"attempt": tentativa + 1, "reason": "connect_error"})
+                logger.warning(
+                    f"CONNECT_ERROR na tentativa {tentativa + 1}/{max_tentativas} "
+                    f"GET {url} params={params} — {type(e).__name__}: {e}"
+                )
+                if tentativa == max_tentativas - 1:
+                    span.set_status(trace.StatusCode.ERROR, "SEI connect error after retries")
+                    span.record_exception(e)
+                    raise e
+                await asyncio.sleep(RETRY_BACKOFF)
+            except httpx.RequestError as e:
+                span.set_status(trace.StatusCode.ERROR, str(e))
+                span.record_exception(e)
+                logger.error(
+                    f"REQUEST_ERROR (não retentável) "
+                    f"GET {url} params={params} — {type(e).__name__}: {e}"
+                )
                 raise e
-            await asyncio.sleep(RETRY_BACKOFF)
-        except httpx.ConnectError as e:
-            logger.warning(
-                f"CONNECT_ERROR na tentativa {tentativa + 1}/{max_tentativas} "
-                f"GET {url} params={params} — {type(e).__name__}: {e}"
-            )
-            if tentativa == max_tentativas - 1:
-                raise e
-            await asyncio.sleep(RETRY_BACKOFF)
-        except httpx.RequestError as e:
-            logger.error(
-                f"REQUEST_ERROR (não retentável) "
-                f"GET {url} params={params} — {type(e).__name__}: {e}"
-            )
-            raise e
 
 
 def _extrair_mensagem_sei(response) -> str:

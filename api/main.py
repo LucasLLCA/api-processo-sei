@@ -12,9 +12,13 @@ from .schemas_legacy import ErrorDetail, ErrorType
 from .config import settings
 from .cache import cache
 from .openai_client import client
-from .database import close_db
+from .database import close_db, engine, Base
 
 # Configurar logging estruturado
+# Note: otelTraceID/otelSpanID are injected into log records by OTEL logging
+# instrumentation automatically. We keep the console format simple to avoid
+# KeyError when fields aren't yet available (e.g., during startup).
+# Trace correlation still works in SigNoz via the OTEL LoggingHandler.
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -22,6 +26,10 @@ logging.basicConfig(
         logging.StreamHandler(sys.stdout)
     ]
 )
+
+# Initialize OpenTelemetry before FastAPI app creation
+from .telemetry import configure_telemetry
+configure_telemetry()
 
 logger = logging.getLogger(__name__)
 
@@ -56,6 +64,23 @@ async def lifespan(app: FastAPI):
             logger.error(f"Erro ao executar migrations: {e}")
     
 
+    # Ensure new tables/columns exist (safe for existing DBs)
+    try:
+        # Import all models so metadata is complete
+        from . import models  # noqa: F401
+        async with engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
+            # Add papel_global column if missing (existing table)
+            await conn.execute(
+                __import__('sqlalchemy').text(
+                    "ALTER TABLE credenciais_usuario ADD COLUMN IF NOT EXISTS "
+                    "papel_global VARCHAR(20) NOT NULL DEFAULT 'user'"
+                )
+            )
+        logger.info("Schema do banco de dados atualizado")
+    except Exception as e:
+        logger.warning(f"Erro ao atualizar schema (pode já estar atualizado): {e}")
+
     await cache.connect()
     logger.info("Cache conectado")
     logger.info("API iniciada com sucesso")
@@ -79,6 +104,10 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+# OpenTelemetry FastAPI auto-instrumentation
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+FastAPIInstrumentor.instrument_app(app)
+
 # Middleware GZip para compressão
 app.add_middleware(GZipMiddleware, minimum_size=1000)
 
@@ -92,7 +121,7 @@ app.add_middleware(
         "http://localhost:3000"
     ],
     allow_credentials=True,
-    allow_methods=["GET", "POST", "DELETE", "PATCH"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH"],
     allow_headers=["Authorization", "Content-Type", "X-Request-ID", "X-SEI-Token", "x-api-key"],
 )
 

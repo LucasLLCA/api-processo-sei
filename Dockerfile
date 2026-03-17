@@ -21,6 +21,14 @@ COPY . .
 # Expor a porta que a API vai usar
 EXPOSE 8535
 
+# OpenTelemetry configuration
+ENV OTEL_EXPORTER_OTLP_ENDPOINT=http://otelcollectorhttp.10.0.122.91.sslip.io
+ENV OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED=true
+ENV OTEL_SERVICE_NAME=api-processo-sei
+ENV OTEL_LOGS_EXPORTER=otlp
+ENV OTEL_METRICS_EXPORTER=otlp
+ENV OTEL_TRACES_EXPORTER=otlp
+
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD python -c "import httpx; httpx.get('http://localhost:8535/')" || exit 1

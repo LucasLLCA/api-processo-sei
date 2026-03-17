@@ -2,8 +2,10 @@ import asyncio
 import json
 import math
 import logging
-from fastapi import APIRouter, Header, HTTPException, Query
+from fastapi import APIRouter, Depends, Header, HTTPException, Query
 from pydantic import BaseModel
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.responses import StreamingResponse
 from ..sei import (
     login, contar_andamentos, buscar_pagina_andamentos,
@@ -12,6 +14,9 @@ from ..sei import (
     consultar_documento,
 )
 from ..cache import cache
+from ..database import get_db
+from ..models.configuracao_horas import ConfiguracaoHorasAndamento
+from ..models.credencial_usuario import CredencialUsuario
 from ..normalization import normalizar_numero_processo
 
 logger = logging.getLogger(__name__)
@@ -111,15 +116,52 @@ class LoginRequest(BaseModel):
 
 
 @router.post("/login")
-async def sei_login(body: LoginRequest):
+async def sei_login(body: LoginRequest, db: AsyncSession = Depends(get_db)):
     """
     Proxy para login na API SEI.
-    Retorna a resposta bruta da API SEI (Token, Login, Unidades).
+    Retorna a resposta bruta da API SEI (Token, Login, Unidades)
+    enriquecida com papel_global e id_pessoa da tabela credencial_usuarios.
     """
     logger.info(f"POST /sei/login INCOMING — user={body.usuario} orgao={body.orgao} senha_len={len(body.senha)}")
     try:
         result = await login(body.usuario, body.senha, body.orgao)
         logger.info(f"POST /sei/login OK for user={body.usuario} orgao={body.orgao} — keys={list(result.keys()) if isinstance(result, dict) else type(result).__name__}")
+
+        # Enrich with papel_global and id_pessoa from credencial_usuarios
+        if isinstance(result, dict):
+            try:
+                cred = None
+                # Try lookup by IdPessoa first
+                id_pessoa_sei = result.get("Login", {}).get("IdPessoa")
+                if id_pessoa_sei:
+                    cred_result = await db.execute(
+                        select(CredencialUsuario).where(
+                            CredencialUsuario.id_pessoa == int(id_pessoa_sei),
+                            CredencialUsuario.deletado_em.is_(None),
+                        )
+                    )
+                    cred = cred_result.scalar_one_or_none()
+
+                # Fallback: lookup by usuario_sei + orgao
+                if not cred:
+                    cred_result = await db.execute(
+                        select(CredencialUsuario).where(
+                            CredencialUsuario.usuario_sei == body.usuario,
+                            CredencialUsuario.orgao == body.orgao,
+                            CredencialUsuario.deletado_em.is_(None),
+                        )
+                    )
+                    cred = cred_result.scalar_one_or_none()
+
+                if cred:
+                    result["papel_global"] = cred.papel_global
+                    result["id_pessoa"] = cred.id_pessoa
+                    logger.info(f"Enriched login with papel_global={cred.papel_global} id_pessoa={cred.id_pessoa}")
+                else:
+                    logger.info(f"No credencial found for user={body.usuario} orgao={body.orgao} — papel_global not set")
+            except Exception as e:
+                logger.warning(f"Could not enrich login with papel_global: {e}")
+
         return result
     except HTTPException as he:
         logger.error(f"POST /sei/login HTTPException for user={body.usuario} orgao={body.orgao} — status={he.status_code} detail={he.detail}")
@@ -723,3 +765,18 @@ async def sei_health():
     Verifica saúde da API SEI.
     """
     return await verificar_saude()
+
+
+@router.get("/configuracao-horas")
+async def get_configuracao_horas_public(
+    orgao: str = Query(...),
+    db: AsyncSession = Depends(get_db),
+):
+    """Public read-only endpoint for hour coefficients (used by productivity table)."""
+    result = await db.execute(
+        select(ConfiguracaoHorasAndamento).where(
+            ConfiguracaoHorasAndamento.orgao == orgao
+        ).order_by(ConfiguracaoHorasAndamento.grupo_key)
+    )
+    rows = result.scalars().all()
+    return {r.grupo_key: r.horas for r in rows}

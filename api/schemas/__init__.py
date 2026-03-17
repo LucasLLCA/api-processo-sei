@@ -53,6 +53,21 @@ from .team_tag import (
     ProcessoTeamTagResponse,
 )
 
+from .fluxo import (
+    FluxoCreate,
+    FluxoUpdate,
+    FluxoNodeData,
+    FluxoEdgeData,
+    FluxoSaveCanvas,
+    FluxoProcessoCreate,
+    FluxoProcessoUpdate,
+    FluxoNodeResponse,
+    FluxoEdgeResponse,
+    FluxoResponse,
+    FluxoDetalheResponse,
+    FluxoProcessoResponse,
+)
+
 __all__ = [
     "HistoricoPesquisaCreate",
     "HistoricoPesquisaUpdate",
@@ -88,4 +103,16 @@ __all__ = [
     "TeamTagResponse",
     "ProcessoTeamTagCreate",
     "ProcessoTeamTagResponse",
+    "FluxoCreate",
+    "FluxoUpdate",
+    "FluxoNodeData",
+    "FluxoEdgeData",
+    "FluxoSaveCanvas",
+    "FluxoProcessoCreate",
+    "FluxoProcessoUpdate",
+    "FluxoNodeResponse",
+    "FluxoEdgeResponse",
+    "FluxoResponse",
+    "FluxoDetalheResponse",
+    "FluxoProcessoResponse",
 ]

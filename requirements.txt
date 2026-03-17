@@ -42,3 +42,12 @@ jwcrypto==1.5.6
 
 # Fernet encryption for stored credentials
 cryptography>=44.0.0
+
+# OpenTelemetry
+opentelemetry-distro==0.50b0
+opentelemetry-exporter-otlp==1.29.0
+opentelemetry-instrumentation-fastapi==0.50b0
+opentelemetry-instrumentation-httpx==0.50b0
+opentelemetry-instrumentation-sqlalchemy==0.50b0
+opentelemetry-instrumentation-redis==0.50b0
+opentelemetry-instrumentation-logging==0.50b0

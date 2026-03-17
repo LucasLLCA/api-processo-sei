@@ -1,11 +1,195 @@
 import logging
-from fastapi import APIRouter, HTTPException
+from datetime import datetime, timezone
+from typing import List, Optional
+
+from fastapi import APIRouter, Depends, HTTPException, Path, Query
+from pydantic import BaseModel
+from sqlalchemy import select, func, distinct
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from ..cache import cache, gerar_chave_documento
+from ..database import get_db
+from ..models.credencial_usuario import CredencialUsuario
+from ..models.configuracao_horas import ConfiguracaoHorasAndamento
 from ..schemas_legacy import ErrorDetail, ErrorType
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
+
+
+# --------------- Admin guard ---------------
+
+async def require_admin(admin_id_pessoa: int = Query(..., alias="id_pessoa"), db: AsyncSession = Depends(get_db)):
+    """Dependency that verifies the requesting user has papel_global='admin'."""
+    result = await db.execute(
+        select(CredencialUsuario).where(
+            CredencialUsuario.id_pessoa == admin_id_pessoa,
+            CredencialUsuario.deletado_em.is_(None),
+        )
+    )
+    cred = result.scalar_one_or_none()
+    if not cred or cred.papel_global != "admin":
+        raise HTTPException(status_code=403, detail="Acesso restrito a administradores")
+    return cred
+
+
+# --------------- Schemas ---------------
+
+class UpdatePapelRequest(BaseModel):
+    papel_global: str  # "admin" | "beta" | "user"
+
+
+class HorasItem(BaseModel):
+    grupo_key: str
+    horas: float
+
+
+class SaveConfiguracaoHorasRequest(BaseModel):
+    orgao: str
+    items: List[HorasItem]
+
+
+class UsuarioResponse(BaseModel):
+    id_pessoa: int
+    usuario_sei: str
+    orgao: str
+    papel_global: str
+    cpf: Optional[str] = None
+
+
+# --------------- User role endpoints ---------------
+
+@router.get("/usuarios")
+async def listar_usuarios(
+    search: str = Query(default=""),
+    _admin: CredencialUsuario = Depends(require_admin),
+    db: AsyncSession = Depends(get_db),
+):
+    """List all users with their roles (active credentials only)."""
+    query = select(CredencialUsuario).where(CredencialUsuario.deletado_em.is_(None))
+    if search.strip():
+        pattern = f"%{search.strip()}%"
+        query = query.where(
+            CredencialUsuario.usuario_sei.ilike(pattern)
+            | CredencialUsuario.orgao.ilike(pattern)
+        )
+    query = query.order_by(CredencialUsuario.usuario_sei)
+    result = await db.execute(query)
+    rows = result.scalars().all()
+    return [
+        UsuarioResponse(
+            id_pessoa=r.id_pessoa,
+            usuario_sei=r.usuario_sei,
+            orgao=r.orgao,
+            papel_global=r.papel_global,
+            cpf=r.cpf,
+        )
+        for r in rows
+    ]
+
+
+@router.patch("/usuarios/{id_pessoa}/papel")
+async def atualizar_papel(
+    body: UpdatePapelRequest,
+    id_pessoa: int = Path(..., description="ID da pessoa"),
+    _admin: CredencialUsuario = Depends(require_admin),
+    db: AsyncSession = Depends(get_db),
+):
+    """Update a user's global role."""
+    if body.papel_global not in ("admin", "beta", "user"):
+        raise HTTPException(status_code=400, detail="Papel inválido. Use: admin, beta, user")
+
+    result = await db.execute(
+        select(CredencialUsuario).where(
+            CredencialUsuario.id_pessoa == id_pessoa,
+            CredencialUsuario.deletado_em.is_(None),
+        )
+    )
+    target = result.scalar_one_or_none()
+    if not target:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado")
+
+    target.papel_global = body.papel_global
+    target.atualizado_em = datetime.now(timezone.utc)
+    await db.flush()
+
+    return {"status": "ok", "id_pessoa": id_pessoa, "papel_global": body.papel_global}
+
+
+# --------------- Hour coefficient endpoints ---------------
+
+@router.get("/configuracao-horas")
+async def get_configuracao_horas(
+    orgao: str = Query(...),
+    _admin: CredencialUsuario = Depends(require_admin),
+    db: AsyncSession = Depends(get_db),
+):
+    """Get all hour coefficients for an orgao (admin)."""
+    result = await db.execute(
+        select(ConfiguracaoHorasAndamento).where(
+            ConfiguracaoHorasAndamento.orgao == orgao
+        ).order_by(ConfiguracaoHorasAndamento.grupo_key)
+    )
+    rows = result.scalars().all()
+    return [
+        {
+            "grupo_key": r.grupo_key,
+            "horas": r.horas,
+            "atualizado_em": r.atualizado_em.isoformat() if r.atualizado_em else None,
+            "atualizado_por": r.atualizado_por,
+        }
+        for r in rows
+    ]
+
+
+@router.put("/configuracao-horas")
+async def save_configuracao_horas(
+    body: SaveConfiguracaoHorasRequest,
+    _admin: CredencialUsuario = Depends(require_admin),
+    db: AsyncSession = Depends(get_db),
+):
+    """Bulk upsert hour coefficients for an orgao."""
+    now = datetime.now(timezone.utc)
+    admin_user = _admin.usuario_sei
+
+    for item in body.items:
+        result = await db.execute(
+            select(ConfiguracaoHorasAndamento).where(
+                ConfiguracaoHorasAndamento.orgao == body.orgao,
+                ConfiguracaoHorasAndamento.grupo_key == item.grupo_key,
+            )
+        )
+        existing = result.scalar_one_or_none()
+        if existing:
+            existing.horas = item.horas
+            existing.atualizado_em = now
+            existing.atualizado_por = admin_user
+        else:
+            db.add(ConfiguracaoHorasAndamento(
+                orgao=body.orgao,
+                grupo_key=item.grupo_key,
+                horas=item.horas,
+                atualizado_em=now,
+                atualizado_por=admin_user,
+            ))
+
+    await db.flush()
+    return {"status": "ok", "orgao": body.orgao, "items_saved": len(body.items)}
+
+
+@router.get("/orgaos")
+async def listar_orgaos(
+    _admin: CredencialUsuario = Depends(require_admin),
+    db: AsyncSession = Depends(get_db),
+):
+    """List distinct orgaos from active credentials."""
+    result = await db.execute(
+        select(distinct(CredencialUsuario.orgao)).where(
+            CredencialUsuario.deletado_em.is_(None)
+        ).order_by(CredencialUsuario.orgao)
+    )
+    return [row[0] for row in result.all()]
 
 
 @router.get("/cache/status")

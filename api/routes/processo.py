@@ -1,5 +1,6 @@
 import asyncio
 import json
+import time
 import logging
 from fastapi import APIRouter, Header, HTTPException, Query
 from sqlalchemy import select
@@ -16,6 +17,7 @@ from ..normalization import normalizar_numero_processo
 from ..database import AsyncSessionLocal
 from ..models.processo_entendimento import ProcessoEntendimento
 from ..models.processo_situacao import ProcessoSituacao
+from ..telemetry import sse_active_connections, sse_stream_duration
 
 logger = logging.getLogger(__name__)
 
@@ -486,6 +488,8 @@ async def resumo_completo_stream(
 
     # 3. Cache + DB miss - buscar documento e streamer a resposta da IA
     async def stream_generator():
+        sse_active_connections.add(1, {"sse.type": "resumo_completo"})
+        _sse_start = time.monotonic()
         try:
             if not primeiro_doc_formatado:
                 yield _sse_event({"type": "error", "content": "primeiro_doc_formatado é obrigatório"})
@@ -552,6 +556,9 @@ async def resumo_completo_stream(
         except Exception as e:
             logger.error(f"[stream] Erro ao processar resumo completo: {str(e)}", exc_info=True)
             yield _sse_event({"type": "error", "content": f"Erro ao processar resumo: {str(e)}"})
+        finally:
+            sse_active_connections.add(-1, {"sse.type": "resumo_completo"})
+            sse_stream_duration.record(time.monotonic() - _sse_start, {"sse.type": "resumo_completo"})
 
     return StreamingResponse(
         stream_generator(),
@@ -591,6 +598,8 @@ async def resumo_documento_stream(
         )
 
     async def stream_generator():
+        sse_active_connections.add(1, {"sse.type": "resumo_documento"})
+        _sse_start = time.monotonic()
         try:
             doc, md = await asyncio.gather(
                 consultar_documento(token, id_unidade, documento_formatado),
@@ -631,6 +640,9 @@ async def resumo_documento_stream(
         except Exception as e:
             logger.error(f"[stream] Erro ao processar resumo do documento: {str(e)}", exc_info=True)
             yield _sse_event({"type": "error", "content": f"Erro ao processar resumo: {str(e)}"})
+        finally:
+            sse_active_connections.add(-1, {"sse.type": "resumo_documento"})
+            sse_stream_duration.record(time.monotonic() - _sse_start, {"sse.type": "resumo_documento"})
 
     return StreamingResponse(
         stream_generator(),
@@ -719,6 +731,8 @@ async def resumo_situacao_stream(
     ultimos_andamentos = await listar_ultimos_andamentos(token, numero_processo, id_unidade, quantidade=3)
 
     async def stream_generator():
+        sse_active_connections.add(1, {"sse.type": "resumo_situacao"})
+        _sse_start = time.monotonic()
         try:
             # 1. Get cached entendimento (Redis first, then DB fallback)
             resumo_cache_key = f"processo:{numero_processo}:resumo_completo"
@@ -828,6 +842,9 @@ async def resumo_situacao_stream(
         except Exception as e:
             logger.error(f"[stream] Erro ao processar situação atual: {str(e)}", exc_info=True)
             yield _sse_event({"type": "error", "content": f"Erro ao processar situação atual: {str(e)}"})
+        finally:
+            sse_active_connections.add(-1, {"sse.type": "resumo_situacao"})
+            sse_stream_duration.record(time.monotonic() - _sse_start, {"sse.type": "resumo_situacao"})
 
     return StreamingResponse(
         stream_generator(),

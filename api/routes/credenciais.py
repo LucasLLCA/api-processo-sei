@@ -101,6 +101,8 @@ async def auto_login(body: AutoLoginRequest, db: AsyncSession = Depends(get_db))
             # Include stored email so frontend uses it (not the CPF from JWE)
             data["usuario_sei"] = cred.usuario_sei
             data["orgao"] = cred.orgao
+            data["papel_global"] = cred.papel_global
+            data["id_pessoa"] = cred.id_pessoa
 
             # 4. Cache the successful response
             await cache.set(cache_key, {
@@ -160,6 +162,8 @@ async def embed_login(body: EmbedLoginRequest, db: AsyncSession = Depends(get_db
     # Include email so frontend uses it (not the CPF from JWE)
     data["usuario_sei"] = body.usuario_sei
     data["orgao"] = body.orgao
+    data["papel_global"] = new_cred.papel_global
+    data["id_pessoa"] = body.id_pessoa
 
     # 3. Cache the login response for future auto-logins
     cache_key = gerar_chave_login(body.id_pessoa)
