@@ -501,7 +501,17 @@ async def contar_andamentos(token: str, protocolo: str, id_unidade: str) -> int:
     """
     Metadata-only request with quantidade=0 to discover TotalItens
     without transferring any andamento data.
+    Uses a short-lived Redis cache (60s) to deduplicate concurrent calls
+    from multiple endpoints hitting this for the same process.
     """
+    from .cache import cache as _cache
+
+    cache_key = f"andamentos_count:{protocolo}:{id_unidade}"
+    cached = await _cache.get(cache_key)
+    if cached is not None:
+        logger.info(f"[contar_andamentos] cache HIT processo={protocolo} total={cached}")
+        return cached
+
     url = f"{settings.SEI_BASE_URL}/unidades/{id_unidade}/procedimentos/andamentos"
     headers = {"accept": "application/json", "token": token}
     response = await _fazer_requisicao_com_retry(
@@ -511,7 +521,11 @@ async def contar_andamentos(token: str, protocolo: str, id_unidade: str) -> int:
     )
     if response.status_code != 200:
         _raise_sei_error(response, "Falha ao consultar andamentos no SEI")
-    return response.json().get("Info", {}).get("TotalItens", 0)
+    total = response.json().get("Info", {}).get("TotalItens", 0)
+
+    await _cache.set(cache_key, total, ttl=172800)
+    logger.info(f"[contar_andamentos] cache MISS processo={protocolo} total={total} (cached 48h)")
+    return total
 
 
 async def listar_tarefa_parcial(token: str, protocolo: str, id_unidade: str):

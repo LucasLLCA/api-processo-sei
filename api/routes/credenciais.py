@@ -79,6 +79,7 @@ async def auto_login(body: AutoLoginRequest, db: AsyncSession = Depends(get_db))
         return cached["response"]
 
     # 2. Cache miss — need credentials from DB
+    logger.info(f"POST /credenciais/auto-login id_pessoa={body.id_pessoa} — cache MISS")
     cred = await _get_active_credential(db, body.id_pessoa)
     if cred is None:
         raise HTTPException(status_code=404, detail="Credenciais não encontradas")

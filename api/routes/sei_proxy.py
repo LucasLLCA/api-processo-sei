@@ -66,18 +66,33 @@ def _extract_documents_from_andamentos(andamentos: list) -> dict:
     }
 
 
+def _deduplicate_andamentos(andamentos: list) -> list:
+    """Remove duplicate andamentos by IdAndamento, keeping first occurrence."""
+    seen = set()
+    result = []
+    for a in andamentos:
+        aid = a.get("IdAndamento")
+        if aid and aid in seen:
+            continue
+        if aid:
+            seen.add(aid)
+        result.append(a)
+    return result
+
+
 def _build_andamentos_result(andamentos: list, total_itens: int, numero_processo: str) -> dict:
     """Build a standardized andamentos response dict."""
+    deduped = _deduplicate_andamentos(andamentos)
     return {
         "Info": {
             "Pagina": 1,
             "TotalPaginas": 1,
-            "QuantidadeItens": len(andamentos),
+            "QuantidadeItens": len(deduped),
             "TotalItens": total_itens,
             "NumeroProcesso": numero_processo,
-            "Parcial": len(andamentos) < total_itens,
+            "Parcial": len(deduped) < total_itens,
         },
-        "Andamentos": andamentos,
+        "Andamentos": deduped,
     }
 
 
@@ -228,6 +243,10 @@ async def sei_andamentos(
         cached_total = cached["Info"]["TotalItens"]
         cached_count = len(cached.get("Andamentos", []))
         cached_is_full = not cached["Info"].get("Parcial", True)
+        logger.info(
+            f"GET /sei/andamentos/{numero_processo} — cache HIT "
+            f"(cached={cached_count} total={cached_total} full={cached_is_full})"
+        )
 
         if cached_total == current_total:
             # TotalItens unchanged
@@ -294,6 +313,9 @@ async def sei_andamentos(
             f"Invalidating cache."
         )
         await cache.delete(cache_key)
+
+    if not cached:
+        logger.info(f"GET /sei/andamentos/{numero_processo} — cache MISS")
 
     # Step 3: No cache (or invalidated) — fresh fetch
     if parcial:
@@ -430,11 +452,16 @@ async def sei_unidades_abertas(
 
     cached = await cache.get(cache_key)
     if cached and cached.get("_total_andamentos") == current_total:
+        logger.info(f"GET /sei/unidades-abertas/{numero_processo} — cache HIT")
         return {
             "UnidadesProcedimentoAberto": cached["UnidadesProcedimentoAberto"],
             "LinkAcesso": cached.get("LinkAcesso"),
         }
 
+    logger.info(
+        f"GET /sei/unidades-abertas/{numero_processo} — cache MISS"
+        f"{' (stale)' if cached else ''}"
+    )
     data = await consultar_procedimento(x_sei_token, numero_processo, id_unidade)
 
     await cache.set(cache_key, {
@@ -486,6 +513,11 @@ async def sei_documentos(
                 "Info": cached["Info"],
                 "Documentos": cached["Documentos"],
             }
+
+        logger.info(
+            f"GET /sei/documentos/{numero_processo} — cache MISS"
+            f"{' (stale)' if cached else ''}"
+        )
 
         if parcial:
             documentos, total_itens, is_parcial = await listar_documentos_parcial(
@@ -641,7 +673,7 @@ async def sei_andamentos_stream(
     # Check cache — if full data is already cached, return immediately
     cached = await cache.get(cache_key)
     if cached and not cached["Info"].get("Parcial", True):
-        logger.info(f"[andamentos-stream] Full cache hit for processo={numero_processo}")
+        logger.info(f"GET /sei/andamentos-stream/{numero_processo} — cache HIT (full)")
 
         async def cached_generator():
             yield _sse_event({"type": "done", "content": cached})
@@ -651,6 +683,11 @@ async def sei_andamentos_stream(
             media_type="text/event-stream",
             headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
         )
+
+    logger.info(
+        f"GET /sei/andamentos-stream/{numero_processo} — cache "
+        f"{'PARTIAL' if cached else 'MISS'}"
+    )
 
     # Determine current total and what we already have
     current_total = await contar_andamentos(x_sei_token, numero_processo, id_unidade)

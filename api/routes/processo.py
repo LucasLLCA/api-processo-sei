@@ -56,8 +56,10 @@ async def andamento(
         cache_key = gerar_chave_andamento(numero_processo)
         cached_result = await cache.get(cache_key)
         if cached_result:
-            logger.debug(f"Retornando andamento do cache para processo {numero_processo}")
+            logger.info(f"GET /andamento/{numero_processo} — cache HIT")
             return Retorno(status="ok", andamento=cached_result.get("andamento"), resumo=cached_result.get("resumo"))
+
+        logger.info(f"GET /andamento/{numero_processo} — cache MISS")
 
         if not ultimo_doc_formatado:
             raise HTTPException(
@@ -135,8 +137,10 @@ async def resumo(
         cache_key = gerar_chave_resumo(numero_processo)
         cached_result = await cache.get(cache_key)
         if cached_result:
-            logger.debug(f"Retornando resumo do cache para processo {numero_processo}")
+            logger.info(f"GET /resumo/{numero_processo} — cache HIT")
             return Retorno(status="ok", resumo=cached_result)
+
+        logger.info(f"GET /resumo/{numero_processo} — cache MISS")
 
         if not primeiro_doc_formatado or not ultimo_doc_formatado:
             raise HTTPException(
@@ -221,8 +225,10 @@ async def resumo_completo(
         cache_key_base = f"processo:{numero_processo}:resumo_completo"
         cached_result = await cache.get(cache_key_base)
         if cached_result:
-            logger.debug(f"Retornando resultado do cache para processo {numero_processo}")
+            logger.info(f"GET /resumo-completo/{numero_processo} — cache HIT")
             return Retorno(status="ok", resumo=cached_result)
+
+        logger.info(f"GET /resumo-completo/{numero_processo} — cache MISS")
 
         if not primeiro_doc_formatado:
             raise HTTPException(
@@ -347,8 +353,10 @@ async def resumo_documento(
         # Tenta obter do cache
         cached_result = await cache.get(cache_key)
         if cached_result:
-            logger.debug(f"Retornando resultado do cache para documento {documento_formatado}")
+            logger.info(f"GET /resumo-documento/{documento_formatado} — cache HIT")
             return Retorno(status="ok", resumo=cached_result)
+
+        logger.info(f"GET /resumo-documento/{documento_formatado} — cache MISS")
 
         # Busca documento e conteúdo em paralelo
         doc, md = await asyncio.gather(
@@ -443,7 +451,7 @@ async def resumo_completo_stream(
     # 1. Fast path: Redis cache hit
     cached_result = await cache.get(cache_key)
     if cached_result:
-        logger.debug(f"[stream] Retornando resumo do cache para processo {numero_processo}")
+        logger.info(f"GET /resumo-completo-stream/{numero_processo} — cache HIT (Redis)")
 
         async def cached_generator():
             yield _sse_event({"type": "done", "content": cached_result})
@@ -465,7 +473,7 @@ async def resumo_completo_stream(
             entendimento_row = result.scalar_one_or_none()
 
         if entendimento_row:
-            logger.debug(f"[stream] Retornando entendimento do DB para processo {numero_processo}")
+            logger.info(f"GET /resumo-completo-stream/{numero_processo} — cache HIT (DB)")
             resposta_ia = {"status": "ok", "resposta_ia": entendimento_row.conteudo}
             resultado = {
                 "processo": {"numero": numero_processo, "id_unidade": id_unidade},
@@ -485,6 +493,8 @@ async def resumo_completo_stream(
             )
     except Exception as e:
         logger.warning(f"[stream] Erro ao consultar entendimento no DB: {str(e)}")
+
+    logger.info(f"GET /resumo-completo-stream/{numero_processo} — cache MISS (Redis + DB)")
 
     # 3. Cache + DB miss - buscar documento e streamer a resposta da IA
     async def stream_generator():
@@ -586,7 +596,7 @@ async def resumo_documento_stream(
 
     cached_result = await cache.get(cache_key)
     if cached_result:
-        logger.debug(f"[stream] Retornando resumo do cache para documento {documento_formatado}")
+        logger.info(f"GET /resumo-documento-stream/{documento_formatado} — cache HIT")
 
         async def cached_generator():
             yield _sse_event({"type": "done", "content": cached_result})
@@ -596,6 +606,8 @@ async def resumo_documento_stream(
             media_type="text/event-stream",
             headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
         )
+
+    logger.info(f"GET /resumo-documento-stream/{documento_formatado} — cache MISS")
 
     async def stream_generator():
         sse_active_connections.add(1, {"sse.type": "resumo_documento"})
@@ -679,7 +691,7 @@ async def resumo_situacao_stream(
     # Step 2: Check Redis cache — return if TotalItens matches
     cached_result = await cache.get(cache_key)
     if cached_result and cached_result.get("_total_andamentos") == current_total:
-        logger.debug(f"[stream] Retornando situação atual do cache para processo {numero_processo} (total_andamentos={current_total})")
+        logger.info(f"GET /resumo-situacao-stream/{numero_processo} — cache HIT (Redis, total={current_total})")
 
         async def cached_generator():
             yield _sse_event({"type": "done", "content": {
@@ -705,7 +717,7 @@ async def resumo_situacao_stream(
             situacao_row = result.scalar_one_or_none()
 
         if situacao_row:
-            logger.debug(f"[stream] Retornando situação do DB para processo {numero_processo} (total_andamentos={current_total})")
+            logger.info(f"GET /resumo-situacao-stream/{numero_processo} — cache HIT (DB, total={current_total})")
             # Re-populate Redis cache
             await cache.set(cache_key, {
                 "status": "ok",
@@ -727,6 +739,11 @@ async def resumo_situacao_stream(
     except Exception as e:
         logger.warning(f"[stream] Erro ao consultar situação no DB: {str(e)}")
 
+    logger.info(
+        f"GET /resumo-situacao-stream/{numero_processo} — cache MISS "
+        f"(Redis+DB, total={current_total}, cached_total={cached_result.get('_total_andamentos') if cached_result else 'none'})"
+    )
+
     # Step 4: TotalItens changed or no stored situação — generate via LLM
     ultimos_andamentos = await listar_ultimos_andamentos(token, numero_processo, id_unidade, quantidade=3)
 
@@ -740,6 +757,7 @@ async def resumo_situacao_stream(
             entendimento = ""
             if cached_resumo:
                 entendimento = cached_resumo.get("resumo_combinado", {}).get("resposta_ia", "")
+                logger.info(f"[situacao-stream] entendimento cache HIT (Redis) processo={numero_processo}")
 
             if not entendimento:
                 try:
@@ -752,7 +770,7 @@ async def resumo_situacao_stream(
                         entendimento_row = result.scalar_one_or_none()
                     if entendimento_row:
                         entendimento = entendimento_row.conteudo
-                        logger.debug(f"[stream] Entendimento obtido do DB para situação atual do processo {numero_processo}")
+                        logger.info(f"[situacao-stream] entendimento cache HIT (DB) processo={numero_processo}")
                 except Exception as db_err:
                     logger.warning(f"[stream] Erro ao buscar entendimento no DB: {str(db_err)}")
 
@@ -768,7 +786,7 @@ async def resumo_situacao_stream(
                 cached_doc_content = await cache.get(doc_cache_key)
                 if cached_doc_content:
                     ultimo_doc_conteudo = cached_doc_content
-                    logger.debug(f"[stream] Último documento {ultimo_doc_formatado} retornado do cache")
+                    logger.info(f"[situacao-stream] ultimo_doc {ultimo_doc_formatado} cache HIT")
                 else:
                     md = await baixar_documento(token, id_unidade, ultimo_doc_formatado, numero_processo)
                     if md:

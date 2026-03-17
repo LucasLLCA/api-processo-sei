@@ -139,8 +139,10 @@ async def listar_historico_usuario(
             cache_key = gerar_chave_historico(usuario, limit, offset)
             cached = await cache.get(cache_key)
             if cached is not None:
-                logger.debug(f"[CACHE HIT] historico para {usuario}")
+                logger.info(f"GET /historico/{usuario} — cache HIT")
                 return cached
+
+        logger.info(f"GET /historico/{usuario} — cache MISS")
 
         # Query base
         base_query = select(HistoricoPesquisa).where(

@@ -19,6 +19,7 @@ from .fluxo import Fluxo
 from .fluxo_node import FluxoNode
 from .fluxo_edge import FluxoEdge
 from .fluxo_processo import FluxoProcesso
+from .unidade_sei import UnidadeSei
 
 __all__ = [
     "HistoricoPesquisa",
@@ -39,4 +40,5 @@ __all__ = [
     "FluxoNode",
     "FluxoEdge",
     "FluxoProcesso",
+    "UnidadeSei",
 ]

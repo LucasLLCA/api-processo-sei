@@ -98,10 +98,10 @@ class RedisCache:
             value = await self.redis_client.get(key)
             if value:
                 cache_hit_counter.add(1, {"cache.key_prefix": key_prefix})
-                logger.debug(f"[CACHE HIT] Chave: {key}")
+                logger.info(f"[CACHE HIT] Chave: {key}")
                 return orjson.loads(value)
             cache_miss_counter.add(1, {"cache.key_prefix": key_prefix})
-            logger.debug(f"[CACHE MISS] Chave: {key}")
+            logger.info(f"[CACHE MISS] Chave: {key}")
             return None
         except (ConnectionError, TimeoutError, OSError) as e:
             logger.warning(f"Erro de conexão ao obter cache para chave {key}: {str(e)}. Reconectando...")
