@@ -595,14 +595,84 @@ SET r.ref_id = e.ref_id
 """
 
 
+CONCLUSION_TYPES = {
+    "CONCLUSAO-AUTOMATICA-UNIDADE",
+    "CONCLUSAO-PROCESSO-UNIDADE",
+}
+
+TRANSFER_TYPES = {
+    "CONCLUSAO-AUTOMATICA-UNIDADE",
+    "CONCLUSAO-PROCESSO-UNIDADE",
+    "PROCESSO-REMETIDO-UNIDADE",
+    "PROCESSO-RECEBIDO-UNIDADE",
+}
+
+
+def _transfer_priority(tipo_acao: str) -> int:
+    """Logical priority for transfer events at the same timestamp.
+    conclusão(0) → remetido(1) → recebido(2) → others(1)
+    """
+    if tipo_acao in CONCLUSION_TYPES:
+        return 0
+    if tipo_acao == "PROCESSO-REMETIDO-UNIDADE":
+        return 1
+    if tipo_acao == "PROCESSO-RECEBIDO-UNIDADE":
+        return 2
+    return 1
+
+
+def _sort_and_fix_activities(activities: list[dict]) -> list[dict]:
+    """Sort activities with same-timestamp priority tiebreaker and
+    post-sort fixup for misrecorded recebido/remetido pairs within 60s.
+
+    Mirrors the frontend logic in process-flow-utils.ts.
+    """
+    # Activities arrive pre-sorted by (data_hora, source_id) from Cypher.
+    # Re-sort with priority tiebreaker for same-timestamp events.
+    activities.sort(key=lambda a: (
+        a.get("data_hora", ""),
+        _transfer_priority(a["tipo_acao"]),
+        a["source_id"],
+    ))
+
+    # Post-sort fixup: when a RECEBIDO appears before its matching
+    # REMETIDO/CONCLUSÃO within 60s, move them before the RECEBIDO.
+    i = 0
+    while i < len(activities):
+        if activities[i]["tipo_acao"] != "PROCESSO-RECEBIDO-UNIDADE":
+            i += 1
+            continue
+        recebido_dt = activities[i].get("data_hora", "")
+        j = i + 1
+        while j < len(activities):
+            candidate = activities[j]
+            cand_dt = candidate.get("data_hora", "")
+            # ISO strings are comparable; check ~60s window
+            if cand_dt and recebido_dt and cand_dt > recebido_dt[:17]:
+                # Past the same minute+1 — stop looking
+                break
+            if candidate["tipo_acao"] in (
+                "PROCESSO-REMETIDO-UNIDADE",
+                "CONCLUSAO-AUTOMATICA-UNIDADE",
+                "CONCLUSAO-PROCESSO-UNIDADE",
+            ):
+                # Move before the recebido
+                activities.insert(i, activities.pop(j))
+                # Don't advance i — re-check from same position
+            else:
+                j += 1
+        i += 1
+
+    return activities
+
+
 def _build_edges_for_processo(activities: list[dict]) -> tuple[list[dict], list[dict]]:
     """Build SEGUIDA_POR edges using unidade-context tracking.
 
     Returns (flow_edges, independent_edges):
       - flow_edges: SEGUIDA_POR edges between activities in the formal flow
       - independent_edges: SEGUIDO_INDEPENDENTEMENTE_POR edges linking
-        activities from non-activated units to the first activity that
-        shares the same bloco/document reference (ref_id)
+        activities via shared bloco/document reference across units
 
     Rules:
       1. Same unidade as previous: chain to last activity there
@@ -612,12 +682,18 @@ def _build_edges_for_processo(activities: list[dict]) -> tuple[list[dict], list[
          this unidade
       4. Activities from units that never had GERACAO/RECEBIDO/REABERTURA
          are linked independently via shared bloco/document reference
+      5. Conclusão nodes do NOT produce outgoing SEGUIDA_POR edges
+      6. Cross-unit document references create independent edges for
+         all units (activated or not)
 
     This correctly handles parallel branches: activities at GAMIL
     only chain to other activities at GAMIL, never cross to SESAPI.
     """
     if len(activities) < 2:
         return [], []
+
+    # Fix 1: Sort with priority tiebreaker + 60s fixup
+    activities = _sort_and_fix_activities(activities)
 
     # Determine activated units (formally part of the flow)
     FLOW_ACTIVATION_TYPES = {
@@ -649,17 +725,19 @@ def _build_edges_for_processo(activities: list[dict]) -> tuple[list[dict], list[
         tipo = atv["tipo_acao"]
         sid = atv["source_id"]
 
-        # Non-activated unit: link via bloco/document reference instead
+        # Fix 3: Cross-unit document/bloco reference (all units, not just non-activated)
+        rid = atv.get("ref_id")
+        if rid and rid in first_by_ref:
+            origin = first_by_ref[rid]
+            if origin["source_id"] != sid and origin["unidade"] != u:
+                independent_edges.append({
+                    "from_id": origin["source_id"],
+                    "to_id": sid,
+                    "ref_id": rid,
+                })
+
+        # Non-activated unit: skip normal flow connections
         if u not in activated_units:
-            rid = atv.get("ref_id")
-            if rid and rid in first_by_ref:
-                origin = first_by_ref[rid]
-                if origin["source_id"] != sid:
-                    independent_edges.append({
-                        "from_id": origin["source_id"],
-                        "to_id": sid,
-                        "ref_id": rid,
-                    })
             continue
 
         if tipo == "PROCESSO-REMETIDO-UNIDADE":
@@ -667,18 +745,21 @@ def _build_edges_for_processo(activities: list[dict]) -> tuple[list[dict], list[
             # Connect from last activity at the SOURCE unidade.
             src = atv.get("source_unidade")
             if src and src in last_at:
-                flow_edges.append({
-                    "from_id": last_at[src]["source_id"],
-                    "to_id": sid,
-                    "mesma_unidade": False,
-                })
+                # Fix 2: skip if last at source was a conclusão
+                if last_at[src]["tipo_acao"] not in CONCLUSION_TYPES:
+                    flow_edges.append({
+                        "from_id": last_at[src]["source_id"],
+                        "to_id": sid,
+                        "mesma_unidade": False,
+                    })
             elif u in last_at:
                 # Fallback: connect from last at same unidade
-                flow_edges.append({
-                    "from_id": last_at[u]["source_id"],
-                    "to_id": sid,
-                    "mesma_unidade": True,
-                })
+                if last_at[u]["tipo_acao"] not in CONCLUSION_TYPES:
+                    flow_edges.append({
+                        "from_id": last_at[u]["source_id"],
+                        "to_id": sid,
+                        "mesma_unidade": True,
+                    })
             # Track for RECEBIDO matching
             if u not in pending_remetidos:
                 pending_remetidos[u] = []
@@ -695,15 +776,17 @@ def _build_edges_for_processo(activities: list[dict]) -> tuple[list[dict], list[
                     })
                 pending_remetidos[u] = []
             elif u in last_at:
-                flow_edges.append({
-                    "from_id": last_at[u]["source_id"],
-                    "to_id": sid,
-                    "mesma_unidade": True,
-                })
+                if last_at[u]["tipo_acao"] not in CONCLUSION_TYPES:
+                    flow_edges.append({
+                        "from_id": last_at[u]["source_id"],
+                        "to_id": sid,
+                        "mesma_unidade": True,
+                    })
 
         else:
             # Regular activity: chain to last at same unidade
-            if u in last_at:
+            # Fix 2: skip if last was a conclusão
+            if u in last_at and last_at[u]["tipo_acao"] not in CONCLUSION_TYPES:
                 flow_edges.append({
                     "from_id": last_at[u]["source_id"],
                     "to_id": sid,
@@ -753,6 +836,7 @@ def build_timeline(driver):
                 ORDER BY pf, data_hora, source_id
                 RETURN pf, collect({
                     source_id: source_id,
+                    data_hora: toString(data_hora),
                     tipo_acao: tipo_acao,
                     ref_id: ref_id,
                     unidade: unidade,
