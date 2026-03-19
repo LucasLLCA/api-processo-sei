@@ -5,13 +5,14 @@ Graph model (enhanced for process flow clustering, shortest path & permanência)
 
   Nodes:
     - Processo         {protocolo_formatado*, data_criacao}
-    - Atividade        {source_id*, data_hora, descricao, tipo_acao, grupo, seq}
+    - Atividade        {source_id*, data_hora, descricao, tipo_acao, grupo, ref_id, seq}
     - TipoProcedimento {nome*}
     - Unidade          {sigla*}
     - Orgao            {sigla*}
     - Usuario          {nome*}
     - TipoAcao         {chave*}
     - GrupoAtividade   {chave*, label, horas}
+    - Documento        {numero*, tipo, serie_id}
 
   Relationships:
     - (Atividade)-[:DO_PROCESSO]->(Processo)
@@ -19,6 +20,7 @@ Graph model (enhanced for process flow clustering, shortest path & permanência)
     - (Atividade)-[:TIPO_ACAO]->(TipoAcao)
     - (Atividade)-[:EXECUTADO_PELO_USUARIO]->(Usuario)
     - (Atividade)-[:REMETIDO_PELA_UNIDADE]->(Unidade)       # source unit on remetido
+    - (Atividade)-[:REFERENCIA_DOCUMENTO]->(Documento)       # document referenced in activity
     - (TipoAcao)-[:PERTENCE_AO_GRUPO]->(GrupoAtividade)
     - (Processo)-[:TEM_TIPO]->(TipoProcedimento)
     - (Processo)-[:CRIADO_NA_UNIDADE]->(Unidade)
@@ -31,6 +33,7 @@ Graph model (enhanced for process flow clustering, shortest path & permanência)
     - (Processo)-[:INICIOU_PROCESSO]->(Atividade)              # first activity
     - (Atividade)-[:SEGUIDA_POR {mesma_unidade}]->(Atividade)  # DAG timeline forward
     - (Atividade)-[:PRECEDIDA_POR {mesma_unidade}]->(Atividade) # DAG timeline backward
+    - (Atividade)-[:SEGUIDO_INDEPENDENTEMENTE_POR {ref_id}]->(Atividade) # non-flow link via bloco/doc ref
 
 Strategy to avoid deadlocks:
     Phase A: Pre-create shared dimension nodes (single-threaded)
@@ -60,6 +63,7 @@ from neo4j.exceptions import TransientError
 
 from etl_neo4j_classifier import (
     classify_descricao,
+    extract_document_info,
     extract_orgao,
     extract_reference_id,
     extract_source_unidade,
@@ -132,6 +136,7 @@ SETUP_CONSTRAINTS = [
     "CREATE CONSTRAINT grupo_atividade_chave IF NOT EXISTS FOR (ga:GrupoAtividade) REQUIRE ga.chave IS UNIQUE",
     "CREATE CONSTRAINT orgao_sigla IF NOT EXISTS FOR (o:Orgao) REQUIRE o.sigla IS UNIQUE",
     "CREATE CONSTRAINT usuario_nome IF NOT EXISTS FOR (u:Usuario) REQUIRE u.nome IS UNIQUE",
+    "CREATE CONSTRAINT documento_numero IF NOT EXISTS FOR (d:Documento) REQUIRE d.numero IS UNIQUE",
     "CREATE INDEX atividade_data IF NOT EXISTS FOR (a:Atividade) ON (a.data_hora)",
     "CREATE INDEX processo_data_criacao IF NOT EXISTS FOR (p:Processo) ON (p.data_criacao)",
     "CREATE INDEX atividade_seq IF NOT EXISTS FOR (a:Atividade) ON (a.seq)",
@@ -248,6 +253,15 @@ MATCH (src:Unidade {sigla: row.source_unidade})
 MERGE (atv)-[:REMETIDO_PELA_UNIDADE]->(src)
 """
 
+LOAD_DOCUMENTO_CYPHER = """
+UNWIND $rows AS row
+MATCH (atv:Atividade {source_id: row.source_id})
+MERGE (doc:Documento {numero: row.numero})
+ON CREATE SET doc.tipo = row.tipo,
+              doc.serie_id = row.serie_id
+MERGE (atv)-[:REFERENCIA_DOCUMENTO]->(doc)
+"""
+
 # ---------------------------------------------------------------------------
 # Cypher - Phase D: Permanencia
 # ---------------------------------------------------------------------------
@@ -331,6 +345,7 @@ def transform_row(row: dict, seq: int) -> dict:
     is_creation = tipo_acao == "GERACAO-PROCEDIMENTO"
     source_unidade = extract_source_unidade(descricao) if tipo_acao == "PROCESSO-REMETIDO-UNIDADE" else None
     ref_id = extract_reference_id(descricao)
+    doc_info = extract_document_info(descricao)
 
     data_hora_str = None
     if row["data_hora"]:
@@ -350,6 +365,7 @@ def transform_row(row: dict, seq: int) -> dict:
         "is_creation": is_creation,
         "source_unidade": source_unidade,
         "ref_id": ref_id,
+        "doc_info": doc_info,
         "seq": seq,
     }
 
@@ -477,6 +493,19 @@ def load_atividades_batch(driver, transformed: list[dict]):
     ]
     if tramitacao_rows:
         _neo4j_run_with_retry(driver, LOAD_TRAMITACAO_CYPHER, rows=tramitacao_rows)
+
+    documento_rows = [
+        {
+            "source_id": t["source_id"],
+            "numero": t["doc_info"]["numero"],
+            "tipo": t["doc_info"]["tipo"],
+            "serie_id": t["doc_info"]["serie_id"],
+        }
+        for t in transformed
+        if t["doc_info"]
+    ]
+    if documento_rows:
+        _neo4j_run_with_retry(driver, LOAD_DOCUMENTO_CYPHER, rows=documento_rows)
 
 
 def process_chunk(protocolo_ids: list[str], neo4j_driver, dry_run: bool, batch_size: int) -> tuple[int, Counter, list[str], set[str]]:

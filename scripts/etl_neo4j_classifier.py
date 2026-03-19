@@ -105,6 +105,10 @@ _REMETIDO_RE = re.compile(r"remetido pela unidade\s+(\S+)", re.IGNORECASE)
 _BLOCO_REF_RE = re.compile(r"\bbloco\s+(\d+)", re.IGNORECASE)
 _DOC_REF_RE = re.compile(r"\bdocumento\s+(?:\w+\s+)*?(\d{6,})", re.IGNORECASE)
 
+# Regex to extract full document info: number + (Type SeriesID)
+# Matches: "0020032608 (SEAD_OFICIO 13441)", "0020030371 (Ficha)", "016096560 (Aviso 445)"
+_DOC_INFO_RE = re.compile(r"(\d{7,})\s*\(([^@)]+?)(?:\s+(\d+))?\)")
+
 
 def classify_descricao(text: str | None) -> str:
     """Classify descricao_replace text into a SEI task type code."""
@@ -127,6 +131,28 @@ def extract_source_unidade(text: str | None) -> str | None:
         return None
     m = _REMETIDO_RE.search(text)
     return m.group(1) if m else None
+
+
+def extract_document_info(text: str | None) -> dict | None:
+    """Extract document number, type, and series ID from a description.
+
+    Matches patterns like:
+      - "0020032608 (SEAD_OFICIO 13441)"  → {numero, tipo, serie_id}
+      - "0020030371 (Ficha)"              → {numero, tipo, serie_id=None}
+      - "016096560 (Aviso 445)"           → {numero, tipo, serie_id}
+
+    Returns dict with keys {numero, tipo, serie_id} or None.
+    """
+    if not text:
+        return None
+    m = _DOC_INFO_RE.search(text)
+    if not m:
+        return None
+    return {
+        "numero": m.group(1),
+        "tipo": m.group(2).strip(),
+        "serie_id": m.group(3),  # None if no series ID
+    }
 
 
 def extract_reference_id(text: str | None) -> str | None:
