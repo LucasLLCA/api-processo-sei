@@ -101,6 +101,10 @@ for group_key, group_info in TASK_GROUPS.items():
 # Regex to extract source unit from tramitação descriptions
 _REMETIDO_RE = re.compile(r"remetido pela unidade\s+(\S+)", re.IGNORECASE)
 
+# Regex to extract bloco or document reference IDs from descriptions
+_BLOCO_REF_RE = re.compile(r"\bbloco\s+(\d+)", re.IGNORECASE)
+_DOC_REF_RE = re.compile(r"\bdocumento\s+(?:\w+\s+)*?(\d{6,})", re.IGNORECASE)
+
 
 def classify_descricao(text: str | None) -> str:
     """Classify descricao_replace text into a SEI task type code."""
@@ -123,6 +127,24 @@ def extract_source_unidade(text: str | None) -> str | None:
         return None
     m = _REMETIDO_RE.search(text)
     return m.group(1) if m else None
+
+
+def extract_reference_id(text: str | None) -> str | None:
+    """Extract a bloco or document reference ID from a description.
+
+    Returns 'bloco:NNN' or 'doc:NNN', or None if no reference found.
+    Bloco takes priority since bloco-related actions are the main
+    source of independent (non-flow) activities.
+    """
+    if not text:
+        return None
+    m = _BLOCO_REF_RE.search(text)
+    if m:
+        return f"bloco:{m.group(1)}"
+    m = _DOC_REF_RE.search(text)
+    if m:
+        return f"doc:{m.group(1)}"
+    return None
 
 
 def extract_orgao(unidade: str | None) -> str:

@@ -61,6 +61,7 @@ from neo4j.exceptions import TransientError
 from etl_neo4j_classifier import (
     classify_descricao,
     extract_orgao,
+    extract_reference_id,
     extract_source_unidade,
     get_all_grupo_records,
     get_all_tipo_acao_records,
@@ -231,6 +232,7 @@ ON CREATE SET
     atv.descricao = row.descricao,
     atv.tipo_acao = row.tipo_acao,
     atv.grupo = row.grupo,
+    atv.ref_id = row.ref_id,
     atv.seq = row.seq
 
 MERGE (atv)-[:DO_PROCESSO]->(proc)
@@ -328,6 +330,7 @@ def transform_row(row: dict, seq: int) -> dict:
     grupo = get_grupo(tipo_acao)
     is_creation = tipo_acao == "GERACAO-PROCEDIMENTO"
     source_unidade = extract_source_unidade(descricao) if tipo_acao == "PROCESSO-REMETIDO-UNIDADE" else None
+    ref_id = extract_reference_id(descricao)
 
     data_hora_str = None
     if row["data_hora"]:
@@ -346,6 +349,7 @@ def transform_row(row: dict, seq: int) -> dict:
         "grupo": grupo,
         "is_creation": is_creation,
         "source_unidade": source_unidade,
+        "ref_id": ref_id,
         "seq": seq,
     }
 
@@ -553,9 +557,23 @@ MATCH (a:Atividade {source_id: r.first_id})
 MERGE (p)-[:INICIOU_PROCESSO]->(a)
 """
 
+LOAD_INDEPENDENT_TIMELINE_CYPHER = """
+UNWIND $edges AS e
+MATCH (a1:Atividade {source_id: e.from_id})
+MATCH (a2:Atividade {source_id: e.to_id})
+MERGE (a1)-[r:SEGUIDO_INDEPENDENTEMENTE_POR]->(a2)
+SET r.ref_id = e.ref_id
+"""
 
-def _build_edges_for_processo(activities: list[dict]) -> list[dict]:
+
+def _build_edges_for_processo(activities: list[dict]) -> tuple[list[dict], list[dict]]:
     """Build SEGUIDA_POR edges using unidade-context tracking.
+
+    Returns (flow_edges, independent_edges):
+      - flow_edges: SEGUIDA_POR edges between activities in the formal flow
+      - independent_edges: SEGUIDO_INDEPENDENTEMENTE_POR edges linking
+        activities from non-activated units to the first activity that
+        shares the same bloco/document reference (ref_id)
 
     Rules:
       1. Same unidade as previous: chain to last activity there
@@ -563,14 +581,35 @@ def _build_edges_for_processo(activities: list[dict]) -> list[dict]:
          activity at the SOURCE unidade (extracted from description)
       3. RECEBIDO: connect from pending REMETIDO(s) that targeted
          this unidade
+      4. Activities from units that never had GERACAO/RECEBIDO/REABERTURA
+         are linked independently via shared bloco/document reference
 
     This correctly handles parallel branches: activities at GAMIL
     only chain to other activities at GAMIL, never cross to SESAPI.
     """
     if len(activities) < 2:
-        return []
+        return [], []
 
-    edges = []
+    # Determine activated units (formally part of the flow)
+    FLOW_ACTIVATION_TYPES = {
+        "GERACAO-PROCEDIMENTO",
+        "PROCESSO-RECEBIDO-UNIDADE",
+        "REABERTURA-PROCESSO-UNIDADE",
+    }
+    activated_units: set[str] = set()
+    for atv in activities:
+        if atv["tipo_acao"] in FLOW_ACTIVATION_TYPES:
+            activated_units.add(atv["unidade"])
+
+    # Index: first activity per ref_id (across all units) for independent linking
+    first_by_ref: dict[str, dict] = {}
+    for atv in activities:
+        rid = atv.get("ref_id")
+        if rid and rid not in first_by_ref:
+            first_by_ref[rid] = atv
+
+    flow_edges = []
+    independent_edges = []
     # Track the last activity at each unidade
     last_at: dict[str, dict] = {}
     # Track pending remetidos by destination unidade
@@ -581,19 +620,32 @@ def _build_edges_for_processo(activities: list[dict]) -> list[dict]:
         tipo = atv["tipo_acao"]
         sid = atv["source_id"]
 
+        # Non-activated unit: link via bloco/document reference instead
+        if u not in activated_units:
+            rid = atv.get("ref_id")
+            if rid and rid in first_by_ref:
+                origin = first_by_ref[rid]
+                if origin["source_id"] != sid:
+                    independent_edges.append({
+                        "from_id": origin["source_id"],
+                        "to_id": sid,
+                        "ref_id": rid,
+                    })
+            continue
+
         if tipo == "PROCESSO-REMETIDO-UNIDADE":
             # REMETIDO is logged at the destination unidade.
             # Connect from last activity at the SOURCE unidade.
             src = atv.get("source_unidade")
             if src and src in last_at:
-                edges.append({
+                flow_edges.append({
                     "from_id": last_at[src]["source_id"],
                     "to_id": sid,
                     "mesma_unidade": False,
                 })
             elif u in last_at:
                 # Fallback: connect from last at same unidade
-                edges.append({
+                flow_edges.append({
                     "from_id": last_at[u]["source_id"],
                     "to_id": sid,
                     "mesma_unidade": True,
@@ -607,14 +659,14 @@ def _build_edges_for_processo(activities: list[dict]) -> list[dict]:
             # RECEBIDO at unidade u. Connect from pending remetido(s).
             if u in pending_remetidos and pending_remetidos[u]:
                 for rem in pending_remetidos[u]:
-                    edges.append({
+                    flow_edges.append({
                         "from_id": rem["source_id"],
                         "to_id": sid,
                         "mesma_unidade": True,
                     })
                 pending_remetidos[u] = []
             elif u in last_at:
-                edges.append({
+                flow_edges.append({
                     "from_id": last_at[u]["source_id"],
                     "to_id": sid,
                     "mesma_unidade": True,
@@ -623,7 +675,7 @@ def _build_edges_for_processo(activities: list[dict]) -> list[dict]:
         else:
             # Regular activity: chain to last at same unidade
             if u in last_at:
-                edges.append({
+                flow_edges.append({
                     "from_id": last_at[u]["source_id"],
                     "to_id": sid,
                     "mesma_unidade": True,
@@ -631,7 +683,7 @@ def _build_edges_for_processo(activities: list[dict]) -> list[dict]:
 
         last_at[u] = atv
 
-    return edges
+    return flow_edges, independent_edges
 
 
 def build_timeline(driver):
@@ -666,18 +718,21 @@ def build_timeline(driver):
                      a.source_id AS source_id,
                      a.data_hora AS data_hora,
                      a.tipo_acao AS tipo_acao,
+                     a.ref_id AS ref_id,
                      u.sigla AS unidade,
                      src.sigla AS source_unidade
                 ORDER BY pf, data_hora, source_id
                 RETURN pf, collect({
                     source_id: source_id,
                     tipo_acao: tipo_acao,
+                    ref_id: ref_id,
                     unidade: unidade,
                     source_unidade: source_unidade
                 }) AS activities
             """, skip=skip, limit=batch_size)
 
-            all_edges = []
+            all_flow_edges = []
+            all_independent_edges = []
             inicio_rows = []
             for record in result:
                 pf = record["pf"]
@@ -685,19 +740,26 @@ def build_timeline(driver):
                 if not activities:
                     continue
 
-                edges = _build_edges_for_processo(activities)
-                all_edges.extend(edges)
+                flow_edges, independent_edges = _build_edges_for_processo(activities)
+                all_flow_edges.extend(flow_edges)
+                all_independent_edges.extend(independent_edges)
 
                 inicio_rows.append({
                     "protocolo_formatado": pf,
                     "first_id": activities[0]["source_id"],
                 })
 
-        if all_edges:
-            for i in range(0, len(all_edges), 500):
-                sub = all_edges[i:i + 500]
+        if all_flow_edges:
+            for i in range(0, len(all_flow_edges), 500):
+                sub = all_flow_edges[i:i + 500]
                 _neo4j_run_with_retry(driver, LOAD_TIMELINE_CYPHER, edges=sub)
-            total_edges += len(all_edges)
+            total_edges += len(all_flow_edges)
+
+        if all_independent_edges:
+            for i in range(0, len(all_independent_edges), 500):
+                sub = all_independent_edges[i:i + 500]
+                _neo4j_run_with_retry(driver, LOAD_INDEPENDENT_TIMELINE_CYPHER, edges=sub)
+            total_edges += len(all_independent_edges)
 
         if inicio_rows:
             for i in range(0, len(inicio_rows), 500):
@@ -710,7 +772,7 @@ def build_timeline(driver):
             log.info("  Progress: %d/%d processos, %d edges, %d inicio",
                      min(skip, total), total, total_edges, total_inicio)
 
-    log.info("Phase C complete: %d SEGUIDA_POR/PRECEDIDA_POR + %d INICIOU_PROCESSO",
+    log.info("Phase C complete: %d edges (SEGUIDA_POR + SEGUIDO_INDEPENDENTEMENTE_POR) + %d INICIOU_PROCESSO",
              total_edges, total_inicio)
 
 # ---------------------------------------------------------------------------
