@@ -7,7 +7,7 @@ Graph model (enhanced for process flow clustering, shortest path & permanência)
     - Processo         {protocolo_formatado*, data_criacao}
     - Atividade        {source_id*, data_hora, descricao, tipo_acao, grupo, ref_id, seq}
     - TipoProcedimento {nome*}
-    - Unidade          {sigla*}
+    - Unidade          {sigla*, id_unidade, descricao}
     - Orgao            {sigla*}
     - Usuario          {nome*}
     - TipoAcao         {chave*}
@@ -21,6 +21,7 @@ Graph model (enhanced for process flow clustering, shortest path & permanência)
     - (Atividade)-[:EXECUTADO_PELO_USUARIO]->(Usuario)
     - (Atividade)-[:REMETIDO_PELA_UNIDADE]->(Unidade)       # source unit on remetido
     - (Atividade)-[:REFERENCIA_DOCUMENTO]->(Documento)       # document referenced in activity
+    - (Processo)-[:CONTEM_DOCUMENTO]->(Documento)            # processo contains this document
     - (TipoAcao)-[:PERTENCE_AO_GRUPO]->(GrupoAtividade)
     - (Processo)-[:TEM_TIPO]->(TipoProcedimento)
     - (Processo)-[:CRIADO_NA_UNIDADE]->(Unidade)
@@ -31,8 +32,8 @@ Graph model (enhanced for process flow clustering, shortest path & permanência)
     - (Unidade)-[:SUBUNIDADE_DE]->(Unidade)                  # SEAD-PI/GAB/NTGD → SEAD-PI/GAB
     - (Usuario)-[:PERTENCE_AO_ORGAO]->(Orgao)
     - (Processo)-[:INICIOU_PROCESSO]->(Atividade)              # first activity
-    - (Atividade)-[:SEGUIDA_POR {mesma_unidade}]->(Atividade)  # DAG timeline forward
-    - (Atividade)-[:PRECEDIDA_POR {mesma_unidade}]->(Atividade) # DAG timeline backward
+    - (Atividade)-[:SEGUIDA_POR {mesma_unidade, intervalo_horas, intervalo_dias}]->(Atividade)  # DAG timeline forward
+    - (Atividade)-[:PRECEDIDA_POR {mesma_unidade, intervalo_horas, intervalo_dias}]->(Atividade) # DAG timeline backward
     - (Atividade)-[:SEGUIDO_INDEPENDENTEMENTE_POR {ref_id}]->(Atividade) # non-flow link via bloco/doc ref
 
 Strategy to avoid deadlocks:
@@ -48,7 +49,9 @@ Usage:
 """
 
 import argparse
+import csv
 import logging
+import os
 import random
 import time
 from collections import Counter
@@ -166,7 +169,9 @@ MERGE (:Orgao {sigla: o})
 
 PRECREATE_UNIDADES_CYPHER = """
 UNWIND $units AS u
-MERGE (:Unidade {sigla: u.sigla})
+MERGE (n:Unidade {sigla: u.sigla})
+SET n.id_unidade = u.id_unidade,
+    n.descricao = u.descricao
 """
 
 LINK_UNIDADE_ORGAO_CYPHER = """
@@ -260,6 +265,9 @@ MERGE (doc:Documento {numero: row.numero})
 ON CREATE SET doc.tipo = row.tipo,
               doc.serie_id = row.serie_id
 MERGE (atv)-[:REFERENCIA_DOCUMENTO]->(doc)
+WITH atv, doc
+MATCH (atv)-[:DO_PROCESSO]->(p:Processo)
+MERGE (p)-[:CONTEM_DOCUMENTO]->(doc)
 """
 
 # ---------------------------------------------------------------------------
@@ -392,8 +400,31 @@ def precreate_shared_nodes(driver, processos, all_unidades: set[str],
         session.run(PRECREATE_ORGAOS_CYPHER, orgaos=all_orgaos)
     log.info("  Pre-created %d orgaos", len(all_orgaos))
 
+    # Load CSV lookup for unidade enrichment
+    _csv_path = os.path.join(
+        os.path.dirname(__file__), "..", "..", "notebooks", "cost", "unidades_sei.csv"
+    )
+    unidade_csv_lookup: dict[str, dict] = {}
+    try:
+        with open(_csv_path, newline="", encoding="utf-8") as f:
+            for row in csv.DictReader(f):
+                unidade_csv_lookup[row["Sigla"]] = {
+                    "id_unidade": row["IdUnidade"],
+                    "descricao": row["Descricao"],
+                }
+        log.info("  Loaded %d unidades from CSV lookup", len(unidade_csv_lookup))
+    except FileNotFoundError:
+        log.warning("  CSV file not found at %s – id_unidade/descricao will be None", _csv_path)
+
     # Unidades (batched)
-    unit_list = [{"sigla": u} for u in all_unidades]
+    unit_list = [
+        {
+            "sigla": u,
+            "id_unidade": unidade_csv_lookup.get(u, {}).get("id_unidade"),
+            "descricao": unidade_csv_lookup.get(u, {}).get("descricao"),
+        }
+        for u in all_unidades
+    ]
     for i in range(0, len(unit_list), 1000):
         batch = unit_list[i:i + 1000]
         with driver.session() as session:
@@ -574,9 +605,13 @@ UNWIND $edges AS e
 MATCH (a1:Atividade {source_id: e.from_id})
 MATCH (a2:Atividade {source_id: e.to_id})
 MERGE (a1)-[r:SEGUIDA_POR]->(a2)
-SET r.mesma_unidade = e.mesma_unidade
+SET r.mesma_unidade = e.mesma_unidade,
+    r.intervalo_horas = e.intervalo_horas,
+    r.intervalo_dias = e.intervalo_dias
 MERGE (a2)-[r2:PRECEDIDA_POR]->(a1)
-SET r2.mesma_unidade = e.mesma_unidade
+SET r2.mesma_unidade = e.mesma_unidade,
+    r2.intervalo_horas = e.intervalo_horas,
+    r2.intervalo_dias = e.intervalo_dias
 """
 
 LOAD_INICIO_CYPHER = """
@@ -637,19 +672,24 @@ def _sort_and_fix_activities(activities: list[dict]) -> list[dict]:
 
     # Post-sort fixup: when a RECEBIDO appears before its matching
     # REMETIDO/CONCLUSÃO within 60s, move them before the RECEBIDO.
+    def _parse_dt(s: str) -> datetime:
+        try:
+            return datetime.fromisoformat(s)
+        except (ValueError, TypeError):
+            return datetime.min
+
     i = 0
     while i < len(activities):
         if activities[i]["tipo_acao"] != "PROCESSO-RECEBIDO-UNIDADE":
             i += 1
             continue
-        recebido_dt = activities[i].get("data_hora", "")
+        recebido_time = _parse_dt(activities[i].get("data_hora", ""))
         j = i + 1
         while j < len(activities):
             candidate = activities[j]
-            cand_dt = candidate.get("data_hora", "")
-            # ISO strings are comparable; check ~60s window
-            if cand_dt and recebido_dt and cand_dt > recebido_dt[:17]:
-                # Past the same minute+1 — stop looking
+            cand_time = _parse_dt(candidate.get("data_hora", ""))
+            # Past 60s window — stop looking
+            if (cand_time - recebido_time).total_seconds() > 60:
                 break
             if candidate["tipo_acao"] in (
                 "PROCESSO-REMETIDO-UNIDADE",
@@ -664,6 +704,24 @@ def _sort_and_fix_activities(activities: list[dict]) -> list[dict]:
         i += 1
 
     return activities
+
+
+def _compute_interval(from_atv: dict, to_atv: dict) -> tuple[float | None, float | None]:
+    """Compute time interval between two activities in hours and days.
+    Returns (intervalo_horas, intervalo_dias) or (None, None) if missing data.
+    """
+    from_dt = from_atv.get("data_hora", "")
+    to_dt = to_atv.get("data_hora", "")
+    if not from_dt or not to_dt:
+        return None, None
+    try:
+        delta = datetime.fromisoformat(to_dt) - datetime.fromisoformat(from_dt)
+        total_seconds = delta.total_seconds()
+        horas = round(total_seconds / 3600, 2)
+        dias = round(total_seconds / 86400, 2)
+        return horas, dias
+    except (ValueError, TypeError):
+        return None, None
 
 
 def _build_edges_for_processo(activities: list[dict]) -> tuple[list[dict], list[dict]]:
@@ -747,18 +805,24 @@ def _build_edges_for_processo(activities: list[dict]) -> tuple[list[dict], list[
             if src and src in last_at:
                 # Fix 2: skip if last at source was a conclusão
                 if last_at[src]["tipo_acao"] not in CONCLUSION_TYPES:
+                    h, d = _compute_interval(last_at[src], atv)
                     flow_edges.append({
                         "from_id": last_at[src]["source_id"],
                         "to_id": sid,
                         "mesma_unidade": False,
+                        "intervalo_horas": h,
+                        "intervalo_dias": d,
                     })
             elif u in last_at:
                 # Fallback: connect from last at same unidade
                 if last_at[u]["tipo_acao"] not in CONCLUSION_TYPES:
+                    h, d = _compute_interval(last_at[u], atv)
                     flow_edges.append({
                         "from_id": last_at[u]["source_id"],
                         "to_id": sid,
                         "mesma_unidade": True,
+                        "intervalo_horas": h,
+                        "intervalo_dias": d,
                     })
             # Track for RECEBIDO matching
             if u not in pending_remetidos:
@@ -769,28 +833,37 @@ def _build_edges_for_processo(activities: list[dict]) -> tuple[list[dict], list[
             # RECEBIDO at unidade u. Connect from pending remetido(s).
             if u in pending_remetidos and pending_remetidos[u]:
                 for rem in pending_remetidos[u]:
+                    h, d = _compute_interval(rem, atv)
                     flow_edges.append({
                         "from_id": rem["source_id"],
                         "to_id": sid,
                         "mesma_unidade": True,
+                        "intervalo_horas": h,
+                        "intervalo_dias": d,
                     })
                 pending_remetidos[u] = []
             elif u in last_at:
                 if last_at[u]["tipo_acao"] not in CONCLUSION_TYPES:
+                    h, d = _compute_interval(last_at[u], atv)
                     flow_edges.append({
                         "from_id": last_at[u]["source_id"],
                         "to_id": sid,
                         "mesma_unidade": True,
+                        "intervalo_horas": h,
+                        "intervalo_dias": d,
                     })
 
         else:
             # Regular activity: chain to last at same unidade
             # Fix 2: skip if last was a conclusão
             if u in last_at and last_at[u]["tipo_acao"] not in CONCLUSION_TYPES:
+                h, d = _compute_interval(last_at[u], atv)
                 flow_edges.append({
                     "from_id": last_at[u]["source_id"],
                     "to_id": sid,
                     "mesma_unidade": True,
+                    "intervalo_horas": h,
+                    "intervalo_dias": d,
                 })
 
         last_at[u] = atv
