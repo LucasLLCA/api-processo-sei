@@ -1,12 +1,10 @@
 import asyncio
-import json
 import math
 import logging
 from fastapi import APIRouter, Depends, Header, HTTPException, Query
 from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from starlette.responses import StreamingResponse
 from ..sei import (
     login, contar_andamentos, buscar_pagina_andamentos,
     listar_documentos, listar_documentos_parcial,
@@ -116,14 +114,6 @@ async def _fetch_andamentos_pages(token, protocolo, id_unidade, start_page, end_
     return all_andamentos
 
 
-async def _safe_cache_update(cache_key: str, new_result: dict, ttl: int):
-    """Only update cache if new data has more items (prevents regression from concurrent writes)."""
-    current = await cache.get(cache_key)
-    if current and len(current.get("Andamentos", [])) >= len(new_result.get("Andamentos", [])):
-        return
-    await cache.set(cache_key, new_result, ttl=ttl)
-
-
 class LoginRequest(BaseModel):
     usuario: str
     senha: str
@@ -191,52 +181,41 @@ async def sei_andamentos(
     numero_processo: str,
     id_unidade: str = Query(...),
     x_sei_token: str = Header(..., alias="X-SEI-Token"),
-    parcial: bool = Query(False),
-    extrair_documentos: bool = Query(False),
+    quantidade: int = Query(None, description="Items per page (overrides default 40). Used for delta fetches."),
+    pagina: int = Query(None, description="Page number to fetch. Used for delta fetches."),
 ):
     """
-    Proxy para buscar andamentos de um processo com cache incremental.
+    Proxy para buscar andamentos de um processo.
 
-    Always queries metadata (quantidade=0) to check current TotalItens.
-    Caches both partial and full results for 1 month.
-    Invalidates when TotalItens changes, reusing existing cached data
-    and only fetching the new/missing andamentos.
+    When quantidade+pagina are provided: simple single-page fetch (for delta sync).
+    Otherwise: full fetch with cache.
     """
     numero_processo = normalizar_numero_processo(numero_processo)
+
+    # ── Delta fetch mode: simple single-page request, no caching ──
+    if quantidade is not None and pagina is not None:
+        if quantidade <= 0:
+            return _build_andamentos_result([], 0, numero_processo)
+
+        andamentos = await buscar_pagina_andamentos(
+            x_sei_token, numero_processo, id_unidade, pagina, quantidade,
+        )
+        current_total = await contar_andamentos(x_sei_token, numero_processo, id_unidade)
+        return _build_andamentos_result(andamentos, current_total, numero_processo)
+
+    # ── Full fetch mode with cache ──
     cache_key = f"proxy:andamentos:{numero_processo}:{id_unidade}"
 
-    # Step 1: Always query metadata to get current TotalItens
     current_total = await contar_andamentos(x_sei_token, numero_processo, id_unidade)
 
     if current_total == 0:
         resultado = _build_andamentos_result([], 0, numero_processo)
-        if extrair_documentos:
-            resultado["DocumentosExtraidos"] = _extract_documents_from_andamentos([])
         await cache.set(cache_key, resultado, ttl=CACHE_TTL_ANDAMENTOS)
         return resultado
 
     total_pages = math.ceil(current_total / ANDAMENTOS_PAGE_SIZE)
 
-    def _add_doc_extraction(resultado: dict, andamentos_for_extraction: list = None):
-        """Add DocumentosExtraidos to result if flag is set."""
-        if extrair_documentos:
-            source = andamentos_for_extraction or resultado.get("Andamentos", [])
-            resultado["DocumentosExtraidos"] = _extract_documents_from_andamentos(source)
-
-    async def _fetch_last_page_for_extraction(andamentos: list) -> list:
-        """Fetch last page and combine with existing andamentos for doc extraction."""
-        if not extrair_documentos or total_pages <= 2:
-            return andamentos
-        try:
-            last_page = await buscar_pagina_andamentos(
-                x_sei_token, numero_processo, id_unidade, total_pages, ANDAMENTOS_PAGE_SIZE,
-            )
-            return andamentos + last_page
-        except Exception:
-            logger.warning(f"Failed to fetch last page for doc extraction: {numero_processo}")
-            return andamentos
-
-    # Step 2: Check cache
+    # Check cache
     cached = await cache.get(cache_key)
 
     if cached:
@@ -248,66 +227,23 @@ async def sei_andamentos(
             f"(cached={cached_count} total={cached_total} full={cached_is_full})"
         )
 
-        if cached_total == current_total:
-            # TotalItens unchanged
-            if cached_is_full:
-                _add_doc_extraction(cached)
-                return cached
+        if cached_total == current_total and cached_is_full:
+            return cached
 
-            # Partial cache, same total — serve cached, background fill remaining
-            if parcial:
-                asyncio.create_task(_background_fill_andamentos(
-                    x_sei_token, numero_processo, id_unidade, cache_key,
-                    cached["Andamentos"], cached_count, current_total,
-                ))
-                extraction_source = await _fetch_last_page_for_extraction(cached["Andamentos"])
-                _add_doc_extraction(cached, extraction_source)
-                return cached
-
-            # Caller wants full — fetch remaining synchronously
-            cached_complete_pages = cached_count // ANDAMENTOS_PAGE_SIZE
-            remaining = await _fetch_andamentos_pages(
-                x_sei_token, numero_processo, id_unidade,
-                cached_complete_pages + 1, total_pages,
-            )
-            all_andamentos = cached["Andamentos"][:cached_complete_pages * ANDAMENTOS_PAGE_SIZE] + remaining
-            resultado = _build_andamentos_result(all_andamentos, current_total, numero_processo)
-            _add_doc_extraction(resultado)
-            await cache.set(cache_key, resultado, ttl=CACHE_TTL_ANDAMENTOS)
-            return resultado
-
-        if current_total > cached_total:
-            # New andamentos added — reuse cached, fetch only new pages
-            logger.info(
-                f"TotalItens changed: {cached_total} → {current_total} for {numero_processo}. "
-                f"Reusing {cached_count} cached items."
-            )
+        if current_total > cached_total or (cached_total == current_total and not cached_is_full):
+            # Reuse cached pages, fetch only missing
             cached_complete_pages = cached_count // ANDAMENTOS_PAGE_SIZE
             reusable = cached["Andamentos"][:cached_complete_pages * ANDAMENTOS_PAGE_SIZE]
-
-            if parcial:
-                resultado = _build_andamentos_result(reusable, current_total, numero_processo)
-                await cache.set(cache_key, resultado, ttl=CACHE_TTL_ANDAMENTOS)
-                asyncio.create_task(_background_fill_andamentos(
-                    x_sei_token, numero_processo, id_unidade, cache_key,
-                    reusable, len(reusable), current_total,
-                ))
-                extraction_source = await _fetch_last_page_for_extraction(reusable)
-                _add_doc_extraction(resultado, extraction_source)
-                return resultado
-
-            # Full request — fetch all missing synchronously
             remaining = await _fetch_andamentos_pages(
                 x_sei_token, numero_processo, id_unidade,
                 cached_complete_pages + 1, total_pages,
             )
             all_andamentos = reusable + remaining
             resultado = _build_andamentos_result(all_andamentos, current_total, numero_processo)
-            _add_doc_extraction(resultado)
             await cache.set(cache_key, resultado, ttl=CACHE_TTL_ANDAMENTOS)
             return resultado
 
-        # TotalItens decreased (unusual) — invalidate and fall through to fresh fetch
+        # TotalItens decreased — invalidate
         logger.warning(
             f"TotalItens decreased: {cached_total} → {current_total} for {numero_processo}. "
             f"Invalidating cache."
@@ -317,105 +253,13 @@ async def sei_andamentos(
     if not cached:
         logger.info(f"GET /sei/andamentos/{numero_processo} — cache MISS")
 
-    # Step 3: No cache (or invalidated) — fresh fetch
-    if parcial:
-        if current_total <= ANDAMENTOS_PAGE_SIZE:
-            # Single fetch gets everything
-            andamentos = await buscar_pagina_andamentos(
-                x_sei_token, numero_processo, id_unidade, 1, ANDAMENTOS_PAGE_SIZE,
-            )
-            resultado = _build_andamentos_result(andamentos, current_total, numero_processo)
-            _add_doc_extraction(resultado)
-            await cache.set(cache_key, resultado, ttl=CACHE_TTL_ANDAMENTOS)
-            return resultado
-
-        if current_total <= ANDAMENTOS_PAGE_SIZE * 2:
-            # 1-2 pages total: fetch both pages when possible
-            if total_pages == 2:
-                page1, last_page = await asyncio.gather(
-                    buscar_pagina_andamentos(x_sei_token, numero_processo, id_unidade, 1, ANDAMENTOS_PAGE_SIZE),
-                    buscar_pagina_andamentos(x_sei_token, numero_processo, id_unidade, total_pages, ANDAMENTOS_PAGE_SIZE),
-                )
-                andamentos = page1 + last_page
-                resultado = _build_andamentos_result(andamentos, current_total, numero_processo)
-                _add_doc_extraction(resultado)
-            else:
-                andamentos = await buscar_pagina_andamentos(
-                    x_sei_token, numero_processo, id_unidade, 1, ANDAMENTOS_PAGE_SIZE,
-                )
-                resultado = _build_andamentos_result(andamentos, current_total, numero_processo)
-                _add_doc_extraction(resultado)
-            await cache.set(cache_key, resultado, ttl=CACHE_TTL_ANDAMENTOS)
-            # All data fetched — no background fill needed when total_pages == 2
-            if total_pages != 2:
-                asyncio.create_task(_background_fill_andamentos(
-                    x_sei_token, numero_processo, id_unidade, cache_key,
-                    andamentos, len(andamentos), current_total,
-                ))
-            return resultado
-
-        # > 80 items: pages 1+2 for recent andamentos, + last page for oldest (includes PROCESSO GERADO)
-        page1, page2, last_page = await asyncio.gather(
-            buscar_pagina_andamentos(x_sei_token, numero_processo, id_unidade, 1, ANDAMENTOS_PAGE_SIZE),
-            buscar_pagina_andamentos(x_sei_token, numero_processo, id_unidade, 2, ANDAMENTOS_PAGE_SIZE),
-            buscar_pagina_andamentos(x_sei_token, numero_processo, id_unidade, total_pages, ANDAMENTOS_PAGE_SIZE),
-        )
-        # Return all fetched pages to client (newest + oldest), but background fill
-        # only knows about the contiguous pages 1-2 to avoid duplicate/out-of-order issues
-        andamentos_for_result = page1 + page2 + last_page
-        andamentos_contiguous = page1 + page2
-        resultado = _build_andamentos_result(andamentos_for_result, current_total, numero_processo)
-        _add_doc_extraction(resultado)
-        await cache.set(cache_key, resultado, ttl=CACHE_TTL_ANDAMENTOS)
-        asyncio.create_task(_background_fill_andamentos(
-            x_sei_token, numero_processo, id_unidade, cache_key,
-            andamentos_contiguous, len(andamentos_contiguous), current_total,
-        ))
-        return resultado
-
-    # parcial=false, no cache — fetch all pages
+    # No cache — fetch all pages
     all_andamentos = await _fetch_andamentos_pages(
         x_sei_token, numero_processo, id_unidade, 1, total_pages,
     )
     resultado = _build_andamentos_result(all_andamentos, current_total, numero_processo)
-    _add_doc_extraction(resultado)
     await cache.set(cache_key, resultado, ttl=CACHE_TTL_ANDAMENTOS)
     return resultado
-
-
-async def _background_fill_andamentos(
-    token, numero_processo, id_unidade, cache_key,
-    existing_andamentos, existing_count, total_itens,
-):
-    """Background task: fetch remaining andamentos incrementally and update cache."""
-    try:
-        cached_complete_pages = existing_count // ANDAMENTOS_PAGE_SIZE
-        total_pages = math.ceil(total_itens / ANDAMENTOS_PAGE_SIZE)
-        start_page = cached_complete_pages + 1
-
-        if start_page > total_pages:
-            return
-
-        logger.info(
-            f"Background fill starting: {numero_processo} "
-            f"pages {start_page}-{total_pages} ({existing_count}/{total_itens} cached)"
-        )
-
-        remaining = await _fetch_andamentos_pages(
-            token, numero_processo, id_unidade, start_page, total_pages,
-        )
-
-        if remaining:
-            reusable = existing_andamentos[:cached_complete_pages * ANDAMENTOS_PAGE_SIZE]
-            all_andamentos = reusable + remaining
-            resultado = _build_andamentos_result(all_andamentos, total_itens, numero_processo)
-            await _safe_cache_update(cache_key, resultado, CACHE_TTL_ANDAMENTOS)
-            logger.info(
-                f"Background fill complete: {numero_processo} "
-                f"({len(all_andamentos)} items cached)"
-            )
-    except Exception as e:
-        logger.error(f"Background fill failed: {numero_processo} — {e}")
 
 
 @router.get("/andamentos-count/{numero_processo}")
@@ -649,107 +493,6 @@ async def sei_assinar_documento(
     except Exception as e:
         logger.exception(f"POST /sei/documentos/{protocolo_documento}/assinar 500 — {type(e).__name__}: {e}")
         raise
-
-
-def _sse_event(data: dict) -> str:
-    """Formata um evento SSE."""
-    return f"data: {json.dumps(data, ensure_ascii=False)}\n\n"
-
-
-@router.get("/andamentos-stream/{numero_processo}")
-async def sei_andamentos_stream(
-    numero_processo: str,
-    id_unidade: str = Query(...),
-    x_sei_token: str = Header(..., alias="X-SEI-Token"),
-):
-    """
-    SSE endpoint for andamentos with progress events.
-    Leverages cached data: if full cache exists returns immediately,
-    otherwise streams only the remaining pages with progress.
-    """
-    numero_processo = normalizar_numero_processo(numero_processo)
-    cache_key = f"proxy:andamentos:{numero_processo}:{id_unidade}"
-
-    # Check cache — if full data is already cached, return immediately
-    cached = await cache.get(cache_key)
-    if cached and not cached["Info"].get("Parcial", True):
-        logger.info(f"GET /sei/andamentos-stream/{numero_processo} — cache HIT (full)")
-
-        async def cached_generator():
-            yield _sse_event({"type": "done", "content": cached})
-
-        return StreamingResponse(
-            cached_generator(),
-            media_type="text/event-stream",
-            headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
-        )
-
-    logger.info(
-        f"GET /sei/andamentos-stream/{numero_processo} — cache "
-        f"{'PARTIAL' if cached else 'MISS'}"
-    )
-
-    # Determine current total and what we already have
-    current_total = await contar_andamentos(x_sei_token, numero_processo, id_unidade)
-
-    existing = cached["Andamentos"] if cached else []
-    existing_count = len(existing)
-
-    # If total changed, only keep complete pages
-    if cached and cached["Info"]["TotalItens"] != current_total:
-        complete_pages = existing_count // ANDAMENTOS_PAGE_SIZE
-        existing = existing[:complete_pages * ANDAMENTOS_PAGE_SIZE]
-        existing_count = len(existing)
-
-    async def stream_generator():
-        try:
-            if current_total == 0:
-                resultado = _build_andamentos_result([], 0, numero_processo)
-                yield _sse_event({"type": "done", "content": resultado})
-                return
-
-            if existing_count >= current_total:
-                resultado = _build_andamentos_result(existing, current_total, numero_processo)
-                yield _sse_event({"type": "done", "content": resultado})
-                return
-
-            # Yield initial progress
-            yield _sse_event({"type": "progress", "content": {"loaded": existing_count, "total": current_total}})
-
-            # Fetch remaining pages in batches, streaming progress
-            total_pages = math.ceil(current_total / ANDAMENTOS_PAGE_SIZE)
-            cached_pages = existing_count // ANDAMENTOS_PAGE_SIZE
-            pages_to_fetch = list(range(cached_pages + 1, total_pages + 1))
-
-            all_andamentos = list(existing)
-
-            for i in range(0, len(pages_to_fetch), ANDAMENTOS_BATCH_SIZE):
-                batch = pages_to_fetch[i:i + ANDAMENTOS_BATCH_SIZE]
-                tasks = [
-                    buscar_pagina_andamentos(x_sei_token, numero_processo, id_unidade, p, ANDAMENTOS_PAGE_SIZE)
-                    for p in batch
-                ]
-                results = await asyncio.gather(*tasks, return_exceptions=True)
-                for result in results:
-                    if isinstance(result, Exception):
-                        continue
-                    all_andamentos.extend(result)
-
-                yield _sse_event({"type": "progress", "content": {"loaded": len(all_andamentos), "total": current_total}})
-
-            resultado = _build_andamentos_result(all_andamentos, current_total, numero_processo)
-            await _safe_cache_update(cache_key, resultado, CACHE_TTL_ANDAMENTOS)
-            yield _sse_event({"type": "done", "content": resultado})
-
-        except Exception as e:
-            logger.error(f"[andamentos-stream] Erro: {str(e)}", exc_info=True)
-            yield _sse_event({"type": "error", "content": f"Erro ao buscar andamentos: {str(e)}"})
-
-    return StreamingResponse(
-        stream_generator(),
-        media_type="text/event-stream",
-        headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
-    )
 
 
 @router.delete("/cache/{numero_processo}")
