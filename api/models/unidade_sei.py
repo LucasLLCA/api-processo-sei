@@ -1,7 +1,7 @@
 """
 Model de Unidade SEI (caixa/unidade organizacional)
 """
-from sqlalchemy import Column, String, Integer, TIMESTAMP, Index, text
+from sqlalchemy import Column, String, BigInteger, TIMESTAMP, Index, text
 
 from ..database import Base
 
@@ -10,7 +10,7 @@ class UnidadeSei(Base):
     __tablename__ = "unidades_sei"
 
     id_unidade = Column(
-        Integer,
+        BigInteger,
         primary_key=True,
         comment="ID da unidade no SEI",
     )
