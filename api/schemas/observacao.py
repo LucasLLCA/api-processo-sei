@@ -27,6 +27,14 @@ class ObservacaoCreate(BaseModel):
     )
 
 
+class ObservacaoUpdate(BaseModel):
+    conteudo: str = Field(..., min_length=1, max_length=5000, description="Novo conteudo da observacao")
+    mencoes: List[str] = Field(
+        default_factory=list,
+        description="Lista de usuarios mencionados explicitamente no frontend",
+    )
+
+
 class ObservacaoMencaoResponse(BaseModel):
     id: UUID
     observacao_id: UUID
