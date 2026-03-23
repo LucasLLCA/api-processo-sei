@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from ..sei import (
     login, contar_andamentos, buscar_pagina_andamentos,
     listar_documentos, listar_documentos_parcial,
-    consultar_procedimento, verificar_saude, assinar_documento,
+    consultar_procedimento, assinar_documento,
     consultar_documento,
 )
 from ..cache import cache
@@ -538,13 +538,6 @@ async def sei_consultar_documento(
         logger.exception(f"GET /sei/documento/{documento_formatado} 500 — {type(e).__name__}: {e}")
         raise
 
-
-@router.get("/health")
-async def sei_health():
-    """
-    Verifica saúde da API SEI.
-    """
-    return await verificar_saude()
 
 
 @router.get("/configuracao-horas")

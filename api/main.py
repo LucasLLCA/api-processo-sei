@@ -89,6 +89,9 @@ async def lifespan(app: FastAPI):
 
     # Shutdown
     logger.info("Encerrando API...")
+    from .sei import http_client
+    await http_client.aclose()
+    logger.info("HTTP client encerrado")
     await cache.close()
     logger.info("Cache desconectado")
     await close_db()
