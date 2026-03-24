@@ -12,6 +12,7 @@ from .team_tags import router as team_tags_router
 from .credenciais import router as credenciais_router
 from .fluxos import router as fluxos_router
 from .unidades import router as unidades_router
+from .tipos_documento import router as tipos_documento_router
 
 router = APIRouter()
 
@@ -28,3 +29,4 @@ router.include_router(team_tags_router, prefix="/tags", tags=["Tags"])
 router.include_router(credenciais_router, prefix="/credenciais", tags=["Credenciais"])
 router.include_router(fluxos_router, prefix="/fluxos", tags=["Fluxos de Processos"])
 router.include_router(unidades_router, tags=["Unidades SEI"])
+router.include_router(tipos_documento_router, tags=["Tipos de Documento"])
