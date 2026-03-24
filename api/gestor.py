@@ -1,8 +1,7 @@
 import logging
 
-import httpx
-
 from .config import settings
+from .sei import http_client
 
 logger = logging.getLogger(__name__)
 
@@ -11,6 +10,7 @@ async def decode_jwe(token: str) -> dict | None:
     """Call the Gestor API to decode a JWE token.
 
     Returns the decoded payload dict, or None on any failure.
+    Uses the shared http_client for connection reuse / keep-alive.
     """
     if not settings.GESTOR_API_URL:
         logger.error("GESTOR_API_URL not configured")
@@ -22,8 +22,12 @@ async def decode_jwe(token: str) -> dict | None:
         headers["X-API-KEY"] = settings.GESTOR_API_TOKEN
 
     try:
-        async with httpx.AsyncClient(timeout=10) as client:
-            resp = await client.post(url, json={"token": token, "application": "visualizador"}, headers=headers)
+        resp = await http_client.post(
+            url,
+            json={"token": token, "application": "visualizador"},
+            headers=headers,
+            timeout=10,
+        )
         if resp.status_code != 200:
             logger.warning("Gestor decode returned %s: %s", resp.status_code, resp.text)
             return None

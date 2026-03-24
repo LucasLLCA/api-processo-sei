@@ -41,6 +41,7 @@ from .compartilhamento import (
 
 from .observacao import (
     ObservacaoCreate,
+    ObservacaoUpdate,
     ObservacaoResponse,
     ObservacaoMencaoResponse,
 )
@@ -96,6 +97,7 @@ __all__ = [
     "CompartilhamentoResponse",
     "CompartilhadoComMigoItem",
     "ObservacaoCreate",
+    "ObservacaoUpdate",
     "ObservacaoResponse",
     "ObservacaoMencaoResponse",
     "TeamTagCreate",

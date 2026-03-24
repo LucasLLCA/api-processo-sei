@@ -30,6 +30,9 @@ class Settings(BaseSettings):
     REDIS_USERNAME: str = "default"
     REDIS_PASSWORD: str = ""
 
+    # D-1 API (api-sei-atividades — pre-loaded andamentos from PostgreSQL)
+    D1_API_URL: str = ""
+
     # Gestor API
     GESTOR_API_URL: str = ""
     GESTOR_API_TOKEN: str = ""

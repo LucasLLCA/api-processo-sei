@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from ..sei import (
     login, contar_andamentos, buscar_pagina_andamentos,
     listar_documentos, listar_documentos_parcial,
-    consultar_procedimento, verificar_saude, assinar_documento,
+    consultar_procedimento, assinar_documento,
     consultar_documento,
 )
 from ..cache import cache
@@ -125,16 +125,17 @@ async def sei_login(body: LoginRequest, db: AsyncSession = Depends(get_db)):
     """
     Proxy para login na API SEI.
     Retorna a resposta bruta da API SEI (Token, Login, Unidades)
-    enriquecida com papel_global e id_pessoa da tabela credencial_usuarios.
+    enriquecida com modulos e id_pessoa da tabela credencial_usuarios.
     """
     logger.info(f"POST /sei/login INCOMING — user={body.usuario} orgao={body.orgao} senha_len={len(body.senha)}")
     try:
         result = await login(body.usuario, body.senha, body.orgao)
         logger.info(f"POST /sei/login OK for user={body.usuario} orgao={body.orgao} — keys={list(result.keys()) if isinstance(result, dict) else type(result).__name__}")
 
-        # Enrich with papel_global and id_pessoa from credencial_usuarios
+        # Enrich with modulos and id_pessoa from RBAC
         if isinstance(result, dict):
             try:
+                from ..rbac import get_user_modulos
                 cred = None
                 # Try lookup by IdPessoa first
                 id_pessoa_sei = result.get("Login", {}).get("IdPessoa")
@@ -159,13 +160,14 @@ async def sei_login(body: LoginRequest, db: AsyncSession = Depends(get_db)):
                     cred = cred_result.scalar_one_or_none()
 
                 if cred:
-                    result["papel_global"] = cred.papel_global
+                    modulos = await get_user_modulos(db, cred.usuario_sei)
+                    result["modulos"] = modulos
                     result["id_pessoa"] = cred.id_pessoa
-                    logger.info(f"Enriched login with papel_global={cred.papel_global} id_pessoa={cred.id_pessoa}")
+                    logger.info(f"Enriched login with modulos={modulos} id_pessoa={cred.id_pessoa}")
                 else:
-                    logger.info(f"No credencial found for user={body.usuario} orgao={body.orgao} — papel_global not set")
+                    logger.info(f"No credencial found for user={body.usuario} orgao={body.orgao} — modulos not set")
             except Exception as e:
-                logger.warning(f"Could not enrich login with papel_global: {e}")
+                logger.warning(f"Could not enrich login with modulos: {e}")
 
         return result
     except HTTPException as he:
@@ -538,13 +540,6 @@ async def sei_consultar_documento(
         logger.exception(f"GET /sei/documento/{documento_formatado} 500 — {type(e).__name__}: {e}")
         raise
 
-
-@router.get("/health")
-async def sei_health():
-    """
-    Verifica saúde da API SEI.
-    """
-    return await verificar_saude()
 
 
 @router.get("/configuracao-horas")

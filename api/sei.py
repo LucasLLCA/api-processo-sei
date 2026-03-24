@@ -1022,23 +1022,6 @@ async def consultar_procedimento(token: str, protocolo: str, id_unidade: str):
         )
 
 
-async def verificar_saude():
-    """
-    Verifica se a API SEI está online.
-    Retorna {online: bool, status_code: int}.
-    """
-    try:
-        url = f"{settings.SEI_BASE_URL}/orgaos"
-        params = {"pagina": 1, "quantidade": 10}
-        headers = {"accept": "application/json"}
-
-        response = await http_client.get(url, headers=headers, params=params, timeout=10)
-
-        return {"online": response.status_code == 200, "status_code": response.status_code}
-    except Exception as e:
-        logger.warning(f"Health check SEI falhou: {str(e)}")
-        return {"online": False, "status_code": 0}
-
 
 async def consultar_documento(token: str, id_unidade: str, documento_formatado: str):
     try:

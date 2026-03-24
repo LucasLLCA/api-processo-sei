@@ -21,6 +21,8 @@ from .fluxo_edge import FluxoEdge
 from .fluxo_processo import FluxoProcesso
 from .unidade_sei import UnidadeSei
 from .tipo_documento import TipoDocumento
+from .papel import Papel
+from .usuario_papel import UsuarioPapel
 
 __all__ = [
     "HistoricoPesquisa",
@@ -43,4 +45,6 @@ __all__ = [
     "FluxoProcesso",
     "UnidadeSei",
     "TipoDocumento",
+    "Papel",
+    "UsuarioPapel",
 ]
