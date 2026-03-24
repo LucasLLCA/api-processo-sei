@@ -2,43 +2,32 @@ import logging
 from datetime import datetime, timezone
 from typing import List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, Path, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
 from sqlalchemy import select, func, distinct
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import aliased
 
 from ..cache import cache, gerar_chave_documento
 from ..database import get_db
 from ..models.credencial_usuario import CredencialUsuario
 from ..models.configuracao_horas import ConfiguracaoHorasAndamento
+from ..models.papel import Papel
+from ..models.usuario_papel import UsuarioPapel
 from ..schemas_legacy import ErrorDetail, ErrorType
+from ..rbac import require_modulo
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
 
-# --------------- Admin guard ---------------
+# --------------- Admin guard (RBAC-based) ---------------
 
-async def require_admin(admin_id_pessoa: int = Query(..., alias="id_pessoa"), db: AsyncSession = Depends(get_db)):
-    """Dependency that verifies the requesting user has papel_global='admin'."""
-    result = await db.execute(
-        select(CredencialUsuario).where(
-            CredencialUsuario.id_pessoa == admin_id_pessoa,
-            CredencialUsuario.deletado_em.is_(None),
-        )
-    )
-    cred = result.scalar_one_or_none()
-    if not cred or cred.papel_global != "admin":
-        raise HTTPException(status_code=403, detail="Acesso restrito a administradores")
-    return cred
+require_admin = require_modulo("admin")
 
 
 # --------------- Schemas ---------------
-
-class UpdatePapelRequest(BaseModel):
-    papel_global: str  # "admin" | "beta" | "user"
-
 
 class HorasItem(BaseModel):
     grupo_key: str
@@ -54,8 +43,10 @@ class UsuarioResponse(BaseModel):
     id_pessoa: int
     usuario_sei: str
     orgao: str
-    papel_global: str
     cpf: Optional[str] = None
+    papel_nome: Optional[str] = None
+    papel_slug: Optional[str] = None
+    papel_id: Optional[str] = None
 
 
 # --------------- User role endpoints ---------------
@@ -66,8 +57,20 @@ async def listar_usuarios(
     _admin: CredencialUsuario = Depends(require_admin),
     db: AsyncSession = Depends(get_db),
 ):
-    """List all users with their roles (active credentials only)."""
-    query = select(CredencialUsuario).where(CredencialUsuario.deletado_em.is_(None))
+    """List all users with their roles (active credentials only), enriched with RBAC role info."""
+    query = (
+        select(CredencialUsuario, Papel)
+        .outerjoin(
+            UsuarioPapel,
+            (UsuarioPapel.usuario_sei == CredencialUsuario.usuario_sei)
+            & (UsuarioPapel.deletado_em.is_(None)),
+        )
+        .outerjoin(
+            Papel,
+            (Papel.id == UsuarioPapel.papel_id) & (Papel.deletado_em.is_(None)),
+        )
+        .where(CredencialUsuario.deletado_em.is_(None))
+    )
     if search.strip():
         pattern = f"%{search.strip()}%"
         query = query.where(
@@ -76,45 +79,19 @@ async def listar_usuarios(
         )
     query = query.order_by(CredencialUsuario.usuario_sei)
     result = await db.execute(query)
-    rows = result.scalars().all()
+    rows = result.all()
     return [
         UsuarioResponse(
-            id_pessoa=r.id_pessoa,
-            usuario_sei=r.usuario_sei,
-            orgao=r.orgao,
-            papel_global=r.papel_global,
-            cpf=r.cpf,
+            id_pessoa=cred.id_pessoa,
+            usuario_sei=cred.usuario_sei,
+            orgao=cred.orgao,
+            cpf=cred.cpf,
+            papel_nome=papel.nome if papel else None,
+            papel_slug=papel.slug if papel else None,
+            papel_id=str(papel.id) if papel else None,
         )
-        for r in rows
+        for cred, papel in rows
     ]
-
-
-@router.patch("/usuarios/{id_pessoa}/papel")
-async def atualizar_papel(
-    body: UpdatePapelRequest,
-    id_pessoa: int = Path(..., description="ID da pessoa"),
-    _admin: CredencialUsuario = Depends(require_admin),
-    db: AsyncSession = Depends(get_db),
-):
-    """Update a user's global role."""
-    if body.papel_global not in ("admin", "beta", "user"):
-        raise HTTPException(status_code=400, detail="Papel inválido. Use: admin, beta, user")
-
-    result = await db.execute(
-        select(CredencialUsuario).where(
-            CredencialUsuario.id_pessoa == id_pessoa,
-            CredencialUsuario.deletado_em.is_(None),
-        )
-    )
-    target = result.scalar_one_or_none()
-    if not target:
-        raise HTTPException(status_code=404, detail="Usuário não encontrado")
-
-    target.papel_global = body.papel_global
-    target.atualizado_em = datetime.now(timezone.utc)
-    await db.flush()
-
-    return {"status": "ok", "id_pessoa": id_pessoa, "papel_global": body.papel_global}
 
 
 # --------------- Hour coefficient endpoints ---------------

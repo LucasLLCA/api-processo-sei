@@ -1,20 +1,22 @@
 """
-Model SQLAlchemy para credenciais SEI armazenadas por usuário
+Model SQLAlchemy para papéis (roles) do sistema RBAC.
 """
-from sqlalchemy import Column, String, Text, BigInteger, TIMESTAMP, Index, text
-from sqlalchemy.dialects.postgresql import UUID
 from datetime import datetime
 import uuid
+
+from sqlalchemy import Column, String, Text, Boolean, TIMESTAMP, Index, text
+from sqlalchemy.dialects.postgresql import UUID, ARRAY
+from sqlalchemy.orm import relationship
 
 from ..database import Base
 
 
-class CredencialUsuario(Base):
+class Papel(Base):
     """
-    Credenciais SEI criptografadas vinculadas a um usuário (id_pessoa do JWE).
-    Implementa soft delete — apenas uma credencial ativa por id_pessoa.
+    Define um papel (role) com lista de módulos permitidos.
+    Soft delete — apenas um papel ativo por slug.
     """
-    __tablename__ = "credenciais_usuario"
+    __tablename__ = "papeis"
 
     id = Column(
         UUID(as_uuid=True),
@@ -23,11 +25,11 @@ class CredencialUsuario(Base):
         server_default=text("gen_random_uuid()"),
     )
 
-    id_pessoa = Column(BigInteger, nullable=False)
-    cpf = Column(String(20), nullable=True)  # CPF from JWE usuario field
-    usuario_sei = Column(String(100), nullable=False)
-    senha_encrypted = Column(Text, nullable=False)
-    orgao = Column(String(50), nullable=False)
+    nome = Column(String(60), nullable=False)
+    slug = Column(String(40), nullable=False)
+    descricao = Column(Text, nullable=True)
+    modulos = Column(ARRAY(Text), nullable=False, server_default=text("'{}'"))
+    is_default = Column(Boolean, nullable=False, server_default=text("false"))
 
     criado_em = Column(
         TIMESTAMP(timezone=True),
@@ -41,14 +43,17 @@ class CredencialUsuario(Base):
     )
     deletado_em = Column(TIMESTAMP(timezone=True), nullable=True)
 
+    # Relationship
+    usuarios = relationship("UsuarioPapel", back_populates="papel")
+
     __table_args__ = (
         Index(
-            'idx_credencial_id_pessoa_unique',
-            'id_pessoa',
+            "idx_papel_slug_unique",
+            "slug",
             unique=True,
             postgresql_where=text("deletado_em IS NULL"),
         ),
-        {'comment': 'Credenciais SEI criptografadas por usuário'},
+        {"comment": "Papéis (roles) do sistema com módulos permitidos"},
     )
 
     def soft_delete(self) -> None:

@@ -14,6 +14,7 @@ from ..database import get_db
 from ..crypto import encrypt_password, decrypt_password
 from ..models.credencial_usuario import CredencialUsuario
 from ..cache import cache, gerar_chave_login
+from ..rbac import get_user_role_info, get_user_modulos
 from .. import sei
 
 logger = logging.getLogger(__name__)
@@ -54,6 +55,23 @@ async def _get_active_credential(db: AsyncSession, id_pessoa: int) -> Credencial
     return result.scalar_one_or_none()
 
 
+def _credentials_unchanged(existing: CredencialUsuario, body: "EmbedLoginRequest") -> bool:
+    """Check if stored credentials match the incoming ones (skip upsert optimization)."""
+    if existing.usuario_sei != body.usuario_sei or existing.orgao != body.orgao:
+        return False
+    try:
+        stored_password = decrypt_password(existing.senha_encrypted)
+        return stored_password == body.senha
+    except Exception:
+        return False
+
+
+async def _enrich_with_modulos(data: dict, db: AsyncSession, usuario_sei: str) -> None:
+    """Add modulos from RBAC to login response data."""
+    modulos = await get_user_modulos(db, usuario_sei)
+    data["modulos"] = modulos
+
+
 # --------------- Endpoints ---------------
 
 @router.get("/check/{id_pessoa}", response_model=CheckCredentialsResponse)
@@ -61,6 +79,20 @@ async def check_credentials(id_pessoa: int, db: AsyncSession = Depends(get_db)):
     """Verifica se existem credenciais armazenadas para o usuário."""
     cred = await _get_active_credential(db, id_pessoa)
     return CheckCredentialsResponse(has_credentials=cred is not None)
+
+
+@router.get("/permissions/{id_pessoa}")
+async def get_permissions(id_pessoa: int, db: AsyncSession = Depends(get_db)):
+    """
+    Returns the user's role info and allowed modules.
+    Always reads from DB (not cached) so role changes take effect immediately.
+    """
+    cred = await _get_active_credential(db, id_pessoa)
+    if cred is None:
+        raise HTTPException(status_code=404, detail="Credenciais não encontradas")
+
+    role_info = await get_user_role_info(db, cred.usuario_sei)
+    return role_info
 
 
 @router.post("/auto-login")
@@ -102,8 +134,8 @@ async def auto_login(body: AutoLoginRequest, db: AsyncSession = Depends(get_db))
             # Include stored email so frontend uses it (not the CPF from JWE)
             data["usuario_sei"] = cred.usuario_sei
             data["orgao"] = cred.orgao
-            data["papel_global"] = cred.papel_global
             data["id_pessoa"] = cred.id_pessoa
+            await _enrich_with_modulos(data, db, cred.usuario_sei)
 
             # 4. Cache the successful response
             await cache.set(cache_key, {
@@ -140,33 +172,45 @@ async def embed_login(body: EmbedLoginRequest, db: AsyncSession = Depends(get_db
     Valida credenciais contra o SEI, criptografa a senha e armazena/atualiza no banco.
     Cacheia a resposta de login no Redis para auto-login futuro.
     Retorna a resposta raw do SEI login em caso de sucesso.
+
+    Optimization: skips DB upsert if credentials are unchanged.
     """
     # 1. Validar contra o SEI (raises HTTPException on failure)
     data = await sei.login(body.usuario_sei, body.senha, body.orgao)
 
-    # 2. Upsert — soft-delete existing, then insert new (preserving papel_global)
+    # 2. Skip upsert if credentials unchanged, otherwise soft-delete + insert
     existing = await _get_active_credential(db, body.id_pessoa)
-    preserved_papel = existing.papel_global if existing else "user"
-    if existing:
-        existing.soft_delete()
-        await db.flush()
 
-    new_cred = CredencialUsuario(
-        id_pessoa=body.id_pessoa,
-        cpf=body.cpf,
-        usuario_sei=body.usuario_sei,
-        senha_encrypted=encrypt_password(body.senha),
-        orgao=body.orgao,
-        papel_global=preserved_papel,
-    )
-    db.add(new_cred)
-    await db.flush()
+    if existing and _credentials_unchanged(existing, body):
+        # Credentials unchanged — just touch the timestamp
+        existing.atualizado_em = datetime.now(timezone.utc)
+        # Update cpf if provided and different
+        if body.cpf and existing.cpf != body.cpf:
+            existing.cpf = body.cpf
+        await db.flush()
+        logger.info(f"embed-login skip upsert (unchanged) para id_pessoa={body.id_pessoa}")
+    else:
+        # Credentials changed or new user — full upsert
+        if existing:
+            existing.soft_delete()
+            await db.flush()
+
+        new_cred = CredencialUsuario(
+            id_pessoa=body.id_pessoa,
+            cpf=body.cpf,
+            usuario_sei=body.usuario_sei,
+            senha_encrypted=encrypt_password(body.senha),
+            orgao=body.orgao,
+        )
+        db.add(new_cred)
+        await db.flush()
+        logger.info(f"embed-login upsert para id_pessoa={body.id_pessoa}")
 
     # Include email so frontend uses it (not the CPF from JWE)
     data["usuario_sei"] = body.usuario_sei
     data["orgao"] = body.orgao
-    data["papel_global"] = new_cred.papel_global
     data["id_pessoa"] = body.id_pessoa
+    await _enrich_with_modulos(data, db, body.usuario_sei)
 
     # 3. Cache the login response for future auto-logins
     cache_key = gerar_chave_login(body.id_pessoa)

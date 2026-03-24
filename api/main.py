@@ -70,13 +70,6 @@ async def lifespan(app: FastAPI):
         from . import models  # noqa: F401
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
-            # Add papel_global column if missing (existing table)
-            await conn.execute(
-                __import__('sqlalchemy').text(
-                    "ALTER TABLE credenciais_usuario ADD COLUMN IF NOT EXISTS "
-                    "papel_global VARCHAR(20) NOT NULL DEFAULT 'user'"
-                )
-            )
         logger.info("Schema do banco de dados atualizado")
     except Exception as e:
         logger.warning(f"Erro ao atualizar schema (pode já estar atualizado): {e}")
