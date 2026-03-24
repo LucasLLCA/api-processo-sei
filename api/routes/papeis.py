@@ -229,7 +229,7 @@ async def atribuir_papel(
     assignment = UsuarioPapel(
         usuario_sei=body.usuario_sei,
         papel_id=papel.id,
-        atribuido_por=_admin.usuario_sei,
+        atribuido_por=_admin,
     )
     db.add(assignment)
     await db.flush()

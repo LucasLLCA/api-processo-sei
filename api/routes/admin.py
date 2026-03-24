@@ -40,13 +40,18 @@ class SaveConfiguracaoHorasRequest(BaseModel):
 
 
 class UsuarioResponse(BaseModel):
-    id_pessoa: int
     usuario_sei: str
     orgao: str
-    cpf: Optional[str] = None
     papel_nome: Optional[str] = None
     papel_slug: Optional[str] = None
     papel_id: Optional[str] = None
+
+
+class UsuariosPaginatedResponse(BaseModel):
+    items: List[UsuarioResponse]
+    total: int
+    page: int
+    page_size: int
 
 
 # --------------- User role endpoints ---------------
@@ -54,44 +59,67 @@ class UsuarioResponse(BaseModel):
 @router.get("/usuarios")
 async def listar_usuarios(
     search: str = Query(default=""),
-    _admin: CredencialUsuario = Depends(require_admin),
+    page: int = Query(default=1, ge=1),
+    page_size: int = Query(default=20, ge=1, le=100),
+    _admin: str = Depends(require_admin),
     db: AsyncSession = Depends(get_db),
 ):
-    """List all users with their roles (active credentials only), enriched with RBAC role info."""
+    """List users with their roles, grouped by unique email, paginated."""
+    # Subquery: distinct emails with their most recent orgao
+    base = (
+        select(
+            CredencialUsuario.usuario_sei,
+            func.max(CredencialUsuario.orgao).label("orgao"),
+        )
+        .where(CredencialUsuario.deletado_em.is_(None))
+        .group_by(CredencialUsuario.usuario_sei)
+    )
+    if search.strip():
+        pattern = f"%{search.strip()}%"
+        base = base.having(
+            CredencialUsuario.usuario_sei.ilike(pattern)
+            | func.max(CredencialUsuario.orgao).ilike(pattern)
+        )
+    users_sub = base.subquery()
+
+    # Count total
+    count_result = await db.execute(select(func.count()).select_from(users_sub))
+    total = count_result.scalar() or 0
+
+    # Paginated query with role join
     query = (
-        select(CredencialUsuario, Papel)
+        select(users_sub.c.usuario_sei, users_sub.c.orgao, Papel)
         .outerjoin(
             UsuarioPapel,
-            (UsuarioPapel.usuario_sei == CredencialUsuario.usuario_sei)
+            (UsuarioPapel.usuario_sei == users_sub.c.usuario_sei)
             & (UsuarioPapel.deletado_em.is_(None)),
         )
         .outerjoin(
             Papel,
             (Papel.id == UsuarioPapel.papel_id) & (Papel.deletado_em.is_(None)),
         )
-        .where(CredencialUsuario.deletado_em.is_(None))
+        .order_by(users_sub.c.usuario_sei)
+        .offset((page - 1) * page_size)
+        .limit(page_size)
     )
-    if search.strip():
-        pattern = f"%{search.strip()}%"
-        query = query.where(
-            CredencialUsuario.usuario_sei.ilike(pattern)
-            | CredencialUsuario.orgao.ilike(pattern)
-        )
-    query = query.order_by(CredencialUsuario.usuario_sei)
     result = await db.execute(query)
     rows = result.all()
-    return [
-        UsuarioResponse(
-            id_pessoa=cred.id_pessoa,
-            usuario_sei=cred.usuario_sei,
-            orgao=cred.orgao,
-            cpf=cred.cpf,
-            papel_nome=papel.nome if papel else None,
-            papel_slug=papel.slug if papel else None,
-            papel_id=str(papel.id) if papel else None,
-        )
-        for cred, papel in rows
-    ]
+
+    return UsuariosPaginatedResponse(
+        items=[
+            UsuarioResponse(
+                usuario_sei=usuario_sei,
+                orgao=orgao,
+                papel_nome=papel.nome if papel else None,
+                papel_slug=papel.slug if papel else None,
+                papel_id=str(papel.id) if papel else None,
+            )
+            for usuario_sei, orgao, papel in rows
+        ],
+        total=total,
+        page=page,
+        page_size=page_size,
+    )
 
 
 # --------------- Hour coefficient endpoints ---------------
@@ -99,7 +127,7 @@ async def listar_usuarios(
 @router.get("/configuracao-horas")
 async def get_configuracao_horas(
     orgao: str = Query(...),
-    _admin: CredencialUsuario = Depends(require_admin),
+    _admin: str = Depends(require_admin),
     db: AsyncSession = Depends(get_db),
 ):
     """Get all hour coefficients for an orgao (admin)."""
@@ -123,12 +151,12 @@ async def get_configuracao_horas(
 @router.put("/configuracao-horas")
 async def save_configuracao_horas(
     body: SaveConfiguracaoHorasRequest,
-    _admin: CredencialUsuario = Depends(require_admin),
+    _admin: str = Depends(require_admin),
     db: AsyncSession = Depends(get_db),
 ):
     """Bulk upsert hour coefficients for an orgao."""
     now = datetime.now(timezone.utc)
-    admin_user = _admin.usuario_sei
+    admin_user = _admin
 
     for item in body.items:
         result = await db.execute(
@@ -157,7 +185,7 @@ async def save_configuracao_horas(
 
 @router.get("/orgaos")
 async def listar_orgaos(
-    _admin: CredencialUsuario = Depends(require_admin),
+    _admin: str = Depends(require_admin),
     db: AsyncSession = Depends(get_db),
 ):
     """List distinct orgaos from active credentials."""

@@ -5,7 +5,7 @@ import asyncio
 import logging
 from datetime import datetime, timezone
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -81,17 +81,13 @@ async def check_credentials(id_pessoa: int, db: AsyncSession = Depends(get_db)):
     return CheckCredentialsResponse(has_credentials=cred is not None)
 
 
-@router.get("/permissions/{id_pessoa}")
-async def get_permissions(id_pessoa: int, db: AsyncSession = Depends(get_db)):
+@router.get("/permissions-by-email")
+async def get_permissions_by_email(usuario_sei: str = Query(...), db: AsyncSession = Depends(get_db)):
     """
-    Returns the user's role info and allowed modules.
-    Always reads from DB (not cached) so role changes take effect immediately.
+    Returns the user's role info and allowed modules by usuario_sei (email).
+    Used in standalone mode where id_pessoa is not available.
     """
-    cred = await _get_active_credential(db, id_pessoa)
-    if cred is None:
-        raise HTTPException(status_code=404, detail="Credenciais não encontradas")
-
-    role_info = await get_user_role_info(db, cred.usuario_sei)
+    role_info = await get_user_role_info(db, usuario_sei)
     return role_info
 
 

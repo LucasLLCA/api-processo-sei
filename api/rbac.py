@@ -4,6 +4,8 @@ RBAC: definições de módulos e helpers de permissão.
 import logging
 from typing import Callable
 
+from typing import Optional
+
 from fastapi import Depends, HTTPException, Query
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -124,33 +126,21 @@ def require_modulo(modulo_key: str) -> Callable:
     """
     FastAPI dependency factory. Returns a dependency that checks if the
     requesting user has access to the given module.
+    Accepts usuario_sei query param for authorization.
     """
     async def _dependency(
-        id_pessoa: int = Query(..., alias="id_pessoa"),
+        auth_usuario: str = Query(..., alias="usuario_sei"),
         db: AsyncSession = Depends(get_db),
-    ) -> CredencialUsuario:
-        # Look up credential to get usuario_sei
-        result = await db.execute(
-            select(CredencialUsuario).where(
-                CredencialUsuario.id_pessoa == id_pessoa,
-                CredencialUsuario.deletado_em.is_(None),
-            )
-        )
-        cred = result.scalar_one_or_none()
-        if not cred:
-            logger.warning(f"RBAC require({modulo_key}): id_pessoa={id_pessoa} -> DENIED (no credential)")
-            raise HTTPException(status_code=403, detail="Credenciais não encontradas")
-
-        modulos = await get_user_modulos(db, cred.usuario_sei)
+    ) -> str:
+        modulos = await get_user_modulos(db, auth_usuario)
         if modulo_key not in modulos:
             logger.warning(
-                f"RBAC require({modulo_key}): id_pessoa={id_pessoa}, "
-                f"usuario_sei={cred.usuario_sei} -> DENIED (has: {modulos})"
+                f"RBAC require({modulo_key}): usuario_sei={auth_usuario} -> DENIED (has: {modulos})"
             )
             raise HTTPException(
                 status_code=403,
                 detail=f"Acesso negado: módulo '{modulo_key}' não permitido",
             )
-        return cred
+        return auth_usuario
 
     return _dependency
