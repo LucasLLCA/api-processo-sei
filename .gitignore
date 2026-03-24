@@ -4,6 +4,8 @@ venv/
 *.env
 .env.*
 
+documentos_sead/*
+
 # Arquivos Python compilados
 __pycache__/
 *.py[cod]
