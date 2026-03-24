@@ -36,7 +36,7 @@ async def get_user_modulos(db: AsyncSession, usuario_sei: str) -> list[str]:
     Falls back to the default role if no assignment exists.
     """
     result = await db.execute(
-        select(Papel.modulos)
+        select(Papel.modulos, Papel.slug, Papel.nome)
         .join(UsuarioPapel, UsuarioPapel.papel_id == Papel.id)
         .where(
             UsuarioPapel.usuario_sei == usuario_sei,
@@ -44,19 +44,33 @@ async def get_user_modulos(db: AsyncSession, usuario_sei: str) -> list[str]:
             Papel.deletado_em.is_(None),
         )
     )
-    row = result.scalar_one_or_none()
+    row = result.one_or_none()
     if row is not None:
-        return list(row)
+        modulos, slug, nome = row
+        logger.info(
+            f"RBAC resolve: usuario_sei={usuario_sei} -> "
+            f"papel={slug} ({nome}), modulos={list(modulos)}, source=usuario_papel"
+        )
+        return list(modulos)
 
     # Fallback: default role
     default_result = await db.execute(
-        select(Papel.modulos).where(
+        select(Papel.modulos, Papel.slug, Papel.nome).where(
             Papel.is_default.is_(True),
             Papel.deletado_em.is_(None),
         )
     )
-    default_modulos = default_result.scalar_one_or_none()
-    return list(default_modulos) if default_modulos else []
+    default_row = default_result.one_or_none()
+    if default_row is not None:
+        modulos, slug, nome = default_row
+        logger.info(
+            f"RBAC resolve: usuario_sei={usuario_sei} -> "
+            f"papel={slug} ({nome}), modulos={list(modulos)}, source=default_role (no assignment found)"
+        )
+        return list(modulos)
+
+    logger.warning(f"RBAC resolve: usuario_sei={usuario_sei} -> NO ROLE FOUND (no assignment, no default)")
+    return []
 
 
 async def get_user_role_info(db: AsyncSession, usuario_sei: str) -> dict:
@@ -74,6 +88,7 @@ async def get_user_role_info(db: AsyncSession, usuario_sei: str) -> dict:
         )
     )
     papel = result.scalar_one_or_none()
+    source = "usuario_papel"
 
     if papel is None:
         # Fallback: default role
@@ -84,10 +99,18 @@ async def get_user_role_info(db: AsyncSession, usuario_sei: str) -> dict:
             )
         )
         papel = default_result.scalar_one_or_none()
+        source = "default_role"
 
     if papel is None:
+        logger.warning(
+            f"RBAC role_info: usuario_sei={usuario_sei} -> NO ROLE (no assignment, no default)"
+        )
         return {"modulos": [], "papel_nome": "Sem papel", "papel_slug": "none"}
 
+    logger.info(
+        f"RBAC role_info: usuario_sei={usuario_sei} -> "
+        f"papel={papel.slug} ({papel.nome}), modulos={list(papel.modulos)}, source={source}"
+    )
     return {
         "modulos": list(papel.modulos),
         "papel_nome": papel.nome,
@@ -115,10 +138,15 @@ def require_modulo(modulo_key: str) -> Callable:
         )
         cred = result.scalar_one_or_none()
         if not cred:
+            logger.warning(f"RBAC require({modulo_key}): id_pessoa={id_pessoa} -> DENIED (no credential)")
             raise HTTPException(status_code=403, detail="Credenciais não encontradas")
 
         modulos = await get_user_modulos(db, cred.usuario_sei)
         if modulo_key not in modulos:
+            logger.warning(
+                f"RBAC require({modulo_key}): id_pessoa={id_pessoa}, "
+                f"usuario_sei={cred.usuario_sei} -> DENIED (has: {modulos})"
+            )
             raise HTTPException(
                 status_code=403,
                 detail=f"Acesso negado: módulo '{modulo_key}' não permitido",
