@@ -165,3 +165,10 @@ class FluxoProcessoResponse(BaseModel):
     atualizado_em: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class FluxoComVinculacaoResponse(BaseModel):
+    fluxo: FluxoDetalheResponse
+    vinculacao: FluxoProcessoResponse
+
+    model_config = ConfigDict(from_attributes=True)

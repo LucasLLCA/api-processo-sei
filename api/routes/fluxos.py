@@ -21,6 +21,7 @@ from ..schemas import (
     FluxoNodeResponse,
     FluxoEdgeResponse,
     FluxoProcessoResponse,
+    FluxoComVinculacaoResponse,
 )
 
 router = APIRouter()
@@ -198,6 +199,51 @@ async def listar_fluxos(
         raise
     except Exception as e:
         logger.error(f"Erro ao listar fluxos: {e}")
+        await db.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get(
+    "/by-processo",
+    response_model=dict,
+    summary="Busca fluxos vinculados a um processo (reverse lookup)",
+)
+async def buscar_fluxos_por_processo(
+    numero_processo: str = Query(..., description="Numero do processo (sem formatacao)"),
+    usuario: str = Query(..., description="Usuario logado"),
+    db: AsyncSession = Depends(get_db),
+):
+    """Returns all flows that a given process is linked to, with full flow detail."""
+    try:
+        result = await db.execute(
+            select(FluxoProcesso).where(
+                and_(
+                    FluxoProcesso.numero_processo == numero_processo,
+                    FluxoProcesso.deletado_em.is_(None),
+                )
+            )
+        )
+        vinculacoes = result.scalars().all()
+
+        items: list[dict] = []
+        for fp in vinculacoes:
+            try:
+                fluxo = await _get_fluxo_com_acesso(db, fp.fluxo_id, usuario)
+            except HTTPException:
+                continue  # skip flows the user cannot access
+
+            items.append(
+                FluxoComVinculacaoResponse(
+                    fluxo=_fluxo_to_detalhe(fluxo),
+                    vinculacao=FluxoProcessoResponse.model_validate(fp),
+                ).model_dump(mode="json")
+            )
+
+        return {"status": "success", "data": items}
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Erro ao buscar fluxos por processo: {e}")
         await db.rollback()
         raise HTTPException(status_code=500, detail=str(e))
 

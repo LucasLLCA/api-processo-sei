@@ -67,6 +67,7 @@ from .fluxo import (
     FluxoResponse,
     FluxoDetalheResponse,
     FluxoProcessoResponse,
+    FluxoComVinculacaoResponse,
 )
 
 __all__ = [
@@ -117,4 +118,5 @@ __all__ = [
     "FluxoResponse",
     "FluxoDetalheResponse",
     "FluxoProcessoResponse",
+    "FluxoComVinculacaoResponse",
 ]
