@@ -23,6 +23,7 @@ from .unidade_sei import UnidadeSei
 from .tipo_documento import TipoDocumento
 from .papel import Papel
 from .usuario_papel import UsuarioPapel
+from .registro_atividade import RegistroAtividade
 
 __all__ = [
     "HistoricoPesquisa",
@@ -47,4 +48,5 @@ __all__ = [
     "TipoDocumento",
     "Papel",
     "UsuarioPapel",
+    "RegistroAtividade",
 ]

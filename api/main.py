@@ -121,6 +121,10 @@ app.add_middleware(
     allow_headers=["Authorization", "Content-Type", "X-Request-ID", "X-SEI-Token", "x-api-key"],
 )
 
+# Middleware de registro de atividades
+from .middleware_atividade import AtividadeMiddleware
+app.add_middleware(AtividadeMiddleware)
+
 
 @app.get("/")
 async def health_check():

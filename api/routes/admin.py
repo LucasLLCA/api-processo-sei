@@ -1,5 +1,5 @@
 import logging
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query
@@ -8,11 +8,15 @@ from sqlalchemy import select, func, distinct
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import aliased
 
+import orjson
+
 from ..cache import cache, gerar_chave_documento
 from ..database import get_db
 from ..models.credencial_usuario import CredencialUsuario
 from ..models.configuracao_horas import ConfiguracaoHorasAndamento
+from ..models.historico_pesquisa import HistoricoPesquisa
 from ..models.papel import Papel
+from ..models.registro_atividade import RegistroAtividade
 from ..models.usuario_papel import UsuarioPapel
 from ..schemas_legacy import ErrorDetail, ErrorType
 from ..rbac import require_modulo
@@ -463,3 +467,401 @@ async def list_cache_keys(pattern: str = "*", limit: int = 100):
                 details={"error": str(e)}
             ).dict()
         )
+
+
+# --------------- Analytics Schemas ---------------
+
+class LoginDiaItem(BaseModel):
+    data: str
+    logins_unicos: int
+    total_logins: int
+
+class LoginsOverTimeResponse(BaseModel):
+    periodo: str
+    items: list[LoginDiaItem]
+    total_usuarios_unicos: int
+
+class UsuarioAtivoItem(BaseModel):
+    usuario_sei: str
+    orgao: Optional[str] = None
+    total_atividades: int
+    processos_visualizados: int
+    ultima_atividade: Optional[str] = None
+    primeiro_acesso: Optional[str] = None
+
+class UsuariosAtivosResponse(BaseModel):
+    items: list[UsuarioAtivoItem]
+    total: int
+    page: int
+    page_size: int
+
+class ProcessoVisualizadoItem(BaseModel):
+    numero_processo: str
+    total_visualizacoes: int
+    usuarios_distintos: int
+    ultima_visualizacao: Optional[str] = None
+
+class ProcessosVisualizadosResponse(BaseModel):
+    items: list[ProcessoVisualizadoItem]
+    total: int
+    page: int
+    page_size: int
+
+class AcaoPorTipoItem(BaseModel):
+    tipo_atividade: str
+    total: int
+    usuarios_distintos: int
+
+class AcoesPorTipoResponse(BaseModel):
+    periodo: str
+    items: list[AcaoPorTipoItem]
+
+class ResumoAnaliticoResponse(BaseModel):
+    periodo: str
+    total_usuarios_unicos: int
+    total_logins: int
+    total_visualizacoes_processo: int
+    total_acoes: int
+    usuario_mais_ativo: Optional[str] = None
+    processo_mais_visto: Optional[str] = None
+
+
+# --------------- Analytics helpers ---------------
+
+def _periodo_to_date(periodo: str) -> datetime:
+    """Converte string de periodo para data de inicio."""
+    days_map = {"7d": 7, "30d": 30, "90d": 90, "365d": 365}
+    days = days_map.get(periodo, 30)
+    return datetime.now(timezone.utc) - timedelta(days=days)
+
+
+# --------------- Analytics endpoints ---------------
+
+@router.get("/analytics/resumo", dependencies=[Depends(require_admin)])
+async def analytics_resumo(
+    usuario_sei: str = Query(...),
+    periodo: str = Query("30d"),
+    db: AsyncSession = Depends(get_db),
+):
+    cache_key = f"analytics:resumo:{periodo}"
+    cached = await cache.get(cache_key)
+    if cached:
+        return orjson.loads(cached)
+
+    desde = _periodo_to_date(periodo)
+
+    # Total unique users
+    r1 = await db.execute(
+        select(func.count(distinct(RegistroAtividade.usuario_sei))).where(
+            RegistroAtividade.criado_em >= desde,
+            RegistroAtividade.deletado_em.is_(None),
+        )
+    )
+    total_usuarios = r1.scalar() or 0
+
+    # Total logins
+    r2 = await db.execute(
+        select(func.count()).where(
+            RegistroAtividade.tipo_atividade == "login",
+            RegistroAtividade.criado_em >= desde,
+            RegistroAtividade.deletado_em.is_(None),
+        )
+    )
+    total_logins = r2.scalar() or 0
+
+    # Total process views (from historico_pesquisas)
+    r3 = await db.execute(
+        select(func.count()).where(
+            HistoricoPesquisa.criado_em >= desde,
+            HistoricoPesquisa.deletado_em.is_(None),
+        )
+    )
+    total_views = r3.scalar() or 0
+
+    # Total actions
+    r4 = await db.execute(
+        select(func.count()).where(
+            RegistroAtividade.criado_em >= desde,
+            RegistroAtividade.deletado_em.is_(None),
+        )
+    )
+    total_acoes = r4.scalar() or 0
+
+    # Most active user
+    r5 = await db.execute(
+        select(RegistroAtividade.usuario_sei, func.count().label("cnt"))
+        .where(
+            RegistroAtividade.criado_em >= desde,
+            RegistroAtividade.deletado_em.is_(None),
+        )
+        .group_by(RegistroAtividade.usuario_sei)
+        .order_by(func.count().desc())
+        .limit(1)
+    )
+    row5 = r5.first()
+    usuario_mais_ativo = row5[0] if row5 else None
+
+    # Most viewed process
+    r6 = await db.execute(
+        select(HistoricoPesquisa.numero_processo, func.count().label("cnt"))
+        .where(
+            HistoricoPesquisa.criado_em >= desde,
+            HistoricoPesquisa.deletado_em.is_(None),
+        )
+        .group_by(HistoricoPesquisa.numero_processo)
+        .order_by(func.count().desc())
+        .limit(1)
+    )
+    row6 = r6.first()
+    processo_mais_visto = row6[0] if row6 else None
+
+    result = ResumoAnaliticoResponse(
+        periodo=periodo,
+        total_usuarios_unicos=total_usuarios,
+        total_logins=total_logins,
+        total_visualizacoes_processo=total_views,
+        total_acoes=total_acoes,
+        usuario_mais_ativo=usuario_mais_ativo,
+        processo_mais_visto=processo_mais_visto,
+    ).model_dump()
+
+    await cache.set(cache_key, orjson.dumps(result).decode(), ttl=300)
+    return result
+
+
+@router.get("/analytics/logins-over-time", dependencies=[Depends(require_admin)])
+async def analytics_logins_over_time(
+    usuario_sei: str = Query(...),
+    periodo: str = Query("30d"),
+    db: AsyncSession = Depends(get_db),
+):
+    cache_key = f"analytics:logins:{periodo}"
+    cached = await cache.get(cache_key)
+    if cached:
+        return orjson.loads(cached)
+
+    desde = _periodo_to_date(periodo)
+
+    stmt = (
+        select(
+            func.date(RegistroAtividade.criado_em).label("dia"),
+            func.count(distinct(RegistroAtividade.usuario_sei)).label("unicos"),
+            func.count().label("total"),
+        )
+        .where(
+            RegistroAtividade.tipo_atividade == "login",
+            RegistroAtividade.criado_em >= desde,
+            RegistroAtividade.deletado_em.is_(None),
+        )
+        .group_by(func.date(RegistroAtividade.criado_em))
+        .order_by(func.date(RegistroAtividade.criado_em))
+    )
+    rows = (await db.execute(stmt)).all()
+
+    items = [LoginDiaItem(data=str(r.dia), logins_unicos=r.unicos, total_logins=r.total) for r in rows]
+    total_unicos_stmt = (
+        select(func.count(distinct(RegistroAtividade.usuario_sei)))
+        .where(
+            RegistroAtividade.tipo_atividade == "login",
+            RegistroAtividade.criado_em >= desde,
+            RegistroAtividade.deletado_em.is_(None),
+        )
+    )
+    total_unicos = (await db.execute(total_unicos_stmt)).scalar() or 0
+
+    result = LoginsOverTimeResponse(periodo=periodo, items=items, total_usuarios_unicos=total_unicos).model_dump()
+    await cache.set(cache_key, orjson.dumps(result).decode(), ttl=300)
+    return result
+
+
+@router.get("/analytics/usuarios-ativos", dependencies=[Depends(require_admin)])
+async def analytics_usuarios_ativos(
+    usuario_sei: str = Query(...),
+    periodo: str = Query("30d"),
+    search: Optional[str] = Query(None),
+    page: int = Query(1, ge=1),
+    page_size: int = Query(20, ge=1, le=100),
+    db: AsyncSession = Depends(get_db),
+):
+    desde = _periodo_to_date(periodo)
+
+    # Subquery: activity counts per user
+    ativ_sq = (
+        select(
+            RegistroAtividade.usuario_sei,
+            func.count().label("total_atividades"),
+            func.max(RegistroAtividade.criado_em).label("ultima_atividade"),
+            func.min(RegistroAtividade.criado_em).label("primeiro_acesso"),
+        )
+        .where(
+            RegistroAtividade.criado_em >= desde,
+            RegistroAtividade.deletado_em.is_(None),
+        )
+        .group_by(RegistroAtividade.usuario_sei)
+        .subquery()
+    )
+
+    # Subquery: process view counts per user from historico
+    hist_sq = (
+        select(
+            HistoricoPesquisa.usuario,
+            func.count(distinct(HistoricoPesquisa.numero_processo)).label("processos_visualizados"),
+        )
+        .where(
+            HistoricoPesquisa.criado_em >= desde,
+            HistoricoPesquisa.deletado_em.is_(None),
+        )
+        .group_by(HistoricoPesquisa.usuario)
+        .subquery()
+    )
+
+    # Main query joining credenciais with activity data
+    base = (
+        select(
+            CredencialUsuario.usuario_sei,
+            CredencialUsuario.orgao,
+            func.coalesce(ativ_sq.c.total_atividades, 0).label("total_atividades"),
+            func.coalesce(hist_sq.c.processos_visualizados, 0).label("processos_visualizados"),
+            ativ_sq.c.ultima_atividade,
+            ativ_sq.c.primeiro_acesso,
+        )
+        .outerjoin(ativ_sq, CredencialUsuario.usuario_sei == ativ_sq.c.usuario_sei)
+        .outerjoin(hist_sq, CredencialUsuario.usuario_sei == hist_sq.c.usuario)
+        .where(CredencialUsuario.deletado_em.is_(None))
+    )
+
+    if search:
+        base = base.where(
+            CredencialUsuario.usuario_sei.ilike(f"%{search}%") |
+            CredencialUsuario.orgao.ilike(f"%{search}%")
+        )
+
+    # Get distinct usuario_sei (credentials can have duplicates)
+    base = base.group_by(
+        CredencialUsuario.usuario_sei,
+        CredencialUsuario.orgao,
+        ativ_sq.c.total_atividades,
+        hist_sq.c.processos_visualizados,
+        ativ_sq.c.ultima_atividade,
+        ativ_sq.c.primeiro_acesso,
+    )
+
+    # Count total
+    count_stmt = select(func.count()).select_from(base.subquery())
+    total = (await db.execute(count_stmt)).scalar() or 0
+
+    # Paginate
+    stmt = base.order_by(ativ_sq.c.ultima_atividade.desc().nullslast()).offset((page - 1) * page_size).limit(page_size)
+    rows = (await db.execute(stmt)).all()
+
+    items = [
+        UsuarioAtivoItem(
+            usuario_sei=r.usuario_sei,
+            orgao=r.orgao,
+            total_atividades=r.total_atividades,
+            processos_visualizados=r.processos_visualizados,
+            ultima_atividade=r.ultima_atividade.isoformat() if r.ultima_atividade else None,
+            primeiro_acesso=r.primeiro_acesso.isoformat() if r.primeiro_acesso else None,
+        )
+        for r in rows
+    ]
+
+    return UsuariosAtivosResponse(items=items, total=total, page=page, page_size=page_size).model_dump()
+
+
+@router.get("/analytics/processos-visualizados", dependencies=[Depends(require_admin)])
+async def analytics_processos_visualizados(
+    usuario_sei: str = Query(...),
+    periodo: str = Query("30d"),
+    filtro_usuario: Optional[str] = Query(None),
+    page: int = Query(1, ge=1),
+    page_size: int = Query(20, ge=1, le=100),
+    db: AsyncSession = Depends(get_db),
+):
+    desde = _periodo_to_date(periodo)
+
+    base_where = [
+        HistoricoPesquisa.criado_em >= desde,
+        HistoricoPesquisa.deletado_em.is_(None),
+    ]
+    if filtro_usuario:
+        base_where.append(HistoricoPesquisa.usuario == filtro_usuario)
+
+    # Count total distinct processes
+    count_stmt = select(func.count(distinct(HistoricoPesquisa.numero_processo))).where(*base_where)
+    total = (await db.execute(count_stmt)).scalar() or 0
+
+    # Get paginated results
+    stmt = (
+        select(
+            HistoricoPesquisa.numero_processo,
+            func.count().label("total_visualizacoes"),
+            func.count(distinct(HistoricoPesquisa.usuario)).label("usuarios_distintos"),
+            func.max(HistoricoPesquisa.criado_em).label("ultima_visualizacao"),
+        )
+        .where(*base_where)
+        .group_by(HistoricoPesquisa.numero_processo)
+        .order_by(func.count().desc())
+        .offset((page - 1) * page_size)
+        .limit(page_size)
+    )
+    rows = (await db.execute(stmt)).all()
+
+    items = [
+        ProcessoVisualizadoItem(
+            numero_processo=r.numero_processo,
+            total_visualizacoes=r.total_visualizacoes,
+            usuarios_distintos=r.usuarios_distintos,
+            ultima_visualizacao=r.ultima_visualizacao.isoformat() if r.ultima_visualizacao else None,
+        )
+        for r in rows
+    ]
+
+    return ProcessosVisualizadosResponse(items=items, total=total, page=page, page_size=page_size).model_dump()
+
+
+@router.get("/analytics/acoes-por-tipo", dependencies=[Depends(require_admin)])
+async def analytics_acoes_por_tipo(
+    usuario_sei: str = Query(...),
+    periodo: str = Query("30d"),
+    filtro_usuario: Optional[str] = Query(None),
+    db: AsyncSession = Depends(get_db),
+):
+    cache_key = f"analytics:acoes:{periodo}:{filtro_usuario or 'all'}"
+    cached = await cache.get(cache_key)
+    if cached:
+        return orjson.loads(cached)
+
+    desde = _periodo_to_date(periodo)
+
+    base_where = [
+        RegistroAtividade.criado_em >= desde,
+        RegistroAtividade.deletado_em.is_(None),
+    ]
+    if filtro_usuario:
+        base_where.append(RegistroAtividade.usuario_sei == filtro_usuario)
+
+    stmt = (
+        select(
+            RegistroAtividade.tipo_atividade,
+            func.count().label("total"),
+            func.count(distinct(RegistroAtividade.usuario_sei)).label("usuarios_distintos"),
+        )
+        .where(*base_where)
+        .group_by(RegistroAtividade.tipo_atividade)
+        .order_by(func.count().desc())
+    )
+    rows = (await db.execute(stmt)).all()
+
+    items = [
+        AcaoPorTipoItem(
+            tipo_atividade=r.tipo_atividade,
+            total=r.total,
+            usuarios_distintos=r.usuarios_distintos,
+        )
+        for r in rows
+    ]
+
+    result = AcoesPorTipoResponse(periodo=periodo, items=items).model_dump()
+    await cache.set(cache_key, orjson.dumps(result).decode(), ttl=300)
+    return result
