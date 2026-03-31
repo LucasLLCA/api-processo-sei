@@ -1,7 +1,7 @@
 """Create registro_atividades table for activity logging
 
 Revision ID: b7c8d9e0f1a2
-Revises: a1b2c3d4e5f6
+Revises: fc324ff248f5, 014_tipos_documento
 Create Date: 2026-03-30
 
 """
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 revision: str = "b7c8d9e0f1a2"
-down_revision: Union[str, None] = "a1b2c3d4e5f6"
+down_revision: Union[str, Sequence[str], None] = ("fc324ff248f5", "014_tipos_documento")
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
