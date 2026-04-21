@@ -1,0 +1,70 @@
+{
+  "documento_numero": "016387738",
+  "protocolo": "00152.000049_2025-95",
+  "source_file": "18257088.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Caroline Viveiros Moura da Cruz"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SDE-PI"
+      },
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "Diretoria de Gestão do Patrimônio"
+      },
+      {
+        "text": "SUPERINTENDÊNCIA DE PATRIMÔNIO IMOBILIÁRIO"
+      },
+      {
+        "text": "Secretaria do Desenvolvimento Econômico do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Superintendente de Patrimônio Imobiliário"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "Secretaria do Desenvolvimento Econômico do Estado do Piauí",
+        "documentação comprobatória de titularidade de imóvel"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:26:20.134814+00:00"
+}

@@ -1,0 +1,85 @@
+{
+  "documento_numero": "017255350",
+  "protocolo": "00227.000410_2025-62",
+  "source_file": "19208040.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "SAMUEL PONTES DO NASCIMETO"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "CLARO S.A."
+      },
+      {
+        "text": "FUNDAÇÃO PIAUÍ PREVIDÊNCIA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD/PI"
+      },
+      {
+        "text": "PIAUIPREV"
+      },
+      {
+        "text": "GERÊNCIA DE GESTÃO DE PESSOAS"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário de Estado"
+      },
+      {
+        "text": "Diretora de Contratos"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "PIAUIPREV",
+        "Contrato nº 66/2020"
+      ]
+    ],
+    "contratou": [
+      [
+        "Diretora de Contratos",
+        "aparelho celular"
+      ],
+      [
+        "PIAUIPREV",
+        "CLARO S.A."
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:03:47.074822+00:00"
+}

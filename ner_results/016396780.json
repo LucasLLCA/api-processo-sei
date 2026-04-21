@@ -1,0 +1,116 @@
+{
+  "documento_numero": "016396780",
+  "protocolo": "00227.000076_2025-47",
+  "source_file": "18267175.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Flávio Chaib"
+      },
+      {
+        "text": "Carlos Castelo Branco"
+      },
+      {
+        "text": "Mara Lilinne Leal de Sousa Lima"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "PiauíPrev"
+      },
+      {
+        "text": "Fundação Piauí Previdência"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "RPPS"
+      },
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "PIAUIPREV"
+      },
+      {
+        "text": "DIRETORIA DE CONTRATOS"
+      },
+      {
+        "text": "Fundação Piauí Previdência"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "Secretaria de Administração do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Presidente"
+      },
+      {
+        "text": "DIRETORA DE CONTRATOS"
+      }
+    ],
+    "data": [
+      {
+        "text": "2025"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "contratou": [
+      [
+        "FUNDAÇÃO PIAUÍ PREVIDÊNCIA",
+        "empresa especializada"
+      ]
+    ],
+    "autorizou": [
+      [
+        "Presidente da PiauíPrev",
+        "Despacho"
+      ]
+    ],
+    "assinou": [
+      [
+        "Mara Lilinne Leal de Sousa Lima",
+        "Eletronicamente"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "Unidade Gestora - 210207",
+        "LOA 2025"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:25:26.473069+00:00"
+}

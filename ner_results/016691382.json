@@ -1,0 +1,86 @@
+{
+  "documento_numero": "016691382",
+  "protocolo": "00240.000047_2025-15",
+  "source_file": "18591617.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa_juridica": [
+      {
+        "text": "equi"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SADA-PI"
+      },
+      {
+        "text": "Diretoria Financeira-DIRAF"
+      },
+      {
+        "text": "COMISSÃO PERMANENTE DE LICITAÇÃO"
+      },
+      {
+        "text": "SECRETARIA DA ASSISTÊNCIA TÉCNICA E DEFESA AGROPECUÁRIA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "Senhora Diretora"
+      }
+    ],
+    "assunto": [
+      {
+        "text": "Aquisição de veículos automotores"
+      }
+    ],
+    "objeto_licitacao": [
+      {
+        "text": "Aquisição de veículos automotores"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "licitacao"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "Comissão permanente de Licitação",
+        "Aquisição de veículos automotores"
+      ]
+    ],
+    "solicitou": [
+      [
+        "Senhoria",
+        "informações orçamentárias"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:12:19.874418+00:00"
+}

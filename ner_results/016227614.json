@@ -1,0 +1,93 @@
+{
+  "documento_numero": "016227614",
+  "protocolo": "00227.000196_2025-44",
+  "source_file": "18078831.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "ITAMARA LIMA MATOS"
+      },
+      {
+        "text": "Luiz Felipe Silva Nepomuceno 8º"
+      },
+      {
+        "text": "Lucas Fernandes Coelho de Miranda 5º"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "FUNDAÇÃO PIAUÍ PREVIDÊNCIA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "GERÊNCIA DE GESTÃO DE PESSOAS"
+      },
+      {
+        "text": "DIRETORIA DE DESENVOLVIMENTO DE PESSOAS"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretora"
+      },
+      {
+        "text": "Presidente"
+      },
+      {
+        "text": "Secretaria"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "Fundação",
+        "Despacho"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "Fundação",
+        "providências da competência"
+      ]
+    ],
+    "contratou": [
+      [
+        "Fundação",
+        "Declaração/Histórico Escolar"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:51:22.791510+00:00"
+}

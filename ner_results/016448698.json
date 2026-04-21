@@ -1,0 +1,286 @@
+{
+  "documento_numero": "016448698",
+  "protocolo": "00153.000049_2025-85",
+  "source_file": "18324953.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "contratante"
+      },
+      {
+        "text": "pessoa física"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "SETUR"
+      },
+      {
+        "text": "Autodesk"
+      },
+      {
+        "text": "contratada"
+      },
+      {
+        "text": "contratante"
+      },
+      {
+        "text": "SANTOS FILHO"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "PMT"
+      },
+      {
+        "text": "CAU"
+      },
+      {
+        "text": "ABNT"
+      },
+      {
+        "text": "SEMAM"
+      },
+      {
+        "text": "SETUR"
+      },
+      {
+        "text": "órgãos oficiais"
+      },
+      {
+        "text": "CONFEA e CREA-PI"
+      },
+      {
+        "text": "Corpo de Bombeiros"
+      },
+      {
+        "text": "prefeitura municipal"
+      },
+      {
+        "text": "Ministério do Turismo"
+      },
+      {
+        "text": "conselho profissional"
+      },
+      {
+        "text": "Ministério do Trabalho"
+      },
+      {
+        "text": "associações de moradores"
+      },
+      {
+        "text": "Conselho de Arquitetura e Urbanismo – CAU PI"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "cie"
+      },
+      {
+        "text": "arquiteto"
+      },
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "coordenador"
+      },
+      {
+        "text": "contratante"
+      },
+      {
+        "text": "engenheiro civil"
+      },
+      {
+        "text": "responsáveis técnicos"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.turismo.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "termo_referencia"
+  },
+  "relations": {
+    "contratou": [
+      [
+        "Título Específico",
+        "Contratação de serviços"
+      ],
+      [
+        "contratante",
+        "objeto"
+      ],
+      [
+        "contratante",
+        "cópia em CD/DVD"
+      ],
+      [
+        "contratante",
+        "produtos"
+      ],
+      [
+        "contratada",
+        "alternativas"
+      ],
+      [
+        "projeto",
+        "contratação da obra"
+      ],
+      [
+        "contratante",
+        "serviços"
+      ],
+      [
+        "SETUR",
+        "empresa contratada"
+      ],
+      [
+        "contratante",
+        "SETUR"
+      ]
+    ],
+    "autorizou": [
+      [
+        "Lei Estadual nº 4810",
+        "ituição Estadual"
+      ]
+    ],
+    "nomeou": [
+      [
+        "povoado",
+        "Cajueiro Rei"
+      ],
+      [
+        "rochas cristalinas",
+        "aquífero fissural"
+      ],
+      [
+        "contratada",
+        "coordenador"
+      ],
+      [
+        "escala",
+        "simbolo"
+      ],
+      [
+        "ABNT",
+        "simbologia"
+      ],
+      [
+        "contratante",
+        "profissionais"
+      ]
+    ],
+    "exonerou": [
+      [
+        "ituição Estadual",
+        "Luís Correia"
+      ],
+      [
+        "entrega",
+        "contrato"
+      ]
+    ],
+    "designou": [
+      [
+        "Lei Estadual nº 4810",
+        "ituição Estadual"
+      ],
+      [
+        "contratada",
+        "coordenador"
+      ],
+      [
+        "escala",
+        "simbolo"
+      ],
+      [
+        "ABNT",
+        "simbologia"
+      ],
+      [
+        "Memorial Descritivo",
+        "materiais de acabamento"
+      ],
+      [
+        "contratante",
+        "profissionais"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "documentos técnicos",
+        "contratante"
+      ],
+      [
+        "documentos correspondentes",
+        "SETUR"
+      ]
+    ],
+    "solicitou": [
+      [
+        "FORNECEDOR",
+        "NORMAS TÉCNICAS"
+      ],
+      [
+        "contratante",
+        "cópia em CD/DVD"
+      ],
+      [
+        "contratante",
+        "apresentação e/ou o desenvolvimento"
+      ],
+      [
+        "contratada",
+        "alternativas"
+      ],
+      [
+        "projeto",
+        "desempenho técnico e energético"
+      ],
+      [
+        "licitante",
+        "comprovação de vínculo"
+      ]
+    ],
+    "assinou": [
+      [
+        "proponente",
+        "consultor(es) individual(is)"
+      ],
+      [
+        "partes",
+        "projetos"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:05:20.194650+00:00"
+}

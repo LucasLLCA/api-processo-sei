@@ -1,0 +1,71 @@
+{
+  "documento_numero": "016144861",
+  "protocolo": "00227.000142_2025-89",
+  "source_file": "17986315.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Carlos Castelo Branco"
+      },
+      {
+        "text": "Carla Adriana da Silva Peres"
+      },
+      {
+        "text": "Marcos Steiner Rodrigues Mesquita"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "FUNDAÇÃO PIAUÍ PREVIDÊNCIA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "DIRETORIA ADMINISTRATIVA E FINANCEIRA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Presidente"
+      },
+      {
+        "text": "Diretora Administrativa e Financeira"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T09:46:51.589190+00:00"
+}

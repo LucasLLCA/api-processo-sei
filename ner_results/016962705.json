@@ -1,0 +1,60 @@
+{
+  "documento_numero": "016962705",
+  "protocolo": "00153.000008_2025-99",
+  "source_file": "18889055.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Wagner Jardel Pontes Gomes"
+      },
+      {
+        "text": "JOAQUIM DE OLIVEIRA JUNIOR"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "DIRETORIA ADMINISTRATIVA E FINANCEIRA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretor Administrativo e Financeiro"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T06:52:26.165778+00:00"
+}

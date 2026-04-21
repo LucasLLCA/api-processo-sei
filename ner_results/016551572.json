@@ -1,0 +1,62 @@
+{
+  "documento_numero": "016551572",
+  "protocolo": "00240.000227_2025-99",
+  "source_file": "18438471.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "SADA-PI DIVISÃO DE BENEFÍCIOS E APOSENTADORIA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "Despacho",
+        "nálise"
+      ]
+    ],
+    "solicitou": [
+      [
+        "Comissão Especial de Enquadramento",
+        "solicitação de enquadramento"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T11:24:57.208252+00:00"
+}

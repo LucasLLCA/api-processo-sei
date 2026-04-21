@@ -1,0 +1,60 @@
+{
+  "documento_numero": "016381523",
+  "protocolo": "00227.000294_2025-81",
+  "source_file": "18250259.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "ZULEIDE DE AGUIAR NOGUEIRA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "GABINETE GERAL DA PRESIDÊNCIA"
+      },
+      {
+        "text": "ASSESSORIA TÉCNICA DO GABINETE"
+      }
+    ],
+    "cpf": [
+      {
+        "text": "CPF Nº 065.249.903-15"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T09:58:48.774742+00:00"
+}

@@ -1,0 +1,62 @@
+{
+  "documento_numero": "016782592",
+  "protocolo": "00153.000062_2025-34",
+  "source_file": "18691051.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "Diretoria de Planejamento Turístico"
+      },
+      {
+        "text": "DIRETORIA ADMINISTRATIVA E FINANCEIRA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Superintendente de Licitações e Contratos"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "ação",
+        "dispensa de contratação"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:30:51.354137+00:00"
+}

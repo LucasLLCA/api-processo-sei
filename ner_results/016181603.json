@@ -1,0 +1,76 @@
+{
+  "documento_numero": "016181603",
+  "protocolo": "00240.000044_2025-73",
+  "source_file": "18027420.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "FABIO ABREU COSTA"
+      },
+      {
+        "text": "Samuel Pontes do Nascimento"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "SADA-PI"
+      },
+      {
+        "text": "COMISSÃO PERMANENTE DE LICITAÇÃO"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretaria"
+      },
+      {
+        "text": "Secretário"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "nomeou": [
+      [
+        "FABIO",
+        "SECRETARIA DA ASSISTÊNCIA TÉCNICA E DEFESA AGROPECUÁRIA"
+      ]
+    ],
+    "designou": [
+      [
+        "FABIO",
+        "SECRETARIA DA ASSISTÊNCIA TÉCNICA E DEFESA AGROPECUÁRIA"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:09:30.439296+00:00"
+}

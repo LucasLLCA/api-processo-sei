@@ -1,0 +1,75 @@
+{
+  "documento_numero": "017089649",
+  "protocolo": "00227.000024_2025-71",
+  "source_file": "19027505.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Samuel Pontes do Nascimento"
+      },
+      {
+        "text": "Francisco Washington Bandeira Santos"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "SGI/SEDUC-PI"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "Filho Secretári"
+      },
+      {
+        "text": "Secretário de Estado"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.seduc.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "Superintendência de Gestão de Pessoas/SEAD-PI",
+        "Despacho Nº 411"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:56:26.821346+00:00"
+}

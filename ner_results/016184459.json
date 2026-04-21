@@ -1,0 +1,74 @@
+{
+  "documento_numero": "016184459",
+  "protocolo": "00227.000076_2025-47",
+  "source_file": "18030649.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Carlos Castelo Branco"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "Fundação Piauí Previdência"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "Diretoria Administrativa e Financeira"
+      },
+      {
+        "text": "COORDENAÇÃO DE EXECUÇÃO ORÇAMENTÁRIA E FINANCEIRA"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "Unidade Gestora",
+        "LOA 2025"
+      ],
+      [
+        "nota de reserva orçamentária",
+        "Diretoria Administrativa e Financeira"
+      ]
+    ],
+    "contratou": [
+      [
+        "nota de reserva orçamentária",
+        "contratação"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:08:52.897148+00:00"
+}

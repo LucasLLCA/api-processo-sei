@@ -1,0 +1,112 @@
+{
+  "documento_numero": "016088457",
+  "protocolo": "00227.000076_2025-47",
+  "source_file": "17923258.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Sousa Martins"
+      },
+      {
+        "text": "Carlos Castelo Branco"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "Fundação Piauí Previdência"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "GERÊNCIA DE PATRIMÔNIO"
+      },
+      {
+        "text": "FUNDAÇÃO PIAUÍ PREVIDÊNCIA"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "Procuradoria Geral do Estado do Piauí – PGE"
+      },
+      {
+        "text": "Servidor Público do Estado do Piauí - CIASPI"
+      },
+      {
+        "text": "SECRETARIA DE ADMINISTRAÇÃO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "Diretoria da Unidade Administrativa e Financeira"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Gerente de Patrimônio"
+      },
+      {
+        "text": "Diretora Administrativa e Financeira"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "contrato"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "FUNDAÇÃO PIAUÍ PREVIDÊNCIA",
+        "Contrato"
+      ],
+      [
+        "Aíldo de Sousa Martins Júnior",
+        "eletronicamente"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "Ata de Registro de Preços",
+        "aquisição prevista"
+      ]
+    ],
+    "autorizou": [
+      [
+        "Resolução nº14/98",
+        "equipamentos obrigatórios"
+      ]
+    ],
+    "solicitou": [
+      [
+        "Fundação Piauí Previdência",
+        "participação do Registro de Preços realizado"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:05:29.340266+00:00"
+}

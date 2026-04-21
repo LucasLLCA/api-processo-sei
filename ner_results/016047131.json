@@ -1,0 +1,78 @@
+{
+  "documento_numero": "016047131",
+  "protocolo": "00227.000024_2025-71",
+  "source_file": "17877229.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Flávio Chaib"
+      },
+      {
+        "text": "SAMUEL PONTES DO NASCIMENTO"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "FUNDAÇÃO PIAUÍ PREVIDÊNCIA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "GABINETE GERAL DA PRESIDÊNCIA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Presidente"
+      },
+      {
+        "text": "Secretário de Estado"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "Decreto 18.369",
+        "Parecer PGE/CJ nº 065/2019"
+      ]
+    ],
+    "solicitou": [
+      [
+        "Ações Trabalhistas",
+        "FGTS"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:53:44.167819+00:00"
+}

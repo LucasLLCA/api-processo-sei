@@ -1,0 +1,66 @@
+{
+  "documento_numero": "016166231",
+  "protocolo": "00227.000177_2025-18",
+  "source_file": "18010249.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "DAVID RAIMUNDO DOS SANTOS"
+      },
+      {
+        "text": "Regina Maria Soares de Araújo Vieira"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "FUNDAÇÃO PIAUÍ PREVIDÊNCIA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Gerente de Benefícios Previdenciários"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "Senhor (a) Coordenador (a)",
+        "V.Sª"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:49:08.514245+00:00"
+}

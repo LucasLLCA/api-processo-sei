@@ -1,0 +1,71 @@
+{
+  "documento_numero": "016383905",
+  "protocolo": "00115.000030_2025-95",
+  "source_file": "18252872.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "GOV-PI"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "Diretoria de Controle de Atos Oficiais"
+      },
+      {
+        "text": "Assessoria Técnica Gabinete do Governador"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETÁRIO DE ESTADO"
+      },
+      {
+        "text": "CHEFE DO GABINETE DO GOVERNADOR"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "nomeou": [
+      [
+        "Governo do Estado do Piauí",
+        "GOV-PI"
+      ]
+    ],
+    "designou": [
+      [
+        "Governo do Estado do Piauí",
+        "GOV-PI"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:18:54.156730+00:00"
+}

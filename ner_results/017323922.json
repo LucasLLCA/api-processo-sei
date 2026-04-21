@@ -1,0 +1,44 @@
+{
+  "documento_numero": "017323922",
+  "protocolo": "00227.000271_2025-77",
+  "source_file": "19283314.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa_juridica": [
+      {
+        "text": "OUVIDORIA SETORIAL"
+      },
+      {
+        "text": "FUNDAÇÃO PIAUÍ PREVIDÊNCIA"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T09:56:51.338578+00:00"
+}

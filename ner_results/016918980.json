@@ -1,0 +1,68 @@
+{
+  "documento_numero": "016918980",
+  "protocolo": "00153.000056_2025-87",
+  "source_file": "18840790.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "Diretoria de Contratos"
+      },
+      {
+        "text": "Assessoria de Licitação"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "objeto_licitacao": [
+      {
+        "text": "Material Descartável"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "órgão requerente",
+        "demanda"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "Ata de Registro de Preços",
+        "SEAD/PI"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:20:12.312433+00:00"
+}

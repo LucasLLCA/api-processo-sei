@@ -1,0 +1,54 @@
+{
+  "documento_numero": "016410322",
+  "protocolo": "00227.000177_2025-18",
+  "source_file": "18282100.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Gerente"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.sead.pi.gov.br/"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T09:49:16.358083+00:00"
+}

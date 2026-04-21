@@ -1,0 +1,66 @@
+{
+  "documento_numero": "016864180",
+  "protocolo": "00240.000057_2025-42",
+  "source_file": "18780673.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Antônio Meirion Braga"
+      },
+      {
+        "text": "ANTÔNIO SEBASTIÃO NASCIMENTO FIGUEIREDO JÚNIOR"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.sead.pi.gov.br/"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "Despacho",
+        "ANTÔNIO SEBASTIÃO NASCIMENTO FIGUEIREDO JÚNIOR"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:31:20.713049+00:00"
+}

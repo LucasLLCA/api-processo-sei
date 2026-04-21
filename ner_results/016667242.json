@@ -1,0 +1,60 @@
+{
+  "documento_numero": "016667242",
+  "protocolo": "00153.000075_2025-11",
+  "source_file": "18565258.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "João Angeline da Silva"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "Gabinete/SETUR"
+      },
+      {
+        "text": "Comissão Permanente de Licitações/SETUR"
+      },
+      {
+        "text": "DIRETORIA DE LICITAÇÕES E CONTRATOS ADMINISTRATIVOS"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.turismo.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T07:48:45.974505+00:00"
+}

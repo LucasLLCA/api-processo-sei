@@ -1,0 +1,63 @@
+{
+  "documento_numero": "016659707",
+  "protocolo": "00153.000001_2025-77",
+  "source_file": "18557072.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "José Antônio Monteiro"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "SERVFAZ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário de Estado do Turismo"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.turismo.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "parecer_juridico"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "SERVFAZ",
+        "Declaração Processo"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:41:56.999790+00:00"
+}

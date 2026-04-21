@@ -1,0 +1,77 @@
+{
+  "documento_numero": "017488051",
+  "protocolo": "00227.000410_2025-62",
+  "source_file": "19463743.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "PEDRO ALEXANDRE CABRAL DE OLIVEIRA"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "DIRETORIA DE LOGÍSTICA E ABASTECIMENTO"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "ASSESSORIA TÉCNICA DO GABINETE"
+      },
+      {
+        "text": "Diretoria de Gestão de Benefícios"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Superintendente de Gestão Administrativa"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.sead.pi.gov.br/"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "ASSESSORIA TÉCNICA DO GABINETE",
+        "DIRETORIA DE LOGÍSTICA E ABASTECIMENTO"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:04:02.238252+00:00"
+}

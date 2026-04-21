@@ -1,0 +1,57 @@
+{
+  "documento_numero": "016328434",
+  "protocolo": "00201.000082_2025-92",
+  "source_file": "18191554.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "KARINE CARDOZO RODRIGUES MACHADO"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SIA-PI"
+      },
+      {
+        "text": "GABINETE DA SECRETARIA DE INTELIGÊNCIA ARTIFICIAL"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "GERENTE DE RELACIONAMENTO"
+      },
+      {
+        "text": "COORDENADORA DE TALENTOS Prezada"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T08:16:30.319713+00:00"
+}

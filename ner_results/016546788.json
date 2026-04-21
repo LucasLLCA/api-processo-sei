@@ -1,0 +1,48 @@
+{
+  "documento_numero": "016546788",
+  "protocolo": "00240.000227_2025-99",
+  "source_file": "18433157.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "SADA-PI COORDENAÇÃO DE RECURSOS HUMANOS"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "Despacho",
+        "Divisão de Benefícios e Aposentadoria"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T11:24:51.156707+00:00"
+}

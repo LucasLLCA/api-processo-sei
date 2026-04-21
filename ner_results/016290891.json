@@ -1,0 +1,109 @@
+{
+  "documento_numero": "016290891",
+  "protocolo": "00153.000039_2025-40",
+  "source_file": "18149839.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Monique de Menezes Urra"
+      },
+      {
+        "text": "JOSÉ ANTÔNIO MONTEIRO NETO"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "SUPARC"
+      },
+      {
+        "text": "Concessionária"
+      },
+      {
+        "text": "Hotel Serra da Capivara"
+      },
+      {
+        "text": "Serra da Capivara Hotel e Convention SPE Ltda"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SUPARC"
+      },
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "SETUR/PI"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "COMITÊ DE MONITORAMENTO E GESTÃO"
+      },
+      {
+        "text": "órgão da Administração Pública Estadual"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário dO Turismo do Estado do Piauí"
+      },
+      {
+        "text": "Superintendente de Parcerias e Concessões"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "SETUR-PI",
+        "Contrato de Concessão"
+      ],
+      [
+        "Monique de Menezes Urra",
+        "eletronicamente"
+      ]
+    ],
+    "contratou": [
+      [
+        "SETUR-PI",
+        "Serra da Capivara Hotel e Convention SPE Ltda"
+      ]
+    ],
+    "solicitou": [
+      [
+        "órgão da Administração Pública Estadual",
+        "reserva do espaço"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:59:22.436786+00:00"
+}

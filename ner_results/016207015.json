@@ -1,0 +1,49 @@
+{
+  "documento_numero": "016207015",
+  "protocolo": "00226.000029_2025-11",
+  "source_file": "18055882.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "DIRETORIA ADMINISTRATIVA E FINANCEIRA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretor-Geral"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T08:43:19.381702+00:00"
+}

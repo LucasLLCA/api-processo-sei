@@ -1,0 +1,83 @@
+{
+  "documento_numero": "016489501",
+  "protocolo": "00153.000001_2025-77",
+  "source_file": "18370170.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Joanna Mara Andrade Soares da Costa"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "SETUR"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "Administração Pública"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "Órgão/Entidade e Fiscal de Contrato"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "COORDENADOR DE RH"
+      },
+      {
+        "text": "Gerente de Recursos Humanos"
+      }
+    ],
+    "numero_processo": [
+      {
+        "text": "00153.000001/2025-77"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "contrato"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "Manifestação de interesse",
+        "prorrogação contratual"
+      ]
+    ],
+    "designou": [
+      [
+        "portaria específica",
+        "Fiscal"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:40:32.410676+00:00"
+}

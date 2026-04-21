@@ -1,0 +1,79 @@
+{
+  "documento_numero": "016326803",
+  "protocolo": "00153.000073_2025-14",
+  "source_file": "18189740.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "WAGNER JARDEL PONTES GOMES"
+      },
+      {
+        "text": "Emílio Joaquim de Oliveira Junior"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "Diretoria Administrativa e Financeira"
+      },
+      {
+        "text": "Comissão de Gestão Financeira e Gestão por Resultados"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "WAGNER JARDEL PONTES GOMES",
+        "Assinatura Eletrônica"
+      ]
+    ],
+    "solicitou": [
+      [
+        "SC de ID - 016314475",
+        "es culturais da região"
+      ]
+    ],
+    "contratou": [
+      [
+        "COMISSÃO DE GESTÃO FINANCEIRA E GESTÃO POR RESULTADOS",
+        "CARNAVAL EUPHORIA 2025"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:32:39.710288+00:00"
+}

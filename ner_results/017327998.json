@@ -1,0 +1,123 @@
+{
+  "documento_numero": "017327998",
+  "protocolo": "00227.000076_2025-47",
+  "source_file": "19287721.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Flávio Chaib"
+      },
+      {
+        "text": "Fabio Miranda Gomes"
+      },
+      {
+        "text": "Carlos Castelo Branco"
+      },
+      {
+        "text": "Carla Adriana da Silva Peres"
+      },
+      {
+        "text": "Aildo de Sousa Martins Júnior"
+      },
+      {
+        "text": "Danusa Brito Pereira Santiago"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "CS BRASIL FROTAS S.A"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "GERÊNCIA DE LOGÍSTICA"
+      },
+      {
+        "text": "Fundação Piauí Previdência"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "orçamento do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "GERÊNCIA DE LOGÍSTICA"
+      },
+      {
+        "text": "Presidente da Fundação Piauí Previdência"
+      },
+      {
+        "text": "Diretora da Unidade Administrativa e Financeira"
+      }
+    ],
+    "cnpj": [
+      {
+        "text": "CNPJ 27.595.780/0001-16"
+      }
+    ],
+    "matricula": [
+      {
+        "text": "CNPJ 27.595.780/0001-16"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "contrato"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "FUNDAÇÃO PIAUÍ PREVIDÊNCIA",
+        "CONTRATO"
+      ],
+      [
+        "Danusa Brito Pereira Santiago",
+        "eletronicamente"
+      ]
+    ],
+    "contratou": [
+      [
+        "FUNDAÇÃO PIAUÍ PREVIDÊNCIA",
+        "CS BRASIL FROTAS S.A"
+      ]
+    ],
+    "autorizou": [
+      [
+        "Ordem de Serviço",
+        "CS BRASIL FROTAS S.A"
+      ],
+      [
+        "Ordem de Execução de Serviço",
+        "Empresa CS BRASIL FROTAS S.A"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:38:23.024621+00:00"
+}

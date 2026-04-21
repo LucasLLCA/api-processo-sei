@@ -1,0 +1,59 @@
+{
+  "documento_numero": "016483253",
+  "protocolo": "00201.000088_2025-60",
+  "source_file": "18363389.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "SUPERINTENDÊNCIA DE GESTÃO DE PESSOAS"
+      },
+      {
+        "text": "Diretoria de Desenvolvimento de Pessoas"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.sead.pi.gov.br/"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "SEAD-PI",
+        "análise e adoção das providências cabíveis"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:17:36.944394+00:00"
+}

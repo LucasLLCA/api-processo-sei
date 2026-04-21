@@ -1,0 +1,70 @@
+{
+  "documento_numero": "016200347",
+  "protocolo": "00227.000142_2025-89",
+  "source_file": "18048432.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "Piauiprev"
+      },
+      {
+        "text": "Superintendência de Gestão Administrativa e Controle dos Gastos"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Superintendente"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.sead.pi.gov.br/"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "Despacho",
+        "Superintendência de Gestão Administrativa e Controle dos Gastos"
+      ]
+    ],
+    "solicitou": [
+      [
+        "Piauiprev",
+        "devolução do veículo"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:47:01.821179+00:00"
+}

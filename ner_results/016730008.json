@@ -1,0 +1,76 @@
+{
+  "documento_numero": "016730008",
+  "protocolo": "00153.000075_2025-11",
+  "source_file": "18633656.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa_juridica": [
+      {
+        "text": "PRODUÇÕES E EVENTOS"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "Gerência Financeira"
+      },
+      {
+        "text": "COORDENAÇÃO ADMINISTRATIVA"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.turismo.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "SETUR-PI",
+        "Gerência Financeira"
+      ]
+    ],
+    "solicitou": [
+      [
+        "SETUR-PI",
+        "prestação de contas"
+      ]
+    ],
+    "nomeou": [
+      [
+        "SETUR-PI",
+        "PRODUÇÕES E EVENTOS"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:51:40.940644+00:00"
+}

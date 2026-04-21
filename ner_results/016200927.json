@@ -1,0 +1,131 @@
+{
+  "documento_numero": "016200927",
+  "protocolo": "00240.000029_2025-25",
+  "source_file": "18049101.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "EVANDRO BORGES DA SILVA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SADA-PI"
+      },
+      {
+        "text": "assembleia geral"
+      },
+      {
+        "text": "Assessoria Jurídica"
+      },
+      {
+        "text": "Governadoria do Estado"
+      },
+      {
+        "text": "Prefeitura Municipal de Oeiras-Pi"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "Governador do Estado"
+      },
+      {
+        "text": "Extensionista Rural II"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "Governador do Estado",
+        "Cessão"
+      ],
+      [
+        "Governador do Estado",
+        "cessão"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "DESPACHO",
+        "ASSESSORIA JURÍDICA"
+      ],
+      [
+        "requisições",
+        "Governadoria do Estado"
+      ]
+    ],
+    "contratou": [
+      [
+        "SADA",
+        "EVANDRO BORGES DA SILVA"
+      ]
+    ],
+    "exonerou": [
+      [
+        "Cessão",
+        "servidor público"
+      ],
+      [
+        "cessão",
+        "servidor público"
+      ]
+    ],
+    "assinou": [
+      [
+        "Diário Oficial do Estado",
+        "cessão"
+      ]
+    ],
+    "nomeou": [
+      [
+        "Governador do Estado",
+        "cargos em comissão"
+      ]
+    ],
+    "designou": [
+      [
+        "Governador do Estado",
+        "cargos em comissão"
+      ],
+      [
+        "Secretaria de Administração",
+        "lotação ou o exercício de servidor"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:06:12.270182+00:00"
+}

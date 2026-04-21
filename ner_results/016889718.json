@@ -1,0 +1,75 @@
+{
+  "documento_numero": "016889718",
+  "protocolo": "00240.000029_2025-25",
+  "source_file": "18808798.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "BORGES DA SILVA"
+      },
+      {
+        "text": "EVANDRO BORGES DA SILVA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "GOV-PI"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "Prefeitura Municipal de Oeiras – PI"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretaria"
+      },
+      {
+        "text": "Extensionista Rural II"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "exonerou": [
+      [
+        "Decreto",
+        "EVANDRO BORGES DA SILVA"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:07:14.498203+00:00"
+}

@@ -1,0 +1,73 @@
+{
+  "documento_numero": "016805116",
+  "protocolo": "00153.000060_2025-45",
+  "source_file": "18715860.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Jacylenne Coêlho"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "ASSESSORIA LICITAÇÃO"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Superintendente de Licitações e Contratos"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "autos em epígrafe",
+        "consulta sobre a existência"
+      ]
+    ],
+    "contratou": [
+      [
+        "órgão",
+        "modalidade de contratação"
+      ]
+    ],
+    "nomeou": [
+      [
+        "Jacylenne Coêlho",
+        "Superintendente de Licitações e Contratos"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:21:04.604065+00:00"
+}

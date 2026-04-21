@@ -1,0 +1,58 @@
+{
+  "documento_numero": "016331084",
+  "protocolo": "00223.000081_2025-90",
+  "source_file": "18194507.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "RUTHELLY SANTANA SOUSA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.sead.pi.gov.br/"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "Despacho",
+        "BADESPI"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:18:47.570603+00:00"
+}

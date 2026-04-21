@@ -1,0 +1,70 @@
+{
+  "documento_numero": "017117703",
+  "protocolo": "00227.000024_2025-71",
+  "source_file": "19058116.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "BENEDITO RUBENS SARAIVA"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "SGP"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "ASSESSORIA TÉCNICA DO GABINETE"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "BENEDITO RUBENS SARAIVA",
+        "Documento Oficial"
+      ]
+    ],
+    "solicitou": [
+      [
+        "BENEDITO RUBENS SARAIVA",
+        "Documento Oficial"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:56:31.663707+00:00"
+}

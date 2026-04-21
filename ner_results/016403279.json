@@ -1,0 +1,54 @@
+{
+  "documento_numero": "016403279",
+  "protocolo": "00227.000416_2025-30",
+  "source_file": "18274380.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Carlos Castelo Branco"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "FUNDAÇÃO PIAUÍ PREVIDÊNCIA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "GERÊNCIA DE FOLHA DE BENEFÍCIOS PREVIDENCIÁRIOS"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T10:04:29.691889+00:00"
+}

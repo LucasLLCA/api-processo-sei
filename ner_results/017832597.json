@@ -1,0 +1,154 @@
+{
+  "documento_numero": "017832597",
+  "protocolo": "00153.000061_2025-90",
+  "source_file": "19840997.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "patrocinar"
+      },
+      {
+        "text": "patrocinado"
+      },
+      {
+        "text": "patrocinador"
+      },
+      {
+        "text": "João Angeline da Silva"
+      },
+      {
+        "text": "Erika Samara Lima Araújo"
+      },
+      {
+        "text": "Bruna Cristina Vieira de Souza"
+      },
+      {
+        "text": "Alexsander Bruno Sampaio Borges"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "RAFFA ESTRUTURAS E EVENTOS LTDA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "CCOM"
+      },
+      {
+        "text": "Diretoria de Licitação"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "Procuradoria Geral do Estado"
+      },
+      {
+        "text": "administração pública estadual"
+      },
+      {
+        "text": "Coordenadoria de Comunicação Social – CCOM"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "administrador"
+      },
+      {
+        "text": "Agente de Contratação"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "parecer_juridico"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "RAFFA ESTRUTURAS E EVENTOS LTDA",
+        "patrocínio"
+      ],
+      [
+        "proponente",
+        "patrocínio"
+      ],
+      [
+        "administração pública",
+        "apoio governamental"
+      ],
+      [
+        "órgão responsável",
+        "patrocínio"
+      ],
+      [
+        "Administração",
+        "serviços"
+      ],
+      [
+        "Lei das Licitações Públicas",
+        "patrocínio"
+      ]
+    ],
+    "contratou": [
+      [
+        "patrocinador",
+        "patrocínio"
+      ],
+      [
+        "Diretoria de Licitação",
+        "RAFFA ESTRUTURAS E EVENTOS LTDA"
+      ]
+    ],
+    "assinou": [
+      [
+        "poder executivo estadual",
+        "contrato"
+      ],
+      [
+        "patrocinador",
+        "nome"
+      ]
+    ],
+    "exonerou": [
+      [
+        "Coordenadoria de Comunicação Social – CCOM",
+        "inserção"
+      ]
+    ],
+    "nomeou": [
+      [
+        "patrocinador",
+        "nome"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:28:19.237931+00:00"
+}

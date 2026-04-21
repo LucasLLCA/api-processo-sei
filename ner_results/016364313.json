@@ -1,0 +1,70 @@
+{
+  "documento_numero": "016364313",
+  "protocolo": "00240.000044_2025-73",
+  "source_file": "18231091.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "André da Silva Rocha"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SADA-PI"
+      },
+      {
+        "text": "DPRS/SADA"
+      },
+      {
+        "text": "Gabinete Geral"
+      },
+      {
+        "text": "Comissão Permanente de Licitação"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretor de Produção Rural Sustentáve"
+      },
+      {
+        "text": "Diretor de Produção Rural Sustentável"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "contratou": [
+      [
+        "Licitação",
+        "1000 kits de irrigação de 500 M 2"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:10:55.551138+00:00"
+}

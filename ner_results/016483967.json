@@ -1,0 +1,49 @@
+{
+  "documento_numero": "016483967",
+  "protocolo": "00240.000243_2025-81",
+  "source_file": "18364179.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "COMISSÃO PERMANENTE DE LICITAÇÃO"
+      },
+      {
+        "text": "SECRETARIA DA ASSISTÊNCIA TÉCNICA E DEFESA AGROPECUÁRIA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "licitacao"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T11:30:03.294415+00:00"
+}

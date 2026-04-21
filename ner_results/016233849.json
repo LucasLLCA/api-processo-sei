@@ -1,0 +1,69 @@
+{
+  "documento_numero": "016233849",
+  "protocolo": "00227.000142_2025-89",
+  "source_file": "18085775.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Lucas Lopes de Araújo"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "Diretoria de Logística e Abastecimento"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Superintendente de Gestão Administrativa"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.sead.pi.gov.br/"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "Despacho",
+        "devolução do veículo"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:47:26.505089+00:00"
+}

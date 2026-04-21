@@ -1,0 +1,83 @@
+{
+  "documento_numero": "016481343",
+  "protocolo": "00240.000243_2025-81",
+  "source_file": "18361313.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Fábio Abreu"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SADA-PI"
+      },
+      {
+        "text": "prefeitura"
+      },
+      {
+        "text": "Comissão de Licitação"
+      },
+      {
+        "text": "COMISSÃO PERMANENTE DE LICITAÇÃO"
+      },
+      {
+        "text": "SECRETARIA DA ASSISTÊNCIA TÉCNICA E DEFESA AGROPECUÁRIA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "Presidente"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "contratou": [
+      [
+        "equipe técnica de engenharia",
+        "Projeto"
+      ]
+    ],
+    "exonerou": [
+      [
+        "DECRETO Nº 23.476",
+        "declaração"
+      ],
+      [
+        "DECRETO",
+        "declaração de situação de emergência"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T11:29:56.804597+00:00"
+}

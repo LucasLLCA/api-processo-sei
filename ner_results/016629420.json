@@ -1,0 +1,84 @@
+{
+  "documento_numero": "016629420",
+  "protocolo": "00227.000076_2025-47",
+  "source_file": "18523912.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "DOE-PI"
+      },
+      {
+        "text": "PGE-PI"
+      },
+      {
+        "text": "SEADPREV"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "Analista do Tesouro do Estado"
+      }
+    ],
+    "lei": [
+      {
+        "text": "Lei n. 8.666/1993"
+      },
+      {
+        "text": "Lei n. 14.133/2021"
+      }
+    ],
+    "url": [
+      {
+        "text": "https://portal.sefaz.pi.gov.br"
+      },
+      {
+        "text": "http://www.diariooficial.pi.gov.br/diario.php?dia="
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "contrato"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "Anuência do fornecedor",
+        "setor solicitante"
+      ]
+    ],
+    "exonerou": [
+      [
+        "apresentação",
+        "Unidade Gestora"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:25:44.631955+00:00"
+}

@@ -1,0 +1,60 @@
+{
+  "documento_numero": "016326465",
+  "protocolo": "00153.000073_2025-14",
+  "source_file": "18189368.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "WAGNER JARDEL PONTES GOMES"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "CCOM-PI"
+      },
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "Coordenadoria de Comunicação Social"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Senhor(a)"
+      },
+      {
+        "text": "Coordenador (a)"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T07:32:25.191363+00:00"
+}

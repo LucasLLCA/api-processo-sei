@@ -1,0 +1,73 @@
+{
+  "documento_numero": "016188161",
+  "protocolo": "00201.000039_2025-27",
+  "source_file": "18034843.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Samuel Pontes do Nascimento"
+      },
+      {
+        "text": "Zenaide Batista Lustosa Neta"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD"
+      },
+      {
+        "text": "SEMPI-PI"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "DIRETORIA ADMINISTRATIVO-FINANCEIRA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretaria"
+      },
+      {
+        "text": "Secretário de Administração"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "contratou": [
+      [
+        "Senhoria",
+        "ônibus Lilás"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:12:27.479927+00:00"
+}

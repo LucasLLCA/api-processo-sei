@@ -1,0 +1,64 @@
+{
+  "documento_numero": "016330464",
+  "protocolo": "00223.000095_2025-11",
+  "source_file": "18193820.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Bruna Moura de Matos"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "CIASPI"
+      },
+      {
+        "text": "BADESPI-PI"
+      },
+      {
+        "text": "COORDENAÇÃO DE RECURSOS HUMANOS E ADMINISTRAÇÃO"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Assessora Especial da Diretoria"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "Senhores(as)",
+        "palestra"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:18:56.137772+00:00"
+}

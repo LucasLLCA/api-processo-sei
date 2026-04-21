@@ -1,0 +1,1 @@
+{"nodes": [{"id": "script:debug_processo", "label": "debug_processo script (debug CLI)", "file_type": "python", "source_file": "scripts/debug_processo.py", "source_location": "script", "source_url": null, "captured_at": null, "author": "EXTRACTED", "contributor": "confidence:0.9"}], "edges": [], "hyperedges": []}

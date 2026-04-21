@@ -1,0 +1,41 @@
+{
+  "documento_numero": "016460586",
+  "protocolo": "00240.000243_2025-81",
+  "source_file": "18338201.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "parecer_juridico"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T11:28:25.702177+00:00"
+}

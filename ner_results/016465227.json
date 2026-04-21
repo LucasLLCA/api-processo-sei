@@ -1,0 +1,73 @@
+{
+  "documento_numero": "016465227",
+  "protocolo": "00240.000243_2025-81",
+  "source_file": "18343384.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Laudelino Ribeiro"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SADA-PI"
+      },
+      {
+        "text": "Gabinete Geral"
+      },
+      {
+        "text": "DIRETORIA DE INFRA-ESTRUTURA RURAL"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "secretário"
+      },
+      {
+        "text": "Diretor de Infraestrutura Rural"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "nomeou": [
+      [
+        "Gabinete Geral",
+        "Laudelino Ribeiro"
+      ]
+    ],
+    "designou": [
+      [
+        "Gabinete Geral",
+        "Laudelino Ribeiro"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T11:29:21.545262+00:00"
+}

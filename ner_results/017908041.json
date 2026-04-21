@@ -1,0 +1,68 @@
+{
+  "documento_numero": "017908041",
+  "protocolo": "00110.000002_2025-18",
+  "source_file": "19923945.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "CONTROLADORIA-GERAL DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "Gerência de Avaliação e Auditoria - CGE-PI"
+      },
+      {
+        "text": "Diretoria de Auditoria e Monitoramento - CGE-PI"
+      },
+      {
+        "text": "Diretoria da Unidade de Auditoria e Monitoramento"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Senhor Gerente"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "Senhor Gerente",
+        "providências cabíveis"
+      ]
+    ],
+    "contratou": [
+      [
+        "Diretoria de Auditoria e Monitoramento - CGE-PI",
+        "Contrato n° ."
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:17:53.551114+00:00"
+}

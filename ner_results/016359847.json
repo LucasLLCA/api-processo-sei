@@ -1,0 +1,61 @@
+{
+  "documento_numero": "016359847",
+  "protocolo": "00153.000081_2025-61",
+  "source_file": "18226200.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "SEAD"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      }
+    ],
+    "objeto_licitacao": [
+      {
+        "text": "registro de preços"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "ata"
+  },
+  "relations": {
+    "contratou": [
+      [
+        "EMPRESAS",
+        "MATERIAL DE EXPEDIENTE"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:54:50.567259+00:00"
+}

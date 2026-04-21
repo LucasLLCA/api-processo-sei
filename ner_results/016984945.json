@@ -1,0 +1,474 @@
+{
+  "documento_numero": "016984945",
+  "protocolo": "00227.000076_2025-47",
+  "source_file": "18913416.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "licitante"
+      },
+      {
+        "text": "titulares"
+      },
+      {
+        "text": "CONTRATANTE"
+      },
+      {
+        "text": "FLÁVIO CHAIB"
+      },
+      {
+        "text": "adjudicatário"
+      },
+      {
+        "text": "Srº FLÁVIO CHAIB"
+      },
+      {
+        "text": "PAULO ROBERTO TEIXEIRA"
+      },
+      {
+        "text": "MARIA ALESSANDRA BAZARIAN DE SOUSA"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "CONTRATADA"
+      },
+      {
+        "text": "CONTRATANTE"
+      },
+      {
+        "text": "Fazenda Nacional"
+      },
+      {
+        "text": "CS BRASIL FROTAS S.A"
+      },
+      {
+        "text": "CS BRASIL FROTAS S.A."
+      },
+      {
+        "text": "FUNDAÇÃO PIAUÍ PREVIDÊNCIA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "TST"
+      },
+      {
+        "text": "LGPD"
+      },
+      {
+        "text": "SEJUS"
+      },
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "CADUF/PI"
+      },
+      {
+        "text": "dministração"
+      },
+      {
+        "text": "Estado do Piauí"
+      },
+      {
+        "text": "Poder Judiciário"
+      },
+      {
+        "text": "Secretaria da Faz"
+      },
+      {
+        "text": "Ministério Público"
+      },
+      {
+        "text": "Secretaria da Justiça"
+      },
+      {
+        "text": "autoridade competente"
+      },
+      {
+        "text": "Administração Pública"
+      },
+      {
+        "text": "DIRETORIA DE CONTRATOS"
+      },
+      {
+        "text": "Autoridade fiscalizadora"
+      },
+      {
+        "text": "FUNDAÇÃO PIAUÍ PREVIDÊNCIA"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "orçamento do Estado do Piauí"
+      },
+      {
+        "text": "Procuradoria-Geral do Estado"
+      },
+      {
+        "text": "conselhos da autoridade fiscalizadora"
+      },
+      {
+        "text": "Procuradoria-Geral da Fazenda Nacional"
+      },
+      {
+        "text": "Secretaria da Receita Federal do Brasil"
+      },
+      {
+        "text": "Secretaria da Fazenda do Estado do Piauí"
+      },
+      {
+        "text": "Autoridade Nacional de Proteção de Dados - ANPD"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "prepostos"
+      },
+      {
+        "text": "Presidente"
+      },
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "Secretaria"
+      },
+      {
+        "text": "empregados"
+      },
+      {
+        "text": "subordinados"
+      },
+      {
+        "text": "funcionários"
+      },
+      {
+        "text": "Geral do Estado"
+      }
+    ],
+    "cpf": [
+      {
+        "text": "CPF"
+      },
+      {
+        "text": "xxx.xxx.xxx-38"
+      }
+    ],
+    "numero_processo": [
+      {
+        "text": "0002.000847/2023-79"
+      }
+    ],
+    "lei": [
+      {
+        "text": "Lei nº 8.666/93"
+      }
+    ],
+    "decreto": [
+      {
+        "text": "Decreto nº 7.746/2012"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "contrato"
+  },
+  "relations": {
+    "contratou": [
+      [
+        "Governo do Estado do Piauí",
+        "EMPRESA CS BRASIL FROTAS S.A."
+      ],
+      [
+        "Contratada",
+        "Contrato"
+      ],
+      [
+        "contratada",
+        "contrato"
+      ],
+      [
+        "partes Contratantes",
+        "contrato"
+      ],
+      [
+        "CONTRATANTE",
+        "serviços"
+      ],
+      [
+        "contratado",
+        "empregados"
+      ],
+      [
+        "Administração",
+        "contrato"
+      ]
+    ],
+    "nomeou": [
+      [
+        "dora­vante",
+        "CONTRATANTE"
+      ],
+      [
+        "nota fiscal",
+        "CONTRATANTE"
+      ],
+      [
+        "autoridade competente",
+        "funcionários"
+      ],
+      [
+        "medidas de segurança",
+        "dados pessoais"
+      ],
+      [
+        "Secretaria da Fazenda do Estado do Piauí",
+        "vencimento de pagamento"
+      ]
+    ],
+    "designou": [
+      [
+        "dora­vante",
+        "CONTRATANTE"
+      ],
+      [
+        "10.1.2",
+        "responsável"
+      ],
+      [
+        "autoridade competente",
+        "comissão"
+      ],
+      [
+        "medidas de segurança",
+        "dados pessoais"
+      ],
+      [
+        "Secretaria da Fazenda do Estado do Piauí",
+        "vencimento de pagamento"
+      ],
+      [
+        "Secretaria da Fazenda",
+        "vencimento de pagamento"
+      ]
+    ],
+    "assinou": [
+      [
+        "partes",
+        "termo circunstanciado"
+      ],
+      [
+        "Secretaria da Receita Federal do Brasil",
+        "Portaria Conjunta nº 1.751"
+      ],
+      [
+        "Contratada",
+        "compromissos"
+      ],
+      [
+        "CONTRATADA",
+        "obrigações"
+      ],
+      [
+        "força de contrato de serviço",
+        "Estado do Piauí"
+      ],
+      [
+        "representante da Administração",
+        "ocorrências"
+      ],
+      [
+        "contratada",
+        "contrato"
+      ],
+      [
+        "contratante",
+        "contrato"
+      ],
+      [
+        "Administração",
+        "objeto do contrato"
+      ],
+      [
+        "CONTRATANTE",
+        "consentimento"
+      ],
+      [
+        "CONTRATADA",
+        "contrato"
+      ],
+      [
+        "Contratante",
+        "Contrato"
+      ],
+      [
+        "Contratada",
+        "comprovante de pagamento"
+      ],
+      [
+        "contratada",
+        "despesas"
+      ],
+      [
+        "Contratada",
+        "assinatura"
+      ],
+      [
+        "partes",
+        "instrumento"
+      ]
+    ],
+    "exonerou": [
+      [
+        "recebimento provisório",
+        "responsabilidade da contratada"
+      ],
+      [
+        "recebimento provisório",
+        "prejuízos"
+      ],
+      [
+        "Administração",
+        "compromissos"
+      ],
+      [
+        "fiscalização",
+        "responsabilidade da Contratada"
+      ],
+      [
+        "pagamento",
+        "Contratada de responsabilidade"
+      ],
+      [
+        "medidas de segurança",
+        "dados pessoais"
+      ],
+      [
+        "CONTRATADA",
+        "dados pessoais"
+      ]
+    ],
+    "autorizou": [
+      [
+        "fiscal do contrato",
+        "PAGAMENTO"
+      ],
+      [
+        "fiscal do contrato",
+        "pagamento"
+      ],
+      [
+        "autoridade competente",
+        "autorização formal"
+      ],
+      [
+        "Contratante",
+        "subcontratação"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "nota fiscal",
+        "fiscal do contrato"
+      ],
+      [
+        "liquidação da despesa",
+        "CONTRATADA"
+      ],
+      [
+        "relatório mensal",
+        "CONTRATANTE"
+      ],
+      [
+        "apontamentos",
+        "autoridade competente"
+      ],
+      [
+        "agente",
+        "DECLARAÇÃO DE INIDONEIDADE"
+      ],
+      [
+        "Procuradoria-Geral",
+        "CASOS OMISSOS"
+      ],
+      [
+        "CONTRATADA",
+        "CONTRATANTE"
+      ],
+      [
+        "identificação do condutor",
+        "órgãos de trânsito"
+      ],
+      [
+        "Contratada",
+        "Administração Pública"
+      ]
+    ],
+    "solicitou": [
+      [
+        "Contratada",
+        "adoção de preço"
+      ],
+      [
+        "acréscimo contratual de valor",
+        "garantia"
+      ],
+      [
+        "CONTRATANTE",
+        "serviços"
+      ],
+      [
+        "CONTRATANTE",
+        "relatório mensal"
+      ],
+      [
+        "dministração",
+        "responsabilizada"
+      ],
+      [
+        "Administração",
+        "prorrogação"
+      ],
+      [
+        "identificação do condutor",
+        "regularização"
+      ],
+      [
+        "Contratada",
+        "ipva"
+      ],
+      [
+        "Administração Pública",
+        "comprovação de registro"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:36:52.411058+00:00"
+}

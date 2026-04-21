@@ -1,0 +1,65 @@
+{
+  "documento_numero": "016276094",
+  "protocolo": "00227.000008_2025-88",
+  "source_file": "18133484.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Regina Maria Soares de Araújo Vieira"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "FUNDAÇÃO PIAUÍ PREVIDÊNCIA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "GERÊNCIA DE BENEFÍCIOS"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Senhor (a)"
+      },
+      {
+        "text": "Coordenador (a)"
+      },
+      {
+        "text": "Gerente de Benefícios Previdenciários"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T08:52:39.206230+00:00"
+}

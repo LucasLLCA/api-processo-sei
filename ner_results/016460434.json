@@ -1,0 +1,70 @@
+{
+  "documento_numero": "016460434",
+  "protocolo": "00240.000243_2025-81",
+  "source_file": "18338035.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "assunto": [
+      {
+        "text": "PROJETO BÁSICO"
+      }
+    ],
+    "objeto_licitacao": [
+      {
+        "text": "PROJETO BÁSICO"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "parecer_juridico"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "Projeto Básico",
+        "Art. 6º, XXII"
+      ]
+    ],
+    "contratou": [
+      [
+        "GOVERNO DO ESTADO DO PIAUÍ",
+        "Projeto Básico"
+      ]
+    ],
+    "exonerou": [
+      [
+        "Projeto Básico",
+        "subjetivismos"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T11:28:19.949531+00:00"
+}

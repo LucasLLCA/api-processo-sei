@@ -1,0 +1,76 @@
+{
+  "documento_numero": "016247222",
+  "protocolo": "00153.000050_2025-18",
+  "source_file": "18100987.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa_juridica": [
+      {
+        "text": "UNIÃO"
+      },
+      {
+        "text": "LINEA"
+      },
+      {
+        "text": "STEVITA"
+      },
+      {
+        "text": "SANTA CLARA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "SETUR/PI"
+      },
+      {
+        "text": "Administração Pública"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "secretária"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "ata"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "legislação vigente",
+        "Rotulagem"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:14:16.725774+00:00"
+}

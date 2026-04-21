@@ -1,0 +1,70 @@
+{
+  "documento_numero": "016758364",
+  "protocolo": "00240.000057_2025-42",
+  "source_file": "18664663.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "SAMUEL PONTES DO NASCIMENTO"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD"
+      },
+      {
+        "text": "SADA-PI"
+      },
+      {
+        "text": "GABINETE GERAL"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretor"
+      },
+      {
+        "text": "Secretário"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "Secretário",
+        "solicitação"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:30:59.092869+00:00"
+}

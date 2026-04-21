@@ -1,0 +1,66 @@
+{
+  "documento_numero": "016447398",
+  "protocolo": "00153.000008_2025-99",
+  "source_file": "18323505.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "ANA CAROLINA ROCHA GOMES"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "empresa TEIXEIRA E LEITE LTDA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "DIRETORIA ADMINISTRATIVA E FINANCEIRA"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.turismo.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "empresa TEIXEIRA E LEITE LTDA .",
+        "eletronicamente"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:49:28.138622+00:00"
+}

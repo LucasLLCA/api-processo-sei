@@ -1,0 +1,41 @@
+{
+  "documento_numero": "016875353",
+  "protocolo": "00240.000116_2025-82",
+  "source_file": "18793058.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "parecer_juridico"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T10:53:35.539861+00:00"
+}

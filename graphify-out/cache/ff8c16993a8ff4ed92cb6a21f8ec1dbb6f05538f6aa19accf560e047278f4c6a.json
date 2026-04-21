@@ -1,0 +1,1 @@
+{"nodes": [{"id": "schema:TeamTag", "label": "TeamTag schemas", "file_type": "python", "source_file": "api/schemas/team_tag.py", "source_location": "team_tag.py", "source_url": null, "captured_at": null, "author": "EXTRACTED", "contributor": "confidence:0.9"}], "edges": [], "hyperedges": []}

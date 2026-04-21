@@ -1,0 +1,90 @@
+{
+  "documento_numero": "016850146",
+  "protocolo": "00227.000072_2025-69",
+  "source_file": "18765444.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Flávio Chaib"
+      },
+      {
+        "text": "ROBERTO MARCIO NARDES"
+      },
+      {
+        "text": "Carla Adriana da Silva Peres"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "Fundação Piauí Previdência"
+      },
+      {
+        "text": "MICROTÉCNICA INFORMÁTICA LTDA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "Fundação Piauí Previdência"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "DIRETORIA ADMINISTRATIVA E FINANCEIRA"
+      },
+      {
+        "text": "SECRETARIA DA ADMINISTRAÇÃO DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Presidente"
+      },
+      {
+        "text": "Diretora Administrativa e Financeira"
+      }
+    ],
+    "email": [
+      {
+        "text": "licitacao@microtecnica.com.br"
+      }
+    ],
+    "valor_monetario": [
+      {
+        "text": "R$ 2.814,85"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T09:03:30.310071+00:00"
+}

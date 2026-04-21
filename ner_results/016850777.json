@@ -1,0 +1,67 @@
+{
+  "documento_numero": "016850777",
+  "protocolo": "00153.000050_2025-18",
+  "source_file": "18766127.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Jacylenne Coelho Bezerra Fortes"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "ASSESSORIA LICITAÇÃO"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "Diretoria Administrativa e Financeira"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Superintendente de Licitações e Contratos"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "Diretoria Administrativa e Financeira - SETUR-PI",
+        "Demanda Interna"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:15:48.102402+00:00"
+}

@@ -1,0 +1,72 @@
+{
+  "documento_numero": "016452644",
+  "protocolo": "00152.000049_2025-95",
+  "source_file": "18329386.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "BÁRBARA DANTAS DE SOUSA"
+      },
+      {
+        "text": "LUANA LIMA LUZ MAGALHÃES"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "ASSESSORIA TÉCNICA JURÍDICA"
+      },
+      {
+        "text": "Diretoria de Gestão de Patrimônio Imobiliário"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretora de Gestão de Patrimônio Imobiliário"
+      }
+    ],
+    "email": [
+      {
+        "text": "cartorio1oficiopicos@gmail.com"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "dministrar o patrimônio imobiliário do estado",
+        "busca cartorária"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:27:14.500771+00:00"
+}

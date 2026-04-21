@@ -1,0 +1,78 @@
+{
+  "documento_numero": "016756962",
+  "protocolo": "00153.000075_2025-11",
+  "source_file": "18663127.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Mayara Cabral"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "PRODUÇÕES ME"
+      },
+      {
+        "text": "órgão patrocinador"
+      },
+      {
+        "text": "fiscal de contratos"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "CCOM-PI"
+      },
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "Núcleo de Controle Interno"
+      },
+      {
+        "text": "COORDENADORIA DE COMUNICAÇÃO SOCIAL"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Leão Fiscal"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "contratou": [
+      [
+        "empresa prestadora do serviço",
+        "órgão patrocinador"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:52:17.831800+00:00"
+}

@@ -1,0 +1,57 @@
+{
+  "documento_numero": "016828218",
+  "protocolo": "00153.000056_2025-87",
+  "source_file": "18741335.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "Diretoria Administrativa e Financeira"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Gerente de Contratos"
+      },
+      {
+        "text": "GERÊNCIA DE CONTRATOS"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.turismo.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T07:19:14.456639+00:00"
+}

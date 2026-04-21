@@ -1,0 +1,51 @@
+{
+  "documento_numero": "016302924",
+  "protocolo": "00224.000048_2025-50",
+  "source_file": "18163196.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "FIRMINO SOARES PAULO"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário"
+      }
+    ],
+    "email": [
+      {
+        "text": "atendimento@piauilink.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T08:19:29.216644+00:00"
+}

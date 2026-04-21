@@ -1,0 +1,67 @@
+{
+  "documento_numero": "016096846",
+  "protocolo": "00227.000054_2025-87",
+  "source_file": "17932553.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "Despacho SECRETARIA DE FAZENDA DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "SECRETARIA"
+      }
+    ],
+    "url": [
+      {
+        "text": "https://portal.sefaz.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "SEFAZ-PI/GASEC",
+        "DESPACHO SEFAZ-PI/GASEC"
+      ]
+    ],
+    "solicitou": [
+      [
+        "caso",
+        "conhecimento e providências"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:57:39.015374+00:00"
+}

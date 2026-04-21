@@ -1,0 +1,64 @@
+{
+  "documento_numero": "016265058",
+  "protocolo": "00153.000056_2025-87",
+  "source_file": "18121038.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "Secretaria de Estado da Saúde do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretaria"
+      }
+    ],
+    "numero_processo": [
+      {
+        "text": "00012.023851/2023-96"
+      }
+    ],
+    "assunto": [
+      {
+        "text": "registro de preços"
+      }
+    ],
+    "objeto_licitacao": [
+      {
+        "text": "registro de preços"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "ata"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T07:18:30.710529+00:00"
+}

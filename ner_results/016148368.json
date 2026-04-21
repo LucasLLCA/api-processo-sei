@@ -1,0 +1,70 @@
+{
+  "documento_numero": "016148368",
+  "protocolo": "00227.000024_2025-71",
+  "source_file": "17990281.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "BENEDITO RUBENS SARAIVA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "Secretaria de Educação"
+      },
+      {
+        "text": "Procuradoria Geral do Estado"
+      },
+      {
+        "text": "SUPERINTENDENCIA DE GESTÃO DE PESSOAS-SEAD"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretaria"
+      }
+    ],
+    "decreto": [
+      {
+        "text": "Decreto nº 18.369"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.sead.pi.gov.br/"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T08:54:10.608362+00:00"
+}

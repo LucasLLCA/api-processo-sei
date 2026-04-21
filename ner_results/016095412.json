@@ -1,0 +1,107 @@
+{
+  "documento_numero": "016095412",
+  "protocolo": "00153.000008_2025-99",
+  "source_file": "17930938.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "WAGNER JARDEL PONTES GOMES"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "empresa TEIXEIRA E LEITE LTDA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "Secretaria de Turismo do Piauí"
+      },
+      {
+        "text": "Secretaria de Turismo do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretaria"
+      },
+      {
+        "text": "Diretor Administrativo e Financeiro SETUR-PI"
+      }
+    ],
+    "data": [
+      {
+        "text": "22 de abril de 2024"
+      },
+      {
+        "text": "22 de abril de 2025"
+      }
+    ],
+    "valor_monetario": [
+      {
+        "text": "R$ 983,91"
+      },
+      {
+        "text": "R$ 3.999,93"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "contrato"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "Contrato",
+        "SETUR-PI"
+      ]
+    ],
+    "solicitou": [
+      [
+        "demanda institucional",
+        "ampliação do quantitativo"
+      ]
+    ],
+    "contratou": [
+      [
+        "Secretaria de Turismo do Estado do Piauí",
+        "empresa TEIXEIRA E LEITE LTDA"
+      ],
+      [
+        "contratado",
+        "acréscimos"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:48:32.599888+00:00"
+}

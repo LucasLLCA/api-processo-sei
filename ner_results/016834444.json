@@ -1,0 +1,56 @@
+{
+  "documento_numero": "016834444",
+  "protocolo": "00153.000049_2025-85",
+  "source_file": "18748157.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "COMISSÃO DE GESTÃO FINANCEIRA E GESTÃO POR RESULTADOS"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "licitacao"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "Sistema Eletrônico de Informação",
+        "eletronicamente"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:13:17.196004+00:00"
+}

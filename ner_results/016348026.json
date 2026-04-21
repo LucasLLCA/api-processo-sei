@@ -1,0 +1,73 @@
+{
+  "documento_numero": "016348026",
+  "protocolo": "00095.000758_2025-01",
+  "source_file": "18213208.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "ABNER CORJES"
+      },
+      {
+        "text": "Susana Anjos Jaskowiak"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "SEJUS-PI"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Senhora Diretora"
+      },
+      {
+        "text": "GERÊNCIA DE PESSOAL"
+      },
+      {
+        "text": "GERÊNCIA DE FOLHA DE PAGAMENTO"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "supervisores",
+        "documentação"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:17:34.098146+00:00"
+}

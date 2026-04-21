@@ -1,0 +1,65 @@
+{
+  "documento_numero": "016658749",
+  "protocolo": "00227.000095_2025-73",
+  "source_file": "18556023.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Flávio Chaib"
+      },
+      {
+        "text": "PEDRO ALVES DE CARVALHO ROCHA"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "Fundação Piauí Previdência"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "GABINETE GERAL DA PRESIDÊNCIA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Presidente"
+      },
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "SECRETÁRIO-CHEFE DO GABINETE DO GOVERNADOR"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T09:43:14.595042+00:00"
+}

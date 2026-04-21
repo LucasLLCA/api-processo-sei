@@ -1,0 +1,69 @@
+{
+  "documento_numero": "016100366",
+  "protocolo": "00227.000091_2025-95",
+  "source_file": "17936564.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "VERA LÚCIA LEITE BARROS MIRANDA"
+      },
+      {
+        "text": "Regina Maria Soares de Araújo Vieira"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "FUNDAÇÃO PIAUÍ PREVIDÊNCIA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "Tribunal de Contas do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Gerente de Benefícios Previdenciários"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "Tribunal de Contas do Estado do Piauí",
+        "retificação do cargo"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:39:57.784293+00:00"
+}

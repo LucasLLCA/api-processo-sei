@@ -1,0 +1,51 @@
+{
+  "documento_numero": "016352338",
+  "protocolo": "00120.000311_2025-79",
+  "source_file": "18217972.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Presidente"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.emgerpi.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T06:22:54.212137+00:00"
+}

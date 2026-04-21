@@ -1,0 +1,67 @@
+{
+  "documento_numero": "016535378",
+  "protocolo": "00240.000128_2025-15",
+  "source_file": "18420801.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "SAMUEL PONTES DO NASCIMENTO"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "Superintendência de Gestão de Pessoas-SGP"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "Despacho",
+        "pleito formulado"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "Despacho",
+        "Superintendência de Gestão de Pessoas-SGP"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T11:02:09.221700+00:00"
+}

@@ -1,0 +1,369 @@
+{
+  "documento_numero": "016311571",
+  "protocolo": "00227.000359_2025-99",
+  "source_file": "18172913.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "MARIA HOZA"
+      },
+      {
+        "text": "JOSAFÁ DE FRANÇA"
+      },
+      {
+        "text": "JOÃO BORGES LEAL"
+      },
+      {
+        "text": "JOSÉ BOLIVAR CRUZ"
+      },
+      {
+        "text": "MARIA ANTONIA SILVA"
+      },
+      {
+        "text": "MAURO DANTAS SOARES"
+      },
+      {
+        "text": "DEUSA MARIA BATISTA"
+      },
+      {
+        "text": "JOANA AIRES DA SILVA"
+      },
+      {
+        "text": "MARIA SULAMITA COSTA"
+      },
+      {
+        "text": "JOSÉ ARIMATÉIA COSTA"
+      },
+      {
+        "text": "ZILMA MARIA DE JESUS"
+      },
+      {
+        "text": "ALBINA MARIA GERONCO"
+      },
+      {
+        "text": "Carlos Castelo Branco"
+      },
+      {
+        "text": "JULIMAR FERREIRA LIMA"
+      },
+      {
+        "text": "ROSILMA SILVA CARDOSO"
+      },
+      {
+        "text": "FRANCISCO FROTA RAMOS"
+      },
+      {
+        "text": "BENEDITO MIRANDA COSTA"
+      },
+      {
+        "text": "NILZETE MARIA DA SILVA"
+      },
+      {
+        "text": "SALOMÃO LOPES DA SILVA"
+      },
+      {
+        "text": "MARIANA DE SOUSA SILVA"
+      },
+      {
+        "text": "EUCÁRIO DE PAIVA GOMES"
+      },
+      {
+        "text": "SOLANGE MARIA DE SOUSA"
+      },
+      {
+        "text": "MARIA DE FÁTIMA SOBRAL"
+      },
+      {
+        "text": "ANTONIO DE SOUSA ARAUJO"
+      },
+      {
+        "text": "VICENTE MARTINS DE LIRA"
+      },
+      {
+        "text": "EUNICE GONÇALVES SANTOS"
+      },
+      {
+        "text": "JONH DOUGLAS NASCIMENTO"
+      },
+      {
+        "text": "JOSE WALDINAR RODRIGUES"
+      },
+      {
+        "text": "VERA LÚCIA ROCHA VELOSO"
+      },
+      {
+        "text": "FRANCISCA GOMES DA CRUZ"
+      },
+      {
+        "text": "MARIA DO SOCORRO DE MELO"
+      },
+      {
+        "text": "LAURENICE ALVES DA SILVA"
+      },
+      {
+        "text": "IRISMAR MORAIS DE AGUIAR"
+      },
+      {
+        "text": "IZABEL CRISTINA DE SOUZA"
+      },
+      {
+        "text": "JUSSEMAR DA SILVA MACEDO"
+      },
+      {
+        "text": "BAZÍLIO BEZERRA DA SILVA"
+      },
+      {
+        "text": "EDILEUZA ARAUJO FERREIRA"
+      },
+      {
+        "text": "Nº MARIA ALVES DE FREITAS"
+      },
+      {
+        "text": "MARIA DE LOURDES MONTEIRO"
+      },
+      {
+        "text": "EMANUEL FERREIRA DA ROCHA"
+      },
+      {
+        "text": "FRANCISCO ALVES DE CASTRO"
+      },
+      {
+        "text": "MARIA DO ROSÁRIO DA SILVA"
+      },
+      {
+        "text": "JOSÉ MENDES RIBEIRO FILHO"
+      },
+      {
+        "text": "MARIA JOSÉ PACHÊCO BORGES"
+      },
+      {
+        "text": "CLAUDIA MARIA DE OLIVEIRA"
+      },
+      {
+        "text": "ANA LUCIA ALVES DOS SANTOS"
+      },
+      {
+        "text": "HERMINIO MARQUES DAMASCENO"
+      },
+      {
+        "text": "RAIMUNDO FERREIRA DA SILVA"
+      },
+      {
+        "text": "ROSIMEIRE PAULINA DE SOUZA"
+      },
+      {
+        "text": "DEUZILENE PEREIRA DA CUNHA"
+      },
+      {
+        "text": "MARIA ESTER GALENO DE SOUZA"
+      },
+      {
+        "text": "MATIAS BANDEIRA MASCARENHAS"
+      },
+      {
+        "text": "ANTONIO VIEIRA DE AS JUNIOR"
+      },
+      {
+        "text": "MARIA LUCIA DA SILVA MENDES"
+      },
+      {
+        "text": "MARIA DO AMPARO ROCHA SILVA"
+      },
+      {
+        "text": "OSMAR DO NASCIMENTO MOREIRA"
+      },
+      {
+        "text": "MARIA ANITA DA SILVA CARDOSO"
+      },
+      {
+        "text": "DEUSINA DIAS RIBEIRO PEREIRA"
+      },
+      {
+        "text": "RAQUEL CRISTINA SOUSA FRANCA"
+      },
+      {
+        "text": "MARIANA MARIA MENDES ISIDORO"
+      },
+      {
+        "text": "JOSE GILBERTO NEIVA TEIXEIRA"
+      },
+      {
+        "text": "CORÁLIA MARIA MIRANDA SANTOS"
+      },
+      {
+        "text": "MARIA DO SOCORRO ALVES SOUSA"
+      },
+      {
+        "text": "FERNANDA MENESES DE CARVALHO"
+      },
+      {
+        "text": "JOÃO ALBERTO BANDEIRA ARNAUD"
+      },
+      {
+        "text": "FRANCISCO JURANÍ DE CARVALHO"
+      },
+      {
+        "text": "MARIA ELISMAR DE SOUSA SANTOS"
+      },
+      {
+        "text": "FRANCISCO DAS CHAGAS MEDEIROS"
+      },
+      {
+        "text": "ADOMITA NOGEUIRA SILVA VIEIRA"
+      },
+      {
+        "text": "FRANCISCO JOSÉ VERAS DE SOUZA"
+      },
+      {
+        "text": "WALDINEIA FERRAZ REIS BARROSO"
+      },
+      {
+        "text": "Nº BENEDITA LOPES DE OLIVEIRA"
+      },
+      {
+        "text": "ROSA PERPETUA MOREIRA TRAJANO"
+      },
+      {
+        "text": "DILSA MARIA MEDEIROS DA SILVA"
+      },
+      {
+        "text": "MILTON FRANCISCO DO NASCIMENTO"
+      },
+      {
+        "text": "GEÍSA MARIA SOARES DE OLIVEIRA"
+      },
+      {
+        "text": "MARIA RAILDA OLIVEIRA VITORINO"
+      },
+      {
+        "text": "EDINA MARIA PEREIRA RESPLANDES"
+      },
+      {
+        "text": "ROSÂNGELA RODRIGUES DOS SANTOS"
+      },
+      {
+        "text": "MAURA REIJANE SANTIAGO LUSTOSA"
+      },
+      {
+        "text": "MARIA DE NAZARE GOMES PIMENTEL"
+      },
+      {
+        "text": "NILSON LIMA LOPES BUENOS AIRES"
+      },
+      {
+        "text": "GEANE DIAS DE SOUSA CAVALCANTE"
+      },
+      {
+        "text": "MARIA DE JESUS PEREIRA DA COSTA"
+      },
+      {
+        "text": "ARIA ALVES MENDES BARROSO SILVA"
+      },
+      {
+        "text": "RITA LINDALVA ALVES DE OLIVEIRA"
+      },
+      {
+        "text": "LAURINDO DE SOUSA BRITTO JUNIOR"
+      },
+      {
+        "text": "DIMAR MARIA DA CONCEIÇÃO SANTOS"
+      },
+      {
+        "text": "MARIA ALVES MENDES BARROSO SILVA"
+      },
+      {
+        "text": "CARMEM LÚCIA FONTENELE DE ARAÚJO"
+      },
+      {
+        "text": "HELISANGELA OLIVEIRA DE LIMA RÊGO"
+      },
+      {
+        "text": "FRANCISCO ANGELO PEREIRA SOBRINHO"
+      },
+      {
+        "text": "VERONEIDE DE OLIVEIRA LEMOS PASSOS"
+      },
+      {
+        "text": "FRANCISCA DAS CHAGAS RAMOS PEREIRA"
+      },
+      {
+        "text": "ANTONIA RODRIGUES DOS SANTOS SOARES"
+      },
+      {
+        "text": "CELIA CRISTINA DE OLIVEIRA GUIMARAES"
+      },
+      {
+        "text": "KÁTIA CILENE MARTINS RIBEIRO ANTUNES"
+      },
+      {
+        "text": "Regina Maria Soares de Araújo Vieira"
+      },
+      {
+        "text": "FRANCISCO DAS CHAGAS RODRIGUES MENDES"
+      },
+      {
+        "text": "MARIA OSMINDA OLIVEIRA SINIMBÚ CASTRO"
+      },
+      {
+        "text": "OLGA ANGÉLICA OLIVEIRA DE MACÊDO SILVA"
+      },
+      {
+        "text": "FRANCISCO DAS CHAGAS RODRIGUES DA SILVA"
+      },
+      {
+        "text": "VALNEIDE MARIA RAMOS ESCÓRCIO E CERQUEIRA"
+      },
+      {
+        "text": "MARIA DO PERPÉTUO SOCORRO BARBOSA MONTEIRO"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEJUS"
+      },
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "GERÊNCIA DE BENEFÍCIOS"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretaria"
+      },
+      {
+        "text": "Gerente de Benefícios Previdenciários"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T10:03:00.187463+00:00"
+}

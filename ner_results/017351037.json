@@ -1,0 +1,59 @@
+{
+  "documento_numero": "017351037",
+  "protocolo": "00226.000029_2025-11",
+  "source_file": "19313027.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Orlando"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "IAEPI-PI"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretor de Operações"
+      }
+    ],
+    "email": [
+      {
+        "text": "gabinete@iaepi.pi.gov.br"
+      },
+      {
+        "text": "licitacao@antarescomercio.com.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T08:44:53.908203+00:00"
+}

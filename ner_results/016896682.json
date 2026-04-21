@@ -1,0 +1,332 @@
+{
+  "documento_numero": "016896682",
+  "protocolo": "00240.000116_2025-82",
+  "source_file": "18816469.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "pregoeiro"
+      },
+      {
+        "text": "proponente"
+      },
+      {
+        "text": "licitante vencedor"
+      },
+      {
+        "text": "agricultor familiar"
+      },
+      {
+        "text": "microempreendedor individual"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "microempresa"
+      },
+      {
+        "text": "Microempresas"
+      },
+      {
+        "text": "empresa licitante"
+      },
+      {
+        "text": "empresas brasileiras"
+      },
+      {
+        "text": "empresas de pequeno porte"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "TCE-PI"
+      },
+      {
+        "text": "Pregoeiro"
+      },
+      {
+        "text": "consulados"
+      },
+      {
+        "text": "embaixadas"
+      },
+      {
+        "text": "Receita Federal"
+      },
+      {
+        "text": "Administração Pública"
+      },
+      {
+        "text": "Controladoria-Geral do Estado"
+      },
+      {
+        "text": "comissão permanente de licitações"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "gerente"
+      },
+      {
+        "text": "dirigente"
+      },
+      {
+        "text": "acionista"
+      },
+      {
+        "text": "Secretaria"
+      },
+      {
+        "text": "controlador"
+      },
+      {
+        "text": "subcontratado"
+      },
+      {
+        "text": "agente público"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "licitacao"
+  },
+  "relations": {
+    "contratou": [
+      [
+        "proposta",
+        "objeto"
+      ],
+      [
+        "sistema",
+        "propostas classificadas"
+      ],
+      [
+        "licitantes",
+        "lance"
+      ],
+      [
+        "licitantes",
+        "lances"
+      ],
+      [
+        "Contratante",
+        "item"
+      ],
+      [
+        "licitante vencedor",
+        "contrato"
+      ],
+      [
+        "empresa estrangeira",
+        "contrato"
+      ]
+    ],
+    "autorizou": [
+      [
+        "certame",
+        "Sistema de Registro de Preços"
+      ],
+      [
+        "Parte Específica deste Edital",
+        "participação de empresas"
+      ],
+      [
+        "pregoeiro",
+        "reinício da disputa"
+      ],
+      [
+        "Administração",
+        "amostra"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "registro",
+        "formação do cadastro de reserva"
+      ],
+      [
+        "microempresas",
+        "documentação de habilitação"
+      ],
+      [
+        "Microempresas",
+        "documentação de habilitação"
+      ],
+      [
+        "licitantes",
+        "PROPOSTA"
+      ],
+      [
+        "licitantes",
+        "documentos de habilitação"
+      ],
+      [
+        "declarações",
+        "documentos de habilitação"
+      ],
+      [
+        "lances",
+        "sistema"
+      ],
+      [
+        "licitante",
+        "proposta"
+      ],
+      [
+        "licitantes",
+        "LANCES"
+      ],
+      [
+        "sistema",
+        "aviso de fechamento"
+      ],
+      [
+        "sistema",
+        "lances"
+      ],
+      [
+        "licitantes",
+        "lances intermediários"
+      ],
+      [
+        "documentos",
+        "habilitação"
+      ]
+    ],
+    "solicitou": [
+      [
+        "licitantes",
+        "cotar os bens ou serviços"
+      ],
+      [
+        "Microempresas",
+        "documentação de habilitação"
+      ],
+      [
+        "licitantes",
+        "PROPOSTA"
+      ],
+      [
+        "licitantes",
+        "documentos de habilitação"
+      ],
+      [
+        "licitantes",
+        "lances intermediários"
+      ],
+      [
+        "pregoeiro",
+        "licitante mais bem classificado"
+      ],
+      [
+        "licitante",
+        "prazo"
+      ],
+      [
+        "Pregoeiro",
+        "apresentação de amostra"
+      ],
+      [
+        "procedimentos",
+        "amostra"
+      ]
+    ],
+    "designou": [
+      [
+        "Registro",
+        "subitem 2.7.1"
+      ],
+      [
+        "Lei nº 14.133, de 2021",
+        "agricultor familiar"
+      ],
+      [
+        "sistema",
+        "lances"
+      ],
+      [
+        "sistema",
+        "período de tempo"
+      ],
+      [
+        "item 1.1",
+        "Cadastro eletrônico de fornecedores"
+      ]
+    ],
+    "assinou": [
+      [
+        "proponente",
+        "compromisso de executar o objeto"
+      ],
+      [
+        "licitante vencedor",
+        "contrato"
+      ],
+      [
+        "empresa estrangeira",
+        "contrato"
+      ]
+    ],
+    "nomeou": [
+      [
+        "Lei nº 14.133, de 2021",
+        "agricultor familiar"
+      ],
+      [
+        "empresa-líder",
+        "representante das consorciadas"
+      ],
+      [
+        "sistema",
+        "licitantes"
+      ],
+      [
+        "sistema",
+        "colocações"
+      ],
+      [
+        "consulta aos cadastros",
+        "empresa licitante"
+      ]
+    ],
+    "exonerou": [
+      [
+        "falsidade da declaração",
+        "licitante"
+      ],
+      [
+        "negociação",
+        "primeiro colocado"
+      ],
+      [
+        "apresentação de regularidade",
+        "documentos já apresentados"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:58:50.743153+00:00"
+}

@@ -1,0 +1,86 @@
+{
+  "documento_numero": "016068859",
+  "protocolo": "00227.000054_2025-87",
+  "source_file": "17901368.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Carlos Castelo Branco"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEADPREV"
+      },
+      {
+        "text": "SEFAZ-PI"
+      },
+      {
+        "text": "PIAUIPREV"
+      },
+      {
+        "text": "Fundação Piauí Previdência"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "DIRETORIA ADMINISTRATIVA E FINANCEIRA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Analistas Previdenciários"
+      },
+      {
+        "text": "Secretário de Fazenda do Estado do Piauí"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "contratou": [
+      [
+        "SEADPREV",
+        "mobiliário"
+      ],
+      [
+        "PIAUIPREV",
+        "Analistas Previdenciários"
+      ]
+    ],
+    "solicitou": [
+      [
+        "missão institucional da Fundação",
+        "20 (vinte) mesas"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:57:33.694667+00:00"
+}

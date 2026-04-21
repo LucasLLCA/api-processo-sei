@@ -1,0 +1,137 @@
+{
+  "documento_numero": "017134719",
+  "protocolo": "00240.000047_2025-15",
+  "source_file": "19076677.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "aci"
+      },
+      {
+        "text": "SADA"
+      },
+      {
+        "text": "SADA-PI"
+      },
+      {
+        "text": "SADA/PI"
+      },
+      {
+        "text": "SEAD/P I"
+      },
+      {
+        "text": "Proconve"
+      },
+      {
+        "text": "direção hidráulica"
+      },
+      {
+        "text": "banco de preço conforme"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "Conselho Nacional de Trânsito"
+      },
+      {
+        "text": "COMISSÃO PERMANENTE DE LICITAÇÃO"
+      },
+      {
+        "text": "Conselho Nacional do Meio Ambiente"
+      },
+      {
+        "text": "secretaria de assistência técnica e defesa agropecuária"
+      },
+      {
+        "text": "SECRETARIA DA ASSISTÊNCIA TÉCNICA E DEFESA AGROPECUÁRIA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretária"
+      },
+      {
+        "text": "secretário"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "contrato"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "SECRETARIA DA ASSISTÊNCIA TÉCNICA E DEFESA AGROPECUÁRIA",
+        "veículos automóveis"
+      ]
+    ],
+    "contratou": [
+      [
+        "SECRETARIA DA ASSISTÊNCIA TÉCNICA E DEFESA AGROPECUÁRIA",
+        "veículos automóveis"
+      ],
+      [
+        "servidores",
+        "contratação"
+      ]
+    ],
+    "nomeou": [
+      [
+        "Lei 7.884/23",
+        "SECRETARIA DA ASSISTÊNCIA TÉCNICA E DEFESA AGROPECUÁRIA"
+      ]
+    ],
+    "designou": [
+      [
+        "Lei 7.884/23",
+        "SECRETARIA DA ASSISTÊNCIA TÉCNICA E DEFESA AGROPECUÁRIA"
+      ],
+      [
+        "Secretaria de Estado",
+        "NICA E DEFESA AGROPECUÁRIA"
+      ]
+    ],
+    "assinou": [
+      [
+        "Governo do Estado do Piauí",
+        "Lei 7.884/2022"
+      ]
+    ],
+    "autorizou": [
+      [
+        "Conselho Nacional de Trânsito (Contran)",
+        "veículos"
+      ],
+      [
+        "equipe de planejamento",
+        "contratação"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:21:28.575198+00:00"
+}

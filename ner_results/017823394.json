@@ -1,0 +1,56 @@
+{
+  "documento_numero": "017823394",
+  "protocolo": "00153.000020_2025-01",
+  "source_file": "19830990.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "Diretoria de Licitações e Contratos Administrativos"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.turismo.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "Despacho",
+        "Diretoria de Licitações e Contratos Administrativos"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:57:03.529864+00:00"
+}

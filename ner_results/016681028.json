@@ -1,0 +1,101 @@
+{
+  "documento_numero": "016681028",
+  "protocolo": "00152.000065_2025-88",
+  "source_file": "18580380.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Ediberto Aguiar Marques Filho"
+      },
+      {
+        "text": "Jacylenne Coêlho Bezerra Fortes"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "ABNT"
+      },
+      {
+        "text": "FONPLAST"
+      },
+      {
+        "text": "DIPALIMP"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEFAZ"
+      },
+      {
+        "text": "SDE-PI"
+      },
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "ASSESSORIA LICITAÇÃO"
+      },
+      {
+        "text": "Secretaria de Administração do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretar"
+      },
+      {
+        "text": "Secretária de Estado"
+      },
+      {
+        "text": "Superintendente de Licitações e Contratos"
+      }
+    ],
+    "email": [
+      {
+        "text": "carla.brito@sead.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "órgão requerente",
+        "demanda"
+      ]
+    ],
+    "autorizou": [
+      [
+        "deliberação",
+        "liberação"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:33:50.029195+00:00"
+}

@@ -1,0 +1,78 @@
+{
+  "documento_numero": "016612052",
+  "protocolo": "00226.000017_2025-89",
+  "source_file": "18504945.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Dr. Magno Pires Alves Filho"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "EMPRESA IMPACTO"
+      },
+      {
+        "text": "Instituto de Saneamento Básico do Piauí"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "GABINETE DO DIRETOR GERAL"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "INSTITUTO DE SANEAMENTO BÁSICO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Presidente"
+      },
+      {
+        "text": "Diretor Geral"
+      }
+    ],
+    "email": [
+      {
+        "text": "d_helal@hotmail.com"
+      }
+    ],
+    "cnpj": [
+      {
+        "text": "CNPJ 22.057.819/0001-28"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "requerimento"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T08:34:53.378695+00:00"
+}

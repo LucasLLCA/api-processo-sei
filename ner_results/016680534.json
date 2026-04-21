@@ -1,0 +1,137 @@
+{
+  "documento_numero": "016680534",
+  "protocolo": "00153.000075_2025-11",
+  "source_file": "18579812.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "MUSSOLINE GUEDES"
+      },
+      {
+        "text": "JOSE ANTONIO MONTEIRO NETO"
+      },
+      {
+        "text": "SARA SAMANTA FERREIRA LIMA"
+      },
+      {
+        "text": "Michelle de Carvalho Lages Monte"
+      },
+      {
+        "text": "CLARICE DE SENA MONTEIRO QUEIROZ"
+      },
+      {
+        "text": "Mussoline Marques de Sousa Guedes"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "Michelle de Carvalho Lages Monte"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "CCOM"
+      },
+      {
+        "text": "Governo do Estado"
+      },
+      {
+        "text": "Coordenadoria de Comun"
+      },
+      {
+        "text": "Núcleo de Controle Interno"
+      },
+      {
+        "text": "CONTROLADORIA-GERAL DO ESTADO"
+      },
+      {
+        "text": "Controladoria Geral do Estado"
+      },
+      {
+        "text": "Coordenadoria de Comunicação Social"
+      },
+      {
+        "text": "Cooordenadoria de Comunicação Social"
+      },
+      {
+        "text": "Coordenadoria de Comunicação do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIO"
+      },
+      {
+        "text": "Coordenador Geral"
+      },
+      {
+        "text": "coordenador Membro do Núcleo de Controle Interno"
+      },
+      {
+        "text": "GERENTE Coordenador do Núcleo de Controle Interno"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "parecer_juridico"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "despacho",
+        "dispensa do prazo inicial de 60 dias"
+      ],
+      [
+        "despacho",
+        "dispensa do prazo inicial"
+      ],
+      [
+        "autoridade competente do órgão patrocinador",
+        "Projeto de Patrocínio"
+      ]
+    ],
+    "assinou": [
+      [
+        "Mussoline Marques de Sousa Guedes",
+        "despacho"
+      ]
+    ],
+    "contratou": [
+      [
+        "GOVERNO DO ESTADO DO PIAUÍ",
+        "PATROCINIO"
+      ]
+    ],
+    "solicitou": [
+      [
+        "particular",
+        "requerimento"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:50:28.313477+00:00"
+}

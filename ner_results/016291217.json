@@ -1,0 +1,62 @@
+{
+  "documento_numero": "016291217",
+  "protocolo": "00226.000020_2025-01",
+  "source_file": "18150196.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "SEAD"
+      },
+      {
+        "text": "GABINETE DO DIRETOR GERAL"
+      },
+      {
+        "text": "Diretoria Administrativa e Financeira"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretor"
+      },
+      {
+        "text": "Presidente"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "Despacho Diretor Geral",
+        "Nota de Reserva"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:40:58.853539+00:00"
+}

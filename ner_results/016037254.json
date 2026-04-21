@@ -1,0 +1,68 @@
+{
+  "documento_numero": "016037254",
+  "protocolo": "00227.000002_2025-19",
+  "source_file": "17866125.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Flávio Chaib"
+      },
+      {
+        "text": "Carlos Castelo Branco"
+      },
+      {
+        "text": "ADERSON DE BRITO NOGUEIRA"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "FUNDAÇÃO PIAUÍ PREVIDÊNCIA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "GABINETE GERAL DA PRESIDÊNCIA"
+      },
+      {
+        "text": "TRIBUNAL DE JUSTIÇA DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Presidente"
+      },
+      {
+        "text": "DESEMBARGADOR"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T08:47:16.458212+00:00"
+}

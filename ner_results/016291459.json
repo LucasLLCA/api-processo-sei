@@ -1,0 +1,46 @@
+{
+  "documento_numero": "016291459",
+  "protocolo": "00240.000029_2025-25",
+  "source_file": "18150456.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa_juridica": [
+      {
+        "text": "Diretoria Financeira"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SADA-PI"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T10:06:18.355547+00:00"
+}

@@ -1,0 +1,73 @@
+{
+  "documento_numero": "016287732",
+  "protocolo": "00153.000020_2025-01",
+  "source_file": "18146349.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "WAGNER JARDEL PONTES GOMES"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "CCOM-PI"
+      },
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "Coordenadoria de Comunicação Social"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Senhor(a)"
+      },
+      {
+        "text": "Coordenador (a)"
+      }
+    ],
+    "assunto": [
+      {
+        "text": "PROJETO DESTINO EM FOCO - II EDIÇÃO"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.turismo.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T06:56:38.015390+00:00"
+}

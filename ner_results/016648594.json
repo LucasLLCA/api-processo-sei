@@ -1,0 +1,61 @@
+{
+  "documento_numero": "016648594",
+  "protocolo": "00226.000017_2025-89",
+  "source_file": "18544848.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "IAEPI-PI"
+      },
+      {
+        "text": "ISBPI-PI"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretor"
+      }
+    ],
+    "email": [
+      {
+        "text": "gabinete@iaepi.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "otavio@realjetteresina.com.br",
+        "Solicitação de cotação de preços"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:35:24.624756+00:00"
+}

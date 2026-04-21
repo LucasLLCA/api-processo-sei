@@ -1,0 +1,73 @@
+{
+  "documento_numero": "017631911",
+  "protocolo": "00152.000065_2025-88",
+  "source_file": "19621317.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "JANAINNA PINTO MARQUES TAVARES"
+      },
+      {
+        "text": "Jacylenne Coelho Bezerra Fortes"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SDE-PI"
+      },
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "ASSESSORIA LICITAÇÃO"
+      },
+      {
+        "text": "Secretaria de Administração do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretária"
+      },
+      {
+        "text": "Superintendente de Licitações e Contratos"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "Secretaria de Administração do Estado do Piauí",
+        "esclarecimentos de eventuais dúvidas"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:37:56.062187+00:00"
+}

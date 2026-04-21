@@ -1,0 +1,82 @@
+{
+  "documento_numero": "016178644",
+  "protocolo": "00240.000077_2025-13",
+  "source_file": "18024035.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "SAMUEL PONTES DO NASCIMENTO"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SADA-PI"
+      },
+      {
+        "text": "SEADPREV"
+      },
+      {
+        "text": "SEADPREV-PI"
+      },
+      {
+        "text": "GABINETE GERAL"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "SECRETARIA"
+      }
+    ],
+    "data": [
+      {
+        "text": "março de 2025"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "CONTRATADOS",
+        "postos de trabalho"
+      ],
+      [
+        "funções",
+        "postos de trabalho"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:33:02.895002+00:00"
+}

@@ -1,0 +1,81 @@
+{
+  "documento_numero": "016128307",
+  "protocolo": "00240.000044_2025-73",
+  "source_file": "17967840.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Alexandre Carvalho"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "Diretoria de PRODUÇÃO RURAL E SUSTENTÁVEL"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SADA-PI"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "CHEFE DE GABINETE"
+      },
+      {
+        "text": "CHEFIA DE GABINETE"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "Despacho",
+        "Diretoria de PRODUÇÃO RURAL E SUSTENTÁVEL"
+      ]
+    ],
+    "nomeou": [
+      [
+        "Secretário",
+        "Alexandre Carvalho"
+      ]
+    ],
+    "designou": [
+      [
+        "Secretário",
+        "Diretoria de PRODUÇÃO RURAL E SUSTENTÁVEL"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:09:01.348073+00:00"
+}

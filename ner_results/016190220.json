@@ -1,0 +1,66 @@
+{
+  "documento_numero": "016190220",
+  "protocolo": "00240.000063_2025-08",
+  "source_file": "18037158.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "JOSE JOAQUIM RODRIGUES DE OLIVEIRA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SADA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "funcionário"
+      },
+      {
+        "text": "EXTENSIONISTA RURAL I"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.sead.pi.gov.br/"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "certidao"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "certidao",
+        "0003679-10"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:32:33.252776+00:00"
+}

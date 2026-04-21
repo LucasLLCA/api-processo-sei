@@ -1,0 +1,61 @@
+{
+  "documento_numero": "016493380",
+  "protocolo": "00227.000271_2025-77",
+  "source_file": "18374447.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Carlos Castelo Branco"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "Diretoria do Fundo de Previdência"
+      },
+      {
+        "text": "GERÊNCIA DE FOLHA DE BENEFÍCIOS PREVIDENCIÁRIOS"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretaria"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "Telefone",
+        "DESPACHO"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:55:07.209019+00:00"
+}

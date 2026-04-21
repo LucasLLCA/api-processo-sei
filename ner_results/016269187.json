@@ -1,0 +1,73 @@
+{
+  "documento_numero": "016269187",
+  "protocolo": "00240.000116_2025-82",
+  "source_file": "18125684.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Jacylenne Coêlho Bezerra Fortes"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "SADA-PI"
+      },
+      {
+        "text": "ASSESSORIA LICITAÇÃO"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretaria"
+      },
+      {
+        "text": "Superintendente de Licitações e Contratos"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "nomeou": [
+      [
+        "Jacylenne Coêlho",
+        "Superintendente de Licitações e Contratos"
+      ]
+    ],
+    "designou": [
+      [
+        "Jacylenne Coêlho",
+        "Superintendente de Licitações e Contratos"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:34:54.410244+00:00"
+}

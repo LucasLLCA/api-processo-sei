@@ -1,0 +1,49 @@
+{
+  "documento_numero": "016257038",
+  "protocolo": "00240.000116_2025-82",
+  "source_file": "18112204.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "Gerência de Atas"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "certidao"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T10:34:35.107928+00:00"
+}

@@ -1,0 +1,216 @@
+{
+  "documento_numero": "016713650",
+  "protocolo": "00240.000116_2025-82",
+  "source_file": "18615899.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "contratante"
+      },
+      {
+        "text": "produtor rural"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "POTY"
+      },
+      {
+        "text": "ZAELE"
+      },
+      {
+        "text": "BETÂNIA"
+      },
+      {
+        "text": "PALMEIRA"
+      },
+      {
+        "text": "PANTANAL"
+      },
+      {
+        "text": "RIO MARIA"
+      },
+      {
+        "text": "CONCÓRDIA"
+      },
+      {
+        "text": "BOM SABOR"
+      },
+      {
+        "text": "BRASILEIRO"
+      },
+      {
+        "text": "cooperativas locais"
+      },
+      {
+        "text": "empresa especializada"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SADA"
+      },
+      {
+        "text": "SADA-PI"
+      },
+      {
+        "text": "Poder Público"
+      },
+      {
+        "text": "Administração Estadual"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "COMISSÃO PERMANENTE DE LICITAÇÃO"
+      },
+      {
+        "text": "SECRETARIA DA ASSISTÊNCIA TÉCNICA E DEFESA AGROPECUÁRIA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "licitacao"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "SADA",
+        "Parceria"
+      ],
+      [
+        "SADA",
+        "Empresa Especializada"
+      ],
+      [
+        "SADA",
+        "empresa especializada"
+      ]
+    ],
+    "autorizou": [
+      [
+        "Decreto de Emergência",
+        "estiagem prolongada"
+      ],
+      [
+        "SADA",
+        "Aquisição Direta pela SADA"
+      ],
+      [
+        "Administração Estadual",
+        "aquis"
+      ],
+      [
+        "ornecedores regionais",
+        "cestas básicas"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "SADA",
+        "famílias carentes"
+      ],
+      [
+        "empresa contratada",
+        "Pequenos Produtores Rurais"
+      ],
+      [
+        "Administração Estadual",
+        "aquis"
+      ],
+      [
+        "cestas básicas",
+        "comunidades"
+      ]
+    ],
+    "solicitou": [
+      [
+        "SADA",
+        "cestas básicas"
+      ],
+      [
+        "Administração Estadual",
+        "reequilíbrio econômico financeiro"
+      ]
+    ],
+    "exonerou": [
+      [
+        "estiagem prolongada",
+        "sementes"
+      ]
+    ],
+    "contratou": [
+      [
+        "SADA",
+        "empresa intermediária"
+      ],
+      [
+        "SADA",
+        "Empresa Especializada"
+      ],
+      [
+        "SADA",
+        "empresa especializada"
+      ],
+      [
+        "Administração Estadual",
+        "aquisição"
+      ],
+      [
+        "Administração Estadual",
+        "empresa especializada"
+      ]
+    ],
+    "designou": [
+      [
+        "SADA",
+        "Empresa Especializada"
+      ],
+      [
+        "Administração Estadual",
+        "aquis"
+      ],
+      [
+        "edital",
+        "mecanismo de obtenção de qualidade"
+      ]
+    ],
+    "nomeou": [
+      [
+        "Administração Estadual",
+        "aquis"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:53:29.704961+00:00"
+}

@@ -1,0 +1,51 @@
+{
+  "documento_numero": "017554608",
+  "protocolo": "00240.000029_2025-25",
+  "source_file": "19536547.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "SADA-PI COORDENAÇÃO DE RECURSOS HUMANOS"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "Despacho",
+        "Diretoria de Desenvolvimento de Pessoas"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:07:43.437732+00:00"
+}

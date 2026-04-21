@@ -1,0 +1,60 @@
+{
+  "documento_numero": "016359649",
+  "protocolo": "00152.000066_2025-22",
+  "source_file": "18225981.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "PAULO EVERTON DA SILVA MAGALHÃES"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SDE-PI"
+      },
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "DIRETORIA DE PAGAMENTO DE PESSOAL"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretaria"
+      },
+      {
+        "text": "Estagiário"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T06:38:05.049393+00:00"
+}

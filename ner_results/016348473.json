@@ -1,0 +1,54 @@
+{
+  "documento_numero": "016348473",
+  "protocolo": "00226.000020_2025-01",
+  "source_file": "18213698.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "James Lane Ramos de Sousa"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "Coordenador"
+      }
+    ],
+    "url": [
+      {
+        "text": "https://portal.sefaz.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T08:41:29.117158+00:00"
+}

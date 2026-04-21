@@ -1,0 +1,54 @@
+{
+  "documento_numero": "016196123",
+  "protocolo": "00240.000128_2025-15",
+  "source_file": "18043733.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "SAMUEL PONTES DO NASCIMENTO"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD/PI"
+      },
+      {
+        "text": "GABINETE GERAL"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário de Estado"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T11:01:51.051431+00:00"
+}

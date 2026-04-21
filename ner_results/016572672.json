@@ -1,0 +1,59 @@
+{
+  "documento_numero": "016572672",
+  "protocolo": "00095.000544_2025-26",
+  "source_file": "18461645.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "ANNDERSON FELIPE BANDEIRA SILVA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "SEJUS-PI"
+      },
+      {
+        "text": "Diretoria de Logística e Abastecimento"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "contratou": [
+      [
+        "Diretoria de Logística e Abastecimento",
+        "ANNDERSON FELIPE BANDEIRA SILVA"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:16:11.826373+00:00"
+}

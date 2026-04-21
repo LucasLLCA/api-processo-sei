@@ -1,0 +1,61 @@
+{
+  "documento_numero": "016490001",
+  "protocolo": "00153.000001_2025-77",
+  "source_file": "18370723.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "Tribunal de Contas da União"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "contrato"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "Administração",
+        "PESQUISA DE PREÇOS"
+      ],
+      [
+        "pedido da contratada",
+        "prorrogação de prazo"
+      ]
+    ],
+    "contratou": [
+      [
+        "Administração Pública",
+        "contrato"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:40:53.378458+00:00"
+}

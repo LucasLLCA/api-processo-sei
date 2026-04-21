@@ -1,0 +1,64 @@
+{
+  "documento_numero": "016730034",
+  "protocolo": "00153.000008_2025-99",
+  "source_file": "18633686.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "José Antônio Monteiro"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "GABINETE"
+      },
+      {
+        "text": "Diretoria Administrativa e Financeira"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Senhor Diretor"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "caso",
+        "conhecimento e providências"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:52:02.645236+00:00"
+}

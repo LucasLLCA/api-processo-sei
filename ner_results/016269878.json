@@ -1,0 +1,64 @@
+{
+  "documento_numero": "016269878",
+  "protocolo": "00153.000060_2025-45",
+  "source_file": "18126473.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa_juridica": [
+      {
+        "text": "BTM Fortaleza"
+      },
+      {
+        "text": "WTM São Paulo"
+      },
+      {
+        "text": "FESTURIS Gramado"
+      },
+      {
+        "text": "MTM Belo Horizonte"
+      },
+      {
+        "text": "ABAV Rio de Janeiro"
+      },
+      {
+        "text": "Salão Nacional do Turismo São Paulo"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "Gabinete"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "requerimento"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T07:20:44.262469+00:00"
+}

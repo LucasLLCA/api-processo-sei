@@ -1,0 +1,111 @@
+{
+  "documento_numero": "016504890",
+  "protocolo": "00153.000049_2025-85",
+  "source_file": "18387265.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "CONTRATADO"
+      },
+      {
+        "text": "José Antônio Monteiro"
+      },
+      {
+        "text": "Yolanda Maria Oliveira Costa"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "empresa especializada"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "ques"
+      },
+      {
+        "text": "Secretaria de Estado do Turismo"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretora"
+      },
+      {
+        "text": "profissional responsável"
+      },
+      {
+        "text": "Secretário de Estado do Turismo"
+      }
+    ],
+    "email": [
+      {
+        "text": "yolanda.costa@setur.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "contrato"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "GOVERNO DO ESTADO DO PIAUÍ",
+        "Contratação de empresa especializada"
+      ],
+      [
+        "profissional responsável",
+        "contratação da execução das obras"
+      ]
+    ],
+    "nomeou": [
+      [
+        "Secretaria de Estado do Turismo",
+        "Contratação de empresa especializada"
+      ]
+    ],
+    "assinou": [
+      [
+        "profissional responsável",
+        "projetos"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "projetos",
+        "realização da obra"
+      ]
+    ],
+    "designou": [
+      [
+        "projetos",
+        "elementos necessários à realização da obra"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:07:51.878878+00:00"
+}

@@ -1,0 +1,63 @@
+{
+  "documento_numero": "016633414",
+  "protocolo": "00227.000076_2025-47",
+  "source_file": "18528266.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa_juridica": [
+      {
+        "text": "FUNDAÇÃO PIAUÍ PREVIDÊNCIA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "Despacho SECRETARIA DE FAZENDA DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      }
+    ],
+    "url": [
+      {
+        "text": "https://portal.sefaz.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "SEFAZ-PI/GASEC/SUTESP/UNIGGP",
+        "FUNDAÇÃO PIAUÍ PREVIDÊNCIA"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:25:55.876043+00:00"
+}

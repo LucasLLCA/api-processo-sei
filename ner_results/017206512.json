@@ -1,0 +1,56 @@
+{
+  "documento_numero": "017206512",
+  "protocolo": "00153.000073_2025-14",
+  "source_file": "19154884.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "Coordenação Administrativa"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.turismo.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "caso",
+        "conhecimento e providência"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:42:13.352435+00:00"
+}

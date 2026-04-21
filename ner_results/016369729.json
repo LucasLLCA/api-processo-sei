@@ -1,0 +1,104 @@
+{
+  "documento_numero": "016369729",
+  "protocolo": "00115.000030_2025-95",
+  "source_file": "18236983.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Samuel Pontes do Nascimento"
+      },
+      {
+        "text": "MARCELLA CASTELO BRANCO CARVALHO CAMPELO"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "órgão de origem da servidora"
+      },
+      {
+        "text": "Tribunal de Justiça do Estado do Piauí"
+      },
+      {
+        "text": "Conselho Estadual de Gestão de Pessoas"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretora de Atos"
+      },
+      {
+        "text": "Escrivã da Polícia Civil"
+      },
+      {
+        "text": "Secretário Estadual de Administração"
+      },
+      {
+        "text": "Presidente do Conselho Estadual de Gestão de Pessoas"
+      }
+    ],
+    "data": [
+      {
+        "text": "29 de janeiro de 2025"
+      }
+    ],
+    "decreto": [
+      {
+        "text": "Decreto nº 15.085"
+      },
+      {
+        "text": "Decreto nº 21.800/2023"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "nomeou": [
+      [
+        "KÉRCIA KARENINA",
+        "BATISTA RODRIGUES"
+      ]
+    ],
+    "exonerou": [
+      [
+        "Decreto nº 21.800/2023",
+        "Decreto nº 15.085"
+      ]
+    ],
+    "designou": [
+      [
+        "KÉRCIA KARENINA",
+        "BATISTA RODRIGUES"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:18:45.987255+00:00"
+}

@@ -1,0 +1,73 @@
+{
+  "documento_numero": "017519242",
+  "protocolo": "00226.000029_2025-11",
+  "source_file": "19497825.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "ISBPI"
+      },
+      {
+        "text": "DOE-PI"
+      },
+      {
+        "text": "PGE-PI"
+      },
+      {
+        "text": "Despacho SECRETARIA DE FAZENDA DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "Analista do Tesouro do Estado"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.diariooficial.pi.gov.br/diario.ph."
+      },
+      {
+        "text": "http://www.diariooficial.pi.gov.br/diario.php?dia="
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "ata"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "ISBPI",
+        "inclusão dos documentos"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:46:00.133299+00:00"
+}

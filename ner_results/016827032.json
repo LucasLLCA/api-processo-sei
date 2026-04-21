@@ -1,0 +1,75 @@
+{
+  "documento_numero": "016827032",
+  "protocolo": "00153.000073_2025-14",
+  "source_file": "18740039.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Mayara Cabral"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "CAJU PRODUÇÕES E EVENTOS LTDA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "Núcleo de Controle Interno"
+      },
+      {
+        "text": "COORDENADORIA DE COMUNICAÇÃO SOCIAL"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Leão Fiscal do Contrato"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "contratou": [
+      [
+        "empresa prestadora do serviço",
+        "órgão patrocinador"
+      ]
+    ],
+    "assinou": [
+      [
+        "empresa prestadora do serviço",
+        "Contrato"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:41:43.183709+00:00"
+}

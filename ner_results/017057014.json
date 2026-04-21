@@ -1,0 +1,94 @@
+{
+  "documento_numero": "017057014",
+  "protocolo": "00227.000076_2025-47",
+  "source_file": "18991957.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "André Luís"
+      },
+      {
+        "text": "Mara Lilinne Leal de Sousa Lima"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "CS BRASIL FROTA S.A."
+      },
+      {
+        "text": "Fundação Piauí Previdência"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SECRETARIA DE ADMINISTRAÇÃO DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretora de Contratos"
+      }
+    ],
+    "assunto": [
+      {
+        "text": "CONTRATO PARA ASSINATURA"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "contrato"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "email institucional",
+        "andre.luissantos@csfrotas.com.br"
+      ],
+      [
+        "auxílio",
+        "contrato"
+      ]
+    ],
+    "contratou": [
+      [
+        "Fundação Piauí Previdência",
+        "empresa especializada"
+      ],
+      [
+        "partes",
+        "contrato"
+      ]
+    ],
+    "assinou": [
+      [
+        "auxílio",
+        "contrato"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:37:07.836800+00:00"
+}

@@ -1,0 +1,79 @@
+{
+  "documento_numero": "016369830",
+  "protocolo": "00240.000227_2025-99",
+  "source_file": "18237095.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Lúcia Maria Gomes Marques"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD/PI"
+      },
+      {
+        "text": "GABINETE GERAL"
+      },
+      {
+        "text": "DIRETORIA ADMINISTRATIVA E FINANCEIRA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "SECRETARIA"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "Chefia de Gabinete",
+        "instrução processual"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "encaminhamento dos autos",
+        "DIRETORIA ADMINISTRATIVA E FINANCEIRA - SADA/PI"
+      ]
+    ],
+    "solicitou": [
+      [
+        "servidora Lúcia Maria Gomes Marques",
+        "envio de certificados"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T11:24:39.566638+00:00"
+}

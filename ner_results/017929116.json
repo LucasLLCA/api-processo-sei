@@ -1,0 +1,78 @@
+{
+  "documento_numero": "017929116",
+  "protocolo": "00226.000017_2025-89",
+  "source_file": "19947286.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa_juridica": [
+      {
+        "text": "Diretoria Administrativa e Financeira"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "ISBPI-PI"
+      },
+      {
+        "text": "SEPLAN-PI"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "GERÊNCIA DE MOVIMENTAÇÃO ORÇAMENTÁRIA"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.seplan.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "Governo do Estado do Piauí",
+        "SEPLAN_Despacho"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "DESPACHO",
+        "Diretoria Administrativa e Financeira"
+      ]
+    ],
+    "solicitou": [
+      [
+        "ISBPI-PI",
+        "nota de crédito 2025NC80"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:37:48.802939+00:00"
+}

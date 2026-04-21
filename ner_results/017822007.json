@@ -1,0 +1,60 @@
+{
+  "documento_numero": "017822007",
+  "protocolo": "00153.000020_2025-01",
+  "source_file": "19829431.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "Diretoria Administrativa e Financeira"
+      },
+      {
+        "text": "COMISSÃO DE GESTÃO FINANCEIRA E GESTÃO POR RESULTADOS"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.turismo.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T06:56:56.926245+00:00"
+}

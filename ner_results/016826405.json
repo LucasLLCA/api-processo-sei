@@ -1,0 +1,111 @@
+{
+  "documento_numero": "016826405",
+  "protocolo": "00227.000072_2025-69",
+  "source_file": "18739366.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Flávio Chaib"
+      },
+      {
+        "text": "Carla Adriana da Silva Peres"
+      },
+      {
+        "text": "CLAUDIO JOSE FREITAS DE SAMPAIO"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "EIRELLI-EPP"
+      },
+      {
+        "text": "Fundação Piauí Previdência"
+      },
+      {
+        "text": "C J FREITAS DE SAMPAIO EIRELLI-EPP"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "DIAF/PIAUIPREV"
+      },
+      {
+        "text": "Fundação Piauí Previdência"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "DIRETORIA ADMINISTRATIVA E FINANCEIRA"
+      },
+      {
+        "text": "SECRETARIA DA ADMINISTRAÇÃO DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Presidente"
+      },
+      {
+        "text": "Diretora Administrativa e Financeira"
+      }
+    ],
+    "email": [
+      {
+        "text": "licitacao.microserv@outlook.com"
+      }
+    ],
+    "valor_monetario": [
+      {
+        "text": "R$ 658,35"
+      },
+      {
+        "text": "R$ 1.316,70"
+      }
+    ],
+    "numero_processo": [
+      {
+        "text": "00227.000072/2025-69"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "contratou": [
+      [
+        "Fundação Piauí Previdência",
+        "Carla Adriana da Silva Peres"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:00:42.588755+00:00"
+}

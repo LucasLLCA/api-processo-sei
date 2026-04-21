@@ -1,0 +1,128 @@
+{
+  "documento_numero": "016122593",
+  "protocolo": "00227.000076_2025-47",
+  "source_file": "17961380.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Carlos Castelo Branco"
+      },
+      {
+        "text": "PAULO ROBERTO TEIXEIRA"
+      },
+      {
+        "text": "Danusa Brito Pereira Santiago"
+      },
+      {
+        "text": "Adriana Núbia da Costa Carvalho"
+      },
+      {
+        "text": "ANSELMO TOLENTINO SOARES JUNIOR/ PAULO ROBERTO"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "CS BRASIL"
+      },
+      {
+        "text": "Sistema Banco de Preços"
+      },
+      {
+        "text": "Fundação Piauí Previdência"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "PIAUIPREV-PI"
+      },
+      {
+        "text": "Administração Pública"
+      },
+      {
+        "text": "Fundação Piauí Previdência"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "Tribunal de Contas do Estado do P"
+      },
+      {
+        "text": "Tribunal de Contas do Estado do Piauí"
+      },
+      {
+        "text": "Assembleia Legislativa do Estado do Piauí"
+      },
+      {
+        "text": "SECRETARIA DE ADMINISTRAÇÃO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "COORDENADORIA ESTADUAL DE DESENVOLVIMENTO DOS TERRITÓRIOS"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretaria"
+      },
+      {
+        "text": "Gerente de Logística"
+      }
+    ],
+    "email": [
+      {
+        "text": "licitacao.frotas@csfrotas.com.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "ata"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "outros Órgãos",
+        "Contratações Similares"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "pesquisa",
+        "Relatório de Cotação"
+      ]
+    ],
+    "contratou": [
+      [
+        "PIAUIPREV",
+        "veículos"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:08:30.554008+00:00"
+}

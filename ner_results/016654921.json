@@ -1,0 +1,119 @@
+{
+  "documento_numero": "016654921",
+  "protocolo": "00153.000086_2025-93",
+  "source_file": "18551803.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "artista"
+      },
+      {
+        "text": "DAMASIO NETO"
+      },
+      {
+        "text": "JOAQUIM DE OLIVEIRA JUNIOR"
+      },
+      {
+        "text": "Wagner Jardel Pontes Gomes"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "CRYSTAL MUSIC PRODUÇÕES ARTISTICAS LTDA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "Secretaria de Fazenda"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "Secretaria de Planejamento"
+      },
+      {
+        "text": "DIRETORIA ADMINISTRATIVA E FINANCEIRA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "secretaria"
+      },
+      {
+        "text": "presidente"
+      },
+      {
+        "text": "Diretor Administrativo e Financeiro"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "contratou": [
+      [
+        "CRYSTAL MUSIC PRODUÇÕES ARTISTICAS LTDA",
+        "DAMASIO NETO"
+      ]
+    ],
+    "designou": [
+      [
+        "entidade fazendária",
+        "processo de licitação"
+      ]
+    ],
+    "autorizou": [
+      [
+        "Presidente do Poder Legislativo",
+        "liberação das emendas parlamentares"
+      ],
+      [
+        "presidente do Poder Legislativo",
+        "emendas parlamentares"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "Ofício do Presidente do Poder Legislativo",
+        "secretaria"
+      ],
+      [
+        "ofícios",
+        "secretaria"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:05:17.575080+00:00"
+}

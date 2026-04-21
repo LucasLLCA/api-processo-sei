@@ -1,0 +1,62 @@
+{
+  "documento_numero": "017835425",
+  "protocolo": "00226.000016_2025-34",
+  "source_file": "19844054.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Samuel Pontes Nascimento"
+      },
+      {
+        "text": "Francisco Washington Bandeira Santos"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "Secretário de Estado"
+      }
+    ],
+    "assunto": [
+      {
+        "text": "Cessão de servidor"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.seduc.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T08:31:44.413235+00:00"
+}

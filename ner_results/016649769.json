@@ -1,0 +1,57 @@
+{
+  "documento_numero": "016649769",
+  "protocolo": "00226.000017_2025-89",
+  "source_file": "18546162.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "IAEPI-PI"
+      },
+      {
+        "text": "ISBPI-PI"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretor"
+      }
+    ],
+    "email": [
+      {
+        "text": "lccs.luis@gmail.com"
+      },
+      {
+        "text": "gabinete@iaepi.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T08:35:29.936136+00:00"
+}

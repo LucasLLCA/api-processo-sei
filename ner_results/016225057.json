@@ -1,0 +1,60 @@
+{
+  "documento_numero": "016225057",
+  "protocolo": "00226.000028_2025-69",
+  "source_file": "18076027.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "SAMUEL PONTES DO NASCIMENTO"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "GABINETE DO DIRETOR GERAL"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "INSTITUTO DE SANEAMENTO BÁSICO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretor Geral"
+      },
+      {
+        "text": "Secretário de Administração do Estado do Piauí"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T08:42:28.082740+00:00"
+}

@@ -1,0 +1,90 @@
+{
+  "documento_numero": "016203678",
+  "protocolo": "00227.000196_2025-44",
+  "source_file": "18052180.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Luiz Felipe Silva Nepomuceno"
+      },
+      {
+        "text": "Lucas Fernandes Coelho de Miranda"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "FUNDAÇÃO PIAUÍ PREVIDÊNCIA"
+      },
+      {
+        "text": "Fundação Universidade Estadual do Piauí"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD"
+      },
+      {
+        "text": "FUESPI"
+      },
+      {
+        "text": "GABINETE GERAL DA PRESIDÊNCIA"
+      },
+      {
+        "text": "GERÊNCIA DE GESTÃO DE PESSOAS"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Presidente"
+      },
+      {
+        "text": "Coordenador"
+      },
+      {
+        "text": "Estagiários"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "termo_referencia"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "Vossa Excelência",
+        "renovação dos contratos de estágios"
+      ]
+    ],
+    "solicitou": [
+      [
+        "Coordenador",
+        "renovação de seus contratos"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:50:58.554311+00:00"
+}

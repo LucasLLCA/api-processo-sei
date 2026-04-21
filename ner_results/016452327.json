@@ -1,0 +1,64 @@
+{
+  "documento_numero": "016452327",
+  "protocolo": "00153.000086_2025-93",
+  "source_file": "18329029.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa_juridica": [
+      {
+        "text": "CRYSTAL MUSIC PRODUCOES ARTISTICAS LTDA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "Diretoria de Promoção e Eventos"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Senhor Diretor"
+      },
+      {
+        "text": "representante legal"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "contratou": [
+      [
+        "CRYSTAL MUSIC PRODUCOES ARTISTICAS LTDA",
+        "contratação artística musical"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:03:51.978390+00:00"
+}

@@ -1,0 +1,58 @@
+{
+  "documento_numero": "016252487",
+  "protocolo": "00095.000544_2025-26",
+  "source_file": "18107061.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "SEJUS"
+      },
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "SEJUS-PI"
+      },
+      {
+        "text": "ASSESSORIA TÉCNICA DO GABINETE"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretor"
+      },
+      {
+        "text": "SECRETARIA"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T06:15:50.093473+00:00"
+}

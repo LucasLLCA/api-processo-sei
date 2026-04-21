@@ -1,0 +1,57 @@
+{
+  "documento_numero": "016616756",
+  "protocolo": "00152.000065_2025-88",
+  "source_file": "18510077.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Gilson Pinto"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "DIPALIMP"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SDE"
+      },
+      {
+        "text": "SEAD"
+      },
+      {
+        "text": "SDE-PI"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T06:31:49.809332+00:00"
+}

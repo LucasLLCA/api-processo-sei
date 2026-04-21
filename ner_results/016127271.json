@@ -1,0 +1,49 @@
+{
+  "documento_numero": "016127271",
+  "protocolo": "00240.000044_2025-73",
+  "source_file": "17966696.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "SADA-PI"
+      }
+    ],
+    "email": [
+      {
+        "text": "andre.rocha@sada.pi.gov.br"
+      },
+      {
+        "text": "alexandre.carvalho@sada.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T10:08:54.813536+00:00"
+}

@@ -1,0 +1,59 @@
+{
+  "documento_numero": "016793538",
+  "protocolo": "00227.000076_2025-47",
+  "source_file": "18703199.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "ASSESSORIA LICITAÇÃO"
+      },
+      {
+        "text": "SECRETARIA DE ADMINISTRAÇÃO DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "email": [
+      {
+        "text": "rauenna.mesquita@sead.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "SECRETARIA DE ADMINISTRAÇÃO DO ESTADO DO PIAUÍ",
+        "Processo nº 00227.000076/2025-47"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:28:13.653566+00:00"
+}

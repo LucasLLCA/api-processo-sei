@@ -1,0 +1,75 @@
+{
+  "documento_numero": "016885996",
+  "protocolo": "00089.002616_2025-59",
+  "source_file": "18804661.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "MARIA ROSANGELA PEREIRA DE JESUS"
+      },
+      {
+        "text": "MARIA ROZANGELA PEREIRA DE JESUS"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "FUNDAÇÃO UNIVERSIDADE ESTADUAL DO PIAUÍ"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "CONAPLAN"
+      },
+      {
+        "text": "FUESPI-PI"
+      },
+      {
+        "text": "CONSELHO DE ADMINISTRAÇÃO E PLANEJAMENTO"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "auxiliar de gestão administrativa universitária"
+      },
+      {
+        "text": "assistente de gestão administrativa universitária"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "parecer_juridico"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "MARIA ROSANGELA PEREIRA DE JESUS",
+        "progressão de classe III - C"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:13:06.486916+00:00"
+}

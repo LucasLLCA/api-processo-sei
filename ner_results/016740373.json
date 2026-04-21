@@ -1,0 +1,192 @@
+{
+  "documento_numero": "016740373",
+  "protocolo": "00153.000073_2025-14",
+  "source_file": "18645070.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "proponente"
+      },
+      {
+        "text": "patrocinado"
+      },
+      {
+        "text": "patrocinador"
+      },
+      {
+        "text": "João Angeline da Silva"
+      },
+      {
+        "text": "Karolaine de Araújo Freitas"
+      },
+      {
+        "text": "Alexsander Bruno Sampaio Borges"
+      },
+      {
+        "text": "Elisson Rondinele Rodrigues Borges"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "CAJU PRODUÇÕES E EVENTOS LTDA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "CCOM"
+      },
+      {
+        "text": "Administração"
+      },
+      {
+        "text": "Diretoria de Licitação"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "Procuradoria Geral do Estado"
+      },
+      {
+        "text": "Coordenadoria de Comunicação Social – CCOM"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretor"
+      },
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "Membro da CPL-SETUR/PI"
+      },
+      {
+        "text": "Presidente da CPL-SETUR/PI"
+      }
+    ],
+    "assunto": [
+      {
+        "text": "SOLICITAÇÃO DE PATROCÍNIO PÚBLICO"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "contratou": [
+      [
+        "CAJU PRODUÇÕES E EVENTOS LTDA",
+        "Carnaval Euphoria 2025"
+      ],
+      [
+        "Diretoria de Licitação",
+        "/patroci"
+      ],
+      [
+        "Diretoria de Licitação",
+        "Caju Produções e Eventos LTDA"
+      ]
+    ],
+    "solicitou": [
+      [
+        "proponente",
+        "patrocínio"
+      ],
+      [
+        "Administração",
+        "serviços"
+      ],
+      [
+        "Lei das Licitações Públicas",
+        "patrocínio"
+      ],
+      [
+        "Diretoria de Licitação",
+        "patrocínio"
+      ]
+    ],
+    "assinou": [
+      [
+        "patrocinador",
+        "contrato de patrocínio"
+      ],
+      [
+        "patrocínio",
+        "contrato"
+      ],
+      [
+        "patrocinador",
+        "nome"
+      ],
+      [
+        "Procuradoria Geral do Estado",
+        "Parecer"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "Iniciativas",
+        "apoio governamental"
+      ],
+      [
+        "Resolução CGFR 003/2020",
+        "instrução do processo"
+      ]
+    ],
+    "nomeou": [
+      [
+        "patrocinador",
+        "projeto patrocinado"
+      ]
+    ],
+    "exonerou": [
+      [
+        "Coordenadoria de Comunicação Social – CCOM",
+        "inserção"
+      ]
+    ],
+    "autorizou": [
+      [
+        "autoridade competente",
+        "patrocínio"
+      ],
+      [
+        "Diretoria de Licitação",
+        "patrocínio"
+      ]
+    ],
+    "designou": [
+      [
+        "Lei nº 14.133/2021",
+        "hipótese"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:37:59.719628+00:00"
+}

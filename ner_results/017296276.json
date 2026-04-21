@@ -1,0 +1,57 @@
+{
+  "documento_numero": "017296276",
+  "protocolo": "00152.000065_2025-88",
+  "source_file": "19252926.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "SDE-PI"
+      },
+      {
+        "text": "COORDENAÇÃO DE CONVÊNIOS"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "Governo do Estado do Piauí",
+        "quadro orçamentário"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "quadro orçamentário",
+        "Nota de Reserva"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:36:40.787632+00:00"
+}

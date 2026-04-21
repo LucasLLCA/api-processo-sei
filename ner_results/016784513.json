@@ -1,0 +1,78 @@
+{
+  "documento_numero": "016784513",
+  "protocolo": "00089.002616_2025-59",
+  "source_file": "18693165.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Allen da Costa Araújo"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "FUNDAÇÃO UNIVERSIDADE ESTADUAL DO PIAUÍ"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "FUESPI-PI"
+      },
+      {
+        "text": "Conselhos Superiores"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Senhor(a)"
+      },
+      {
+        "text": "Presidente"
+      },
+      {
+        "text": "Conselheiro(a)"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "nomeou": [
+      [
+        "Presidente dos Conselhos Superiores",
+        "Allen da Costa Araújo"
+      ]
+    ],
+    "designou": [
+      [
+        "Presidente dos Conselhos Superiores",
+        "Allen da Costa Araújo"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:12:50.909168+00:00"
+}

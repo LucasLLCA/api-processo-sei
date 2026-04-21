@@ -1,0 +1,56 @@
+{
+  "documento_numero": "017178419",
+  "protocolo": "00089.002616_2025-59",
+  "source_file": "19124352.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Maria Dias de Almeida"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "Departamento de Gestão de Pessoal"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretora"
+      }
+    ],
+    "email": [
+      {
+        "text": "mariarozangela@uespi.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "portaria"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T06:13:59.722031+00:00"
+}

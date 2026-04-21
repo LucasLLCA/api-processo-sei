@@ -1,0 +1,75 @@
+{
+  "documento_numero": "017834122",
+  "protocolo": "00153.000061_2025-90",
+  "source_file": "19842652.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "DANIEL CARVALHO OLIVEIRA VALENTE"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "RAFFA ESTRUTURAS E EVENTOS LTDA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "Gabinete – SETUR – Teresina – PI"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "Secretário de Estado do Turismo"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.turismo.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "ata"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "SECRETARIA DE ESTADO DO TURISMO",
+        "TERMO DE AUTORIZAÇÃO"
+      ],
+      [
+        "Lei nº 14.133/2021",
+        "prestação de serviços"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:28:59.334320+00:00"
+}

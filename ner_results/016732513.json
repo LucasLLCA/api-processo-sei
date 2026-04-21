@@ -1,0 +1,90 @@
+{
+  "documento_numero": "016732513",
+  "protocolo": "00152.000049_2025-95",
+  "source_file": "18636426.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "BÁRBARA DANTAS DE SOUSA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "DIRETORIA DE GESTÃO DE PATRIMÔNIO"
+      },
+      {
+        "text": "G erência de Análises e Operações - GAO"
+      },
+      {
+        "text": "Superintendência de Patrimônio Imobiliário"
+      },
+      {
+        "text": "Secretaria do Desenvolvimento Econômico do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "Diretora de Gestão do Patrimônio Imobiliário"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.sead.pi.gov.br/"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "Superintendência de Patrimônio Imobiliário",
+        "DESPACHO"
+      ]
+    ],
+    "nomeou": [
+      [
+        "particular",
+        "imóvel"
+      ]
+    ],
+    "designou": [
+      [
+        "Superintendência de Patrimônio Imobiliário",
+        "DESPACHO"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:28:34.580332+00:00"
+}

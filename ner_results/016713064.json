@@ -1,0 +1,70 @@
+{
+  "documento_numero": "016713064",
+  "protocolo": "00240.000227_2025-99",
+  "source_file": "18615247.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "LUCIA MARIA GOMES MARQUES"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "SEAD_PLANILHA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "EXTENSONISTA RURAL II"
+      },
+      {
+        "text": "AGENTE DE EXTENSÃO RURAL"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "requerimento"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "LUCIA MARIA GOMES MARQUES",
+        "REQUERIMENTO"
+      ]
+    ],
+    "solicitou": [
+      [
+        "LUCIA MARIA GOMES MARQUES",
+        "solicitação de enquadramento"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T11:25:19.061311+00:00"
+}

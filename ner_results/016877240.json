@@ -1,0 +1,85 @@
+{
+  "documento_numero": "016877240",
+  "protocolo": "00240.000116_2025-82",
+  "source_file": "18795122.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "Teresina-PI"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "Secretaria de Assistência Técnica e Defesa Agropecuária"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "ata"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "GOVERNO DO ESTADO DO PIAUÍ",
+        "aquisição de cestas básicas"
+      ],
+      [
+        "governador",
+        "autorizo do governador"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "SECRETARIA DA ASSISTÊNCIA TÉCNICA E DEFESA AGROPECUÁRIA",
+        "melhoria das condições de vida"
+      ],
+      [
+        "recursos",
+        "aquisição das cestas básicas"
+      ]
+    ],
+    "nomeou": [
+      [
+        "Secretaria de Assistência Técnica e Defesa Agropecuária",
+        "SECRETARIA DA ASSISTÊNCIA TÉCNICA E DEFESA AGROPECUÁRIA"
+      ]
+    ],
+    "exonerou": [
+      [
+        "estiagem",
+        "sementes"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:54:00.726231+00:00"
+}

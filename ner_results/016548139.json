@@ -1,0 +1,66 @@
+{
+  "documento_numero": "016548139",
+  "protocolo": "00153.000081_2025-61",
+  "source_file": "18434649.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "José Antônio Monteiro Neto"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "Diretoria Administrativa e Financeira"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Senhor Diretor"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.turismo.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "caso",
+        "conhecimento e providências"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:59:15.209746+00:00"
+}

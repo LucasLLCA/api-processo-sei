@@ -1,0 +1,68 @@
+{
+  "documento_numero": "017755513",
+  "protocolo": "00226.000029_2025-11",
+  "source_file": "19756570.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Joaquim de Oliveira Júnior"
+      },
+      {
+        "text": "Dr. Magno Pires Alves Filho"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "Instituto de Saneamento Básico do Piauí"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "GABINETE DO DIRETOR GERAL"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "GABINETE DO SECRETÁRIO DE FAZENDA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "Diretor Geral"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T08:46:43.044375+00:00"
+}

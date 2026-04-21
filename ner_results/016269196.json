@@ -1,0 +1,67 @@
+{
+  "documento_numero": "016269196",
+  "protocolo": "00227.000271_2025-77",
+  "source_file": "18125695.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Emanuel Francisco Santos Oliveira"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "FUNDAÇÃO PIAUÍ PREVIDÊNCIA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "Policia Federal"
+      },
+      {
+        "text": "GABINETE GERAL DA PREVIDÊNCIA"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "Lei Federal nº 13.460/2017",
+        "resposta"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "resposta",
+        "Ouvidoria Setorial da PIAUIPREV"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:54:43.231674+00:00"
+}

@@ -1,0 +1,82 @@
+{
+  "documento_numero": "016369613",
+  "protocolo": "00115.000030_2025-95",
+  "source_file": "18236855.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "RAFAEL TAJRA"
+      },
+      {
+        "text": "FRANCISCO LUCAS COSTA VELOSO"
+      },
+      {
+        "text": "MARCELLA CASTELO BRANCO CARVALHO CAMPELO"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "TJ-PI"
+      },
+      {
+        "text": "SSP-PI"
+      },
+      {
+        "text": "Tribunal de Justiça do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Governador do Estado do Piuaí"
+      },
+      {
+        "text": "Secretário de Segurança Pública"
+      },
+      {
+        "text": "CHEFIA DE GABINETE DO SECRETÁRIO"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "RAFAEL TAJRA",
+        "Autorização para cessão de profissional"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "Diretoria de Controle",
+        "SSP-PI"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:18:22.741575+00:00"
+}

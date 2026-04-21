@@ -1,0 +1,69 @@
+{
+  "documento_numero": "017348151",
+  "protocolo": "00153.000001_2025-77",
+  "source_file": "19309856.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Wagner Jardel Pontes Gomes"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEFAZ-PI"
+      },
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "Despacho Governo do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretor Administrativo e Financeiro"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.turismo.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "Despacho",
+        "Unidade de Gestão e Programação do Gasto Público"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:45:11.179094+00:00"
+}

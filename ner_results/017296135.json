@@ -1,0 +1,78 @@
+{
+  "documento_numero": "017296135",
+  "protocolo": "00226.000016_2025-34",
+  "source_file": "19252771.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Gilson Dias de Macedo Filho"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SGI"
+      },
+      {
+        "text": "UGP"
+      },
+      {
+        "text": "SEAD-PI"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETÁRIO"
+      },
+      {
+        "text": "Secretaria"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.seduc.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "DECRETO",
+        "disposição do servidor Gilson Dias de Macedo Filho"
+      ]
+    ],
+    "solicitou": [
+      [
+        "Diretoria de Desenvolvimento de Pessoas",
+        "juntada da Ficha de Cessão"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:30:04.801340+00:00"
+}

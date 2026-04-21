@@ -1,0 +1,64 @@
+{
+  "documento_numero": "016505622",
+  "protocolo": "00153.000049_2025-85",
+  "source_file": "18388079.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "José Antônio Monteiro Neto"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário de Estado do Turismo"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "contratou": [
+      [
+        "órgãos e entidades",
+        "obras"
+      ]
+    ],
+    "exonerou": [
+      [
+        "SECRETARIA DE ESTADO DO TURISMO",
+        "matriz de riscos"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:08:20.208544+00:00"
+}

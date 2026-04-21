@@ -7,20 +7,12 @@ Usage:
 """
 
 import argparse
-import logging
 
-from neo4j import GraphDatabase
+from pipeline.cli import add_standard_args, resolve_settings
+from pipeline.logging_setup import configure_logging
+from pipeline.neo4j_driver import build_driver
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S",
-)
-log = logging.getLogger(__name__)
-
-NEO4J_URI = "bolt://localhost:7687"
-NEO4J_USER = "neo4j"
-NEO4J_PASSWORD = "password123"
+log = configure_logging(__name__)
 
 
 def clean(driver):
@@ -89,11 +81,14 @@ def clean(driver):
 def main():
     parser = argparse.ArgumentParser(description="Clean Neo4j database")
     parser.add_argument("--force", action="store_true", help="Skip confirmation")
+    add_standard_args(parser)
     args = parser.parse_args()
 
-    driver = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_USER, NEO4J_PASSWORD))
-    driver.verify_connectivity()
-    log.info("Connected to Neo4j: %s", NEO4J_URI)
+    settings = resolve_settings(args)
+    configure_logging(__name__, settings.log_level)
+
+    driver = build_driver(settings)
+    log.info("Connected to Neo4j: %s", settings.neo4j_uri)
 
     if not args.force:
         answer = input("This will DELETE ALL DATA in Neo4j. Continue? [y/N] ")

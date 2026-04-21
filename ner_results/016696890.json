@@ -1,0 +1,66 @@
+{
+  "documento_numero": "016696890",
+  "protocolo": "00240.000116_2025-82",
+  "source_file": "18597517.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "FRANCISCO GOMES PIEROT"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "Procuradoria-Geral do Estado"
+      },
+      {
+        "text": "PROCURADORIA GERAL DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "PROCURADOR-GERAL DO ESTADO"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.pge.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "Procuradoria-Geral do Estado",
+        "diligência"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:51:14.927684+00:00"
+}

@@ -1,0 +1,53 @@
+{
+  "documento_numero": "017347541",
+  "protocolo": "00153.000001_2025-77",
+  "source_file": "19309204.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      }
+    ],
+    "url": [
+      {
+        "text": "https://portal.sefaz.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "SEFAZ-PI/GASEC/SUTESP/UNIGGP",
+        "SECRETARIA DE TURISMO"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:44:51.475016+00:00"
+}

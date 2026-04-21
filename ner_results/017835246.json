@@ -1,0 +1,150 @@
+{
+  "documento_numero": "017835246",
+  "protocolo": "00153.000020_2025-01",
+  "source_file": "19843853.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "patrocinado"
+      },
+      {
+        "text": "patrocinador"
+      },
+      {
+        "text": "João Angeline da Silva"
+      },
+      {
+        "text": "Erika Samara Lima Araújo"
+      },
+      {
+        "text": "Bruna Cristina Vieira de Souza"
+      },
+      {
+        "text": "Alexsander Bruno Sampaio Borges"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "TOTAL COMÉRCIO E SERVICOS LTDA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "CCOM"
+      },
+      {
+        "text": "administração pública"
+      },
+      {
+        "text": "Diretoria de Licitação"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "Procuradoria Geral do Estado"
+      },
+      {
+        "text": "Coordenadoria de Comunicação Social – CCOM"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "administrador"
+      },
+      {
+        "text": "Agente de Contratação"
+      },
+      {
+        "text": "Júnior Gerente de licitações"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "parecer_juridico"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "TOTAL COMÉRCIO E SERVICOS LTDA",
+        "PATROCÍNIO"
+      ],
+      [
+        "proponente",
+        "patrocínio"
+      ],
+      [
+        "administração pública",
+        "apoio governamental"
+      ],
+      [
+        "órgão responsável",
+        "patrocínio"
+      ],
+      [
+        "Administração",
+        "serviços"
+      ],
+      [
+        "Lei das Licitações Públicas",
+        "patrocínio"
+      ]
+    ],
+    "contratou": [
+      [
+        "patrocinador",
+        "patrocínio"
+      ],
+      [
+        "Diretoria de Licitação",
+        "TOTAL COMÉRCIO E SERVICOS LTDA"
+      ]
+    ],
+    "assinou": [
+      [
+        "patrocinador",
+        "nome"
+      ]
+    ],
+    "exonerou": [
+      [
+        "Coordenadoria de Comunicação Social – CCOM",
+        "inserção"
+      ]
+    ],
+    "nomeou": [
+      [
+        "patrocinador",
+        "nome"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:58:17.791818+00:00"
+}

@@ -1,0 +1,119 @@
+{
+  "documento_numero": "017112261",
+  "protocolo": "00153.000014_2025-46",
+  "source_file": "19052245.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "SAMUEL PONTES DO NASCI"
+      },
+      {
+        "text": "SAMUEL PONTES DO NASCIMENTO"
+      },
+      {
+        "text": "Jacylenne Coêlho Bezerra Fortes"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "DISTRIBUIÇÃO E SERVIÇOS EM GERAL DO NORDESTE LTDA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEGOV"
+      },
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "ASSESSORIA LICITAÇÃO"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "Secretaria de Estado do Turismo"
+      },
+      {
+        "text": "Administração do Estado do Piauí"
+      },
+      {
+        "text": "Secretaria de Administração do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretaria"
+      },
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "Superintendente de Licitações e Contratos Administrativos"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "contrato"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "SECRETARIA DE ESTADO DO TURISMO",
+        "autorização"
+      ],
+      [
+        "órgão solicitante",
+        "autorização do Secretário"
+      ]
+    ],
+    "autorizou": [
+      [
+        "Secretaria de Administração",
+        "autorização do Secretário"
+      ],
+      [
+        "Secretário de Administração do Estado do Piauí",
+        "Secretaria de Estado do Turismo - SETUR-PI"
+      ]
+    ],
+    "contratou": [
+      [
+        "SETUR-PI",
+        "Contrato"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:55:21.781284+00:00"
+}

@@ -1,0 +1,76 @@
+{
+  "documento_numero": "017452026",
+  "protocolo": "00226.000029_2025-11",
+  "source_file": "19423908.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa_juridica": [
+      {
+        "text": "ANTARES"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "ARP"
+      },
+      {
+        "text": "GABINETE DO DIRETOR GERAL"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "Diretoria Administrativa e Financeira"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "DIRETOR"
+      },
+      {
+        "text": "Presidente"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "DESPACHO",
+        "Diretoria Administrativa e Financeira"
+      ]
+    ],
+    "contratou": [
+      [
+        "Diretoria Administrativa e Financeira",
+        "empresa especializada"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:45:22.590569+00:00"
+}

@@ -1,0 +1,82 @@
+{
+  "documento_numero": "017190037",
+  "protocolo": "00153.000061_2025-90",
+  "source_file": "19137089.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "WAGNER JARDEL PONTES GOMES"
+      },
+      {
+        "text": "Emílio Joaquim de Oliveira Junior"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "COORDENAÇÃO ADMINISTRATIVA"
+      },
+      {
+        "text": "Diretoria Administrativa e Financeira"
+      },
+      {
+        "text": "Comissão de Gestão Financeira e Gestão por Resultados"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "SC de ID - 016341643",
+        "os mil reais"
+      ]
+    ],
+    "contratou": [
+      [
+        "COMISSÃO DE GESTÃO FINANCEIRA E GESTÃO POR RESULTADOS",
+        "II FESTIVAL DO CARANGUEJO DE TERESINA"
+      ]
+    ],
+    "assinou": [
+      [
+        "WAGNER JARDEL PONTES GOMES",
+        "Assinatura Eletrônica"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:23:02.453280+00:00"
+}

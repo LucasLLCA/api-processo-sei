@@ -1,0 +1,59 @@
+{
+  "documento_numero": "017954417",
+  "protocolo": "00153.000081_2025-61",
+  "source_file": "19974972.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "SEAD"
+      },
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "diretoria de licitações e contratos Prezados"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.turismo.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "Despacho",
+        "diretoria de licitações e contratos Prezados"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:03:06.886024+00:00"
+}

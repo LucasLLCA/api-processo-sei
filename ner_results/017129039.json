@@ -1,0 +1,86 @@
+{
+  "documento_numero": "017129039",
+  "protocolo": "00152.000065_2025-88",
+  "source_file": "19070496.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Gilson Pinto"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "DIPALIMP"
+      },
+      {
+        "text": "Conselho Nacional"
+      },
+      {
+        "text": "DISTRIBUIDORA DE PRODUTOS ALIMENTICIOS E LIMPEZA LTDA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SDE-PI"
+      },
+      {
+        "text": "SDE/PI"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Gerente de Logística e Suprimento"
+      }
+    ],
+    "email": [
+      {
+        "text": "gilson.pinto@sde.pi.gov.br"
+      },
+      {
+        "text": "dipalimpdistribuidora@gmail.com"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "licitacao"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "Senhor(a) Representante",
+        "Habilitação Completa de Fornecedor"
+      ]
+    ],
+    "autorizou": [
+      [
+        "União",
+        "contratada"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:35:32.979456+00:00"
+}

@@ -1,0 +1,95 @@
+{
+  "documento_numero": "016265018",
+  "protocolo": "00153.000056_2025-87",
+  "source_file": "18120997.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "MARIA DA SILVA"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "DISTRIBUIÇÃO E SERVIÇOS EM GERAL DO NORDESTE LTDA"
+      },
+      {
+        "text": "EVOLUÇÃO DISTRIBUIDORA DE PRODUTOS PARA SAÚDE LTDA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "Anvisa"
+      },
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "SETUR/PI"
+      },
+      {
+        "text": "Administração Pública"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "email": [
+      {
+        "text": "ribuidora@hotmail.com"
+      },
+      {
+        "text": "martyelle.pi@gmail.com"
+      },
+      {
+        "text": "evolucaopidistribuidora@gmail.com"
+      },
+      {
+        "text": "dipallimpdistribuidora@hotmail.com"
+      }
+    ],
+    "cnpj": [
+      {
+        "text": "CNPJ 17.897.450/0001-21"
+      },
+      {
+        "text": "CNPJ 42.336.259/0001-58"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "ata"
+  },
+  "relations": {
+    "exonerou": [
+      [
+        "cidade de absorção",
+        "furos"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:18:15.813014+00:00"
+}

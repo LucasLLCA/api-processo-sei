@@ -1,0 +1,69 @@
+{
+  "documento_numero": "016191690",
+  "protocolo": "00227.000076_2025-47",
+  "source_file": "18038801.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Sousa Martins Júnior"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "CS BRASIL FROTAS S.A"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "FUNDAÇÃO PIAUÍ PREVIDÊNCIA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Gerente de Patrimônio"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "ata"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "GOVERNO DO ESTADO DO PIAUÍ",
+        "QUADRO RESUMO DE PEDIDOS"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:12:51.035284+00:00"
+}

@@ -1,0 +1,49 @@
+{
+  "documento_numero": "016367677",
+  "protocolo": "00152.000049_2025-95",
+  "source_file": "18234739.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "SDE-PI"
+      },
+      {
+        "text": "SDE/PI"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretária"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T06:25:31.081579+00:00"
+}

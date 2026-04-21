@@ -1,0 +1,62 @@
+{
+  "documento_numero": "016604278",
+  "protocolo": "00153.000001_2025-77",
+  "source_file": "18496330.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "WAGNER JARDEL PONTES GOMES"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "CGE-PI"
+      },
+      {
+        "text": "SETUR-PI"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Senhor Diretor"
+      },
+      {
+        "text": "Diretor Administrativo e Financeiro SETUR-PI"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.turismo.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T06:41:40.779079+00:00"
+}

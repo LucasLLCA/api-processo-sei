@@ -1,0 +1,67 @@
+{
+  "documento_numero": "016379899",
+  "protocolo": "00153.000089_2025-27",
+  "source_file": "18248405.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "SETUR-PI"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "Governador do Estado do Piauí"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.turismo.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "ata"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "Diário Oficial do Estado (DOE)",
+        "decreto"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:08:06.450169+00:00"
+}

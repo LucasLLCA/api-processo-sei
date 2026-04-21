@@ -1,0 +1,72 @@
+{
+  "documento_numero": "018070852",
+  "protocolo": "00226.000017_2025-89",
+  "source_file": "20102362.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Paula Cristiana da Silva Cardoso"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "INSTITUTO DE SANEAMENTO BÁSICO DO PIAUÍ"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "ISBPI-PI"
+      },
+      {
+        "text": "SEGOV -PI"
+      },
+      {
+        "text": "Gabinete do Diretor Geral"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretor"
+      },
+      {
+        "text": "Presidente"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "autos do processo",
+        "Gabinete do Diretor Geral"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:38:49.633697+00:00"
+}

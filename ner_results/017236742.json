@@ -1,0 +1,64 @@
+{
+  "documento_numero": "017236742",
+  "protocolo": "00153.000049_2025-85",
+  "source_file": "19187834.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Wagner Jardel Pontes Gomes"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "Despacho Governo do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretor Administrativo e Financeiro"
+      }
+    ],
+    "numero_processo": [
+      {
+        "text": "00153.000049/2025-85"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.turismo.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T07:13:41.755027+00:00"
+}

@@ -1,0 +1,65 @@
+{
+  "documento_numero": "016285411",
+  "protocolo": "00240.000186_2025-31",
+  "source_file": "18143754.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "SADA-PI"
+      },
+      {
+        "text": "COORDENAÇÃO DE ELABORAÇÃO DE PROJETOS"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "Senhor diretor"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "Memorando",
+        "Diretoria de Operações"
+      ]
+    ],
+    "solicitou": [
+      [
+        "extensionistas",
+        "folha de produtividade técnica"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T11:23:43.758307+00:00"
+}

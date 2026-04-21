@@ -1,0 +1,55 @@
+{
+  "documento_numero": "016687576",
+  "protocolo": "00227.000095_2025-73",
+  "source_file": "18587515.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "Assessoria Técnica"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETÁRIO DE ESTADO"
+      },
+      {
+        "text": "CHEFE DO GABINETE DO GOVERNADOR"
+      },
+      {
+        "text": "Chefia do Gabinete do Governador"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T09:43:20.007352+00:00"
+}

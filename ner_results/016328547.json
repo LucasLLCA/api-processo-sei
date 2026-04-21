@@ -1,0 +1,125 @@
+{
+  "documento_numero": "016328547",
+  "protocolo": "00201.000088_2025-60",
+  "source_file": "18191683.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Ravane da Silva"
+      },
+      {
+        "text": "Ana Kelly Rocha"
+      },
+      {
+        "text": "Dayse Machado Silva"
+      },
+      {
+        "text": "Nilce Araújo e Sousa"
+      },
+      {
+        "text": "Claudete Vieira Dias"
+      },
+      {
+        "text": "Dara da Silva Santos"
+      },
+      {
+        "text": "Rosana Orsano dos Santos"
+      },
+      {
+        "text": "Gualter Lima de Oliveira"
+      },
+      {
+        "text": "Ferdinan Pereira da Silva"
+      },
+      {
+        "text": "SAMUEL PONTES DO NASCIMENTO"
+      },
+      {
+        "text": "Laura Ribeiro Andrade Lessa"
+      },
+      {
+        "text": "Leany Barros morais Machado"
+      },
+      {
+        "text": "Janaina Karla Santos e Silva"
+      },
+      {
+        "text": "Josélia Maria Brito Conceição"
+      },
+      {
+        "text": "Jorane de Araújo Martins Pereira"
+      },
+      {
+        "text": "Rogeslane Aristides Vitorino de Assunção"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEMPI-PI"
+      },
+      {
+        "text": "Secretaria de Mulheres"
+      },
+      {
+        "text": "NÚCLEO DE CONTROLE INTERNO"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Psicóloga"
+      },
+      {
+        "text": "SSP/ DEAM"
+      },
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "Assistente Social"
+      },
+      {
+        "text": "SSP/Central de Gênero"
+      },
+      {
+        "text": "Secretário de Administração"
+      }
+    ],
+    "data": [
+      {
+        "text": "31/03/2022"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T08:17:24.343206+00:00"
+}

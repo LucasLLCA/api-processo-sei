@@ -1,0 +1,85 @@
+{
+  "documento_numero": "016122032",
+  "protocolo": "00227.000076_2025-47",
+  "source_file": "17960778.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa_juridica": [
+      {
+        "text": "Fundação Piauí Previdência"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "PIAUIPREV-PI"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Junior Gerente"
+      }
+    ],
+    "email": [
+      {
+        "text": "felipepa@csfrotas.com.br"
+      },
+      {
+        "text": "licitacao.frotas@csfrotas.com.br"
+      },
+      {
+        "text": "contratos.csb@csbrasiservicos.com.br"
+      }
+    ],
+    "assunto": [
+      {
+        "text": "manifestação de interesse"
+      }
+    ],
+    "objeto_licitacao": [
+      {
+        "text": "manifestação de interesse"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "Fundação Piauí Previdência",
+        "Manifestação de interesse"
+      ]
+    ],
+    "contratou": [
+      [
+        "Fundação Piauí Previdência",
+        "02 veículos tipo Sedan"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:07:03.498132+00:00"
+}

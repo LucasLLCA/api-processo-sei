@@ -1,0 +1,93 @@
+{
+  "documento_numero": "017853297",
+  "protocolo": "00153.000061_2025-90",
+  "source_file": "19863702.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "ERICK DIEGO FURTADO ROCHA"
+      },
+      {
+        "text": "JOAQUIM DE OLIVEIRA JUNIOR"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "RAFFA PRODUCOES E ESTRUTURAS LTDA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "Controladoria-Geral do Estado"
+      },
+      {
+        "text": "Diretoria Administrativa e Financeira"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "secretaria"
+      },
+      {
+        "text": "presidente"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "designou": [
+      [
+        "entidade fazendária",
+        "processo de licitação"
+      ]
+    ],
+    "autorizou": [
+      [
+        "Presidente do Poder Legislativo",
+        "emendas parlamentares"
+      ]
+    ],
+    "assinou": [
+      [
+        "ERICK DIEGO FURTADO ROCHA",
+        "Assinatura Eletrônica"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:29:30.637380+00:00"
+}

@@ -1,0 +1,101 @@
+{
+  "documento_numero": "016759060",
+  "protocolo": "00153.000075_2025-11",
+  "source_file": "18665415.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Marina Coelho Sousa"
+      },
+      {
+        "text": "CLARICE DE SENA MONTEIRO QUEIROZ"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "Núcleo de Controle Interno"
+      },
+      {
+        "text": "CONTROLADORIA-GERAL DO ESTADO"
+      },
+      {
+        "text": "Superintendência de Controladoria Geral do Estado"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Coordenador Memb."
+      }
+    ],
+    "data": [
+      {
+        "text": "18/02/2025"
+      },
+      {
+        "text": "19/02/2025"
+      }
+    ],
+    "contrato_edital": [
+      {
+        "text": "Contrato nº 23/2025"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "parecer_juridico"
+  },
+  "relations": {
+    "nomeou": [
+      [
+        "portaria específica",
+        "fiscal do contrato"
+      ]
+    ],
+    "designou": [
+      [
+        "portaria específica",
+        "fiscal do contrato"
+      ]
+    ],
+    "assinou": [
+      [
+        "gestor",
+        "Nota de Empenho"
+      ]
+    ],
+    "contratou": [
+      [
+        "Contrato",
+        "Contrato nº 23/2025"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:52:42.877247+00:00"
+}

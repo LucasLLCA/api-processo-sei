@@ -1,0 +1,358 @@
+{
+  "documento_numero": "016186806",
+  "protocolo": "00227.000076_2025-47",
+  "source_file": "18033334.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Carlos Castelo Branco"
+      },
+      {
+        "text": "PAULO ROBERTO TEIXEIRA"
+      },
+      {
+        "text": "Carla Adriana da Silva Peres"
+      },
+      {
+        "text": "Aíldo de Sousa Martins Júnior"
+      },
+      {
+        "text": "Marcos Steiner Rodrigues Mesquita"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "PIAUIPREV"
+      },
+      {
+        "text": "Contratada"
+      },
+      {
+        "text": "contratante"
+      },
+      {
+        "text": "empresa matriz"
+      },
+      {
+        "text": "empresa contratada"
+      },
+      {
+        "text": "CS BRASIL FROTAS S.A"
+      },
+      {
+        "text": "Fundação Piauí Previdência"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "TST"
+      },
+      {
+        "text": "RPPS"
+      },
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "PIAUIPREV"
+      },
+      {
+        "text": "CIASPI/SEAD"
+      },
+      {
+        "text": "órgão público"
+      },
+      {
+        "text": "fiscal do contrato"
+      },
+      {
+        "text": "entidades estaduais"
+      },
+      {
+        "text": "Administração Pública"
+      },
+      {
+        "text": "GERÊNCIA DE PATRIMÔNIO"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "Fundação Piauí Previdência"
+      },
+      {
+        "text": "Conselho Regional de Contabilidade"
+      },
+      {
+        "text": "Casa Civil da Presidência da República"
+      },
+      {
+        "text": "Procuradoria-Geral da Fazenda Nacional"
+      },
+      {
+        "text": "Secretaria da Receita Federal do Brasil"
+      },
+      {
+        "text": "Secretaria da Fazenda do Estado do Piauí"
+      },
+      {
+        "text": "Procuradoria Geral do Estado do Piauí – PGE"
+      },
+      {
+        "text": "Procuradoria Geral do Estado do Piauí - PGE"
+      },
+      {
+        "text": "SECRETARIA DE ADMINISTRAÇÃO DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "contador"
+      },
+      {
+        "text": "servidor"
+      },
+      {
+        "text": "comissão"
+      },
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "Presidente"
+      },
+      {
+        "text": "Gerente de Patrimônio"
+      },
+      {
+        "text": "Diretora Administrativa e Financeira – PIAUIPREV"
+      }
+    ],
+    "objeto_licitacao": [
+      {
+        "text": "serviços"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "termo_referencia"
+  },
+  "relations": {
+    "contratou": [
+      [
+        "CS BRASIL",
+        "empresa especializada"
+      ],
+      [
+        "parte Contratante",
+        "contrato"
+      ],
+      [
+        "Administração",
+        "contrato"
+      ],
+      [
+        "contratada",
+        "equipamentos de segurança"
+      ],
+      [
+        "CONTRATANTE",
+        "objeto a ser contratado"
+      ]
+    ],
+    "assinou": [
+      [
+        "PIAUIPREV",
+        "Termo de Cooperação Técnica"
+      ],
+      [
+        "Fundação Piauí Previdência",
+        "contratos de locação de veículos"
+      ],
+      [
+        "contador",
+        "demonstrações contábeis"
+      ],
+      [
+        "fornecedor registrado",
+        "CONTRATO"
+      ],
+      [
+        "fornecedor registrado",
+        "contrato"
+      ],
+      [
+        "partes",
+        "termo circunstanciado"
+      ],
+      [
+        "órgãos",
+        "contratos"
+      ],
+      [
+        "CONTRATADA",
+        "Nota Fiscal"
+      ],
+      [
+        "Marcos Steiner Rodrigues Mesquita",
+        "Assinatura eletrônica"
+      ]
+    ],
+    "solicitou": [
+      [
+        "CIASPI/SEAD",
+        "materiais de apoio"
+      ],
+      [
+        "órgãos",
+        "transporte de servidores"
+      ],
+      [
+        "Contratada",
+        "índices contábeis"
+      ],
+      [
+        "Administração",
+        "realização do serviço"
+      ],
+      [
+        "Contratada",
+        "IPVA"
+      ],
+      [
+        "empresa de locação",
+        "comprovação de registro"
+      ],
+      [
+        "CONTRATADA",
+        "Nota Fiscal"
+      ],
+      [
+        "Contratada",
+        "documentos"
+      ],
+      [
+        "REAJUSTE",
+        "Contratada"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "servidores",
+        "eventos profissionais"
+      ],
+      [
+        "demonstrações contábeis",
+        "Conselho Regional de Contabilidade"
+      ],
+      [
+        "fornecedor registrado",
+        "contrato"
+      ],
+      [
+        "Contratada",
+        "Administração Pública"
+      ],
+      [
+        "contratada",
+        "Administração Pública"
+      ],
+      [
+        "Nota Fiscal",
+        "Fiscal deste Contrato"
+      ]
+    ],
+    "nomeou": [
+      [
+        "empresa matriz",
+        "atestados"
+      ],
+      [
+        "CONTRATANTE",
+        "representante"
+      ],
+      [
+        "Secretaria da Fazenda",
+        "vencimento de pagamento"
+      ]
+    ],
+    "designou": [
+      [
+        "empresa matriz",
+        "atestados"
+      ],
+      [
+        "autoridade competente",
+        "servidor ou comissão"
+      ],
+      [
+        "CONTRATANTE",
+        "representante"
+      ],
+      [
+        "Secretaria da Fazenda",
+        "vencimento de pagamento"
+      ]
+    ],
+    "autorizou": [
+      [
+        "Administração",
+        "contratação"
+      ],
+      [
+        "autoridade competente",
+        "autorização formal"
+      ],
+      [
+        "Norma Regulamentadora nº 6 do MTE",
+        "SUBCONTRATAÇÃO"
+      ],
+      [
+        "fiscal do contrato",
+        "contrato"
+      ],
+      [
+        "Fiscal",
+        "Nota Fiscal"
+      ],
+      [
+        "Marcos Steiner Rodrigues Mesquita",
+        "Gestor"
+      ]
+    ],
+    "exonerou": [
+      [
+        "recebimento provisório",
+        "responsabilidade civil"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:12:42.315349+00:00"
+}

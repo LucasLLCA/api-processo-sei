@@ -1,0 +1,90 @@
+{
+  "documento_numero": "016431078",
+  "protocolo": "00226.000016_2025-34",
+  "source_file": "18305417.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Gilson Dias de Macedo Filho"
+      },
+      {
+        "text": "Francisco Washington Bandeira Santos"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEDUC-PI"
+      },
+      {
+        "text": "ISBPI-PI"
+      },
+      {
+        "text": "Educação do Piauí"
+      },
+      {
+        "text": "Conselho Estadual de Gestão de Pessoas"
+      },
+      {
+        "text": "Secretaria de Governo do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretaria"
+      },
+      {
+        "text": "Secretário de Estado"
+      },
+      {
+        "text": "Governador do Estado"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.seduc.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "Governador do Estado",
+        "ÔNUS REMUNERATÓRIO"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "solicitação em pauta",
+        "Secretaria de Governo do Estado do Piauí"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:28:58.773790+00:00"
+}

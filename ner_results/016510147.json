@@ -1,0 +1,207 @@
+{
+  "documento_numero": "016510147",
+  "protocolo": "00153.000049_2025-85",
+  "source_file": "18393065.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "José Antônio Monteiro Neto"
+      },
+      {
+        "text": "Jorge Ulysses Jacoby Fernandes"
+      },
+      {
+        "text": "LUIZ INÁCIO LULA DA SILVA Esther Dweck"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "Editora Brasília Jurídica"
+      },
+      {
+        "text": "BRASIL EFICIENTE URBANISMO LTDA"
+      },
+      {
+        "text": "empresa BRASIL EFICIENTE URBANISMO LTDA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "TCU"
+      },
+      {
+        "text": "PGE/PI"
+      },
+      {
+        "text": "SETUR/PI"
+      },
+      {
+        "text": "Administração Pública"
+      },
+      {
+        "text": "Tribunal de Contas as União"
+      },
+      {
+        "text": "Procuradoria Geral do Estado do Piauí"
+      },
+      {
+        "text": "Secretaria de Estado do Turismo - SETUR"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "procurador"
+      },
+      {
+        "text": "Secretaria"
+      },
+      {
+        "text": "agente público"
+      },
+      {
+        "text": "PRESIDENTE DA REPÚBLICA"
+      },
+      {
+        "text": "Secretário de Estado do Turismo"
+      }
+    ],
+    "lei": [
+      {
+        "text": "Lei n° 14.133/2021"
+      }
+    ],
+    "decreto": [
+      {
+        "text": "DECRETO Nº 12.343"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "licitacao"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "ESTADO DO PIAUÍ",
+        "contratação de empresa especializada"
+      ],
+      [
+        "Hidráulica",
+        "volumes de reserva"
+      ],
+      [
+        "Administração Pública",
+        "proposta mais vantajosa"
+      ],
+      [
+        "rocurar",
+        "proposta mais vantajosa"
+      ],
+      [
+        "SETUR/PI",
+        "apoio logístico"
+      ],
+      [
+        "Administração",
+        "materiais"
+      ],
+      [
+        "Administração Pública",
+        "contratação"
+      ],
+      [
+        "Secretaria de Estado do Turismo - SETUR",
+        "contratação"
+      ]
+    ],
+    "contratou": [
+      [
+        "ESTADO DO PIAUÍ",
+        "contratação de empresa especializada"
+      ],
+      [
+        "Administração",
+        "particular"
+      ],
+      [
+        "Administração Pública",
+        "licitações"
+      ],
+      [
+        "contratações",
+        "serviços"
+      ],
+      [
+        "Administração",
+        "empresa BRASIL EFICIENTE URBANISMO LTDA"
+      ]
+    ],
+    "nomeou": [
+      [
+        "termo de referência",
+        "materiais"
+      ],
+      [
+        "Jorge Ulysses Jacoby Fernandes",
+        "Contratação Direta sem Licitação"
+      ]
+    ],
+    "autorizou": [
+      [
+        "Lei Federal nº 14.133/2021",
+        "Dispensa de Licitação"
+      ],
+      [
+        "art. 75",
+        "dispensa de licitação"
+      ],
+      [
+        "Administração Pública",
+        "Dispensa de Licitação"
+      ]
+    ],
+    "assinou": [
+      [
+        "Administração",
+        "Dispensa de Licitação"
+      ]
+    ],
+    "designou": [
+      [
+        "Jorge Ulysses Jacoby Fernandes",
+        "Contratação Direta sem Licitação"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "MINUTA",
+        "Dispensa de Licitação"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:12:09.004425+00:00"
+}

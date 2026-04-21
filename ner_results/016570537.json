@@ -1,0 +1,79 @@
+{
+  "documento_numero": "016570537",
+  "protocolo": "00226.000029_2025-11",
+  "source_file": "18459275.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Dr. Magno Pires Alves Filho"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "ANTARES COMERCIO ATACADISTA LTDA"
+      },
+      {
+        "text": "Instituto de Saneamento Básico do Piauí"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "TCE-PI"
+      },
+      {
+        "text": "GABINETE DO DIRETOR GERAL"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "Conselho Nacional de Justiça"
+      },
+      {
+        "text": "INSTITUTO DE SANEAMENTO BÁSICO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Presidente"
+      },
+      {
+        "text": "Diretor Geral"
+      }
+    ],
+    "email": [
+      {
+        "text": "licitacao@antarescomercio.com.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T08:44:48.636562+00:00"
+}

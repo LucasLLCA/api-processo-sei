@@ -1,0 +1,74 @@
+{
+  "documento_numero": "016261918",
+  "protocolo": "00226.000020_2025-01",
+  "source_file": "18117636.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa_juridica": [
+      {
+        "text": "MERCADOMOVEIS LTDA"
+      },
+      {
+        "text": "Instituto de Saneamento Básico do Piauí"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "TCE-PI"
+      },
+      {
+        "text": "GABINETE DO DIRETOR GERAL"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "Conselho Nacional de Justiça"
+      },
+      {
+        "text": "INSTITUTO DE SANEAMENTO BÁSICO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Presidente"
+      },
+      {
+        "text": "Diretor Geral"
+      }
+    ],
+    "email": [
+      {
+        "text": "licitacao.mmatacado@gmail.com"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T08:40:39.626172+00:00"
+}

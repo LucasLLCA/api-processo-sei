@@ -1,0 +1,48 @@
+{
+  "documento_numero": "016814462",
+  "protocolo": "00240.000047_2025-15",
+  "source_file": "18726236.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "SADA-PI"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "designou": [
+      [
+        "Diretoria Administrativa e Financeira",
+        "Coordenação Financeira e Contábil"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:19:53.683647+00:00"
+}

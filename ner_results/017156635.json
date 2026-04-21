@@ -1,0 +1,65 @@
+{
+  "documento_numero": "017156635",
+  "protocolo": "00227.000072_2025-69",
+  "source_file": "19100506.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Carlos Castelo Branco"
+      },
+      {
+        "text": "Mara Lilinne Leal de Sousa Lima"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "MICROTECNICA INFORMATICA LTDA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "entidade sancionadora"
+      },
+      {
+        "text": "DIRETORIA DE CONTRATOS"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretora de Contratos"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T09:04:27.743781+00:00"
+}

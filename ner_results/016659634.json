@@ -1,0 +1,70 @@
+{
+  "documento_numero": "016659634",
+  "protocolo": "00153.000075_2025-11",
+  "source_file": "18556989.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "SEPLAN-PI"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Chefia de Gabinete"
+      },
+      {
+        "text": "GERÊNCIA DE MOVIMENTAÇÃO ORÇAMENTÁRIA"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.seplan.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "Governo do Estado do Piauí",
+        "SEPLAN_Despacho"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "DESPACHO",
+        "Chefia de Gabinete"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:47:12.632562+00:00"
+}

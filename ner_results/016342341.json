@@ -1,0 +1,75 @@
+{
+  "documento_numero": "016342341",
+  "protocolo": "00227.000294_2025-81",
+  "source_file": "18206973.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Nayana Cavalcante Costa"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "Sra. Zuleide de Aguiar Nogueira"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "Gabinete da Presidência"
+      },
+      {
+        "text": "Secretaria de Administração"
+      },
+      {
+        "text": "Gabinete Geral da Presidência"
+      },
+      {
+        "text": "DIRETORIA DE GESTÃO DE BENEFÍCIOS"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretaria"
+      },
+      {
+        "text": "Diretora de Gestão de Benefícios"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "requerimento"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "Sra. Zuleide de Aguiar Nogueira",
+        "revisão, regularização e devolução de descontos consignados"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:58:33.204383+00:00"
+}

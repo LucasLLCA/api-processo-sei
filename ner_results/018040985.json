@@ -1,0 +1,65 @@
+{
+  "documento_numero": "018040985",
+  "protocolo": "00201.000103_2025-70",
+  "source_file": "20069811.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "PGE-PI"
+      },
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "SUPERINTENDÊNCIA DE GESTÃO DE PESSOAS"
+      },
+      {
+        "text": "SECRETARIA DE ADMINISTRAÇÃO DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "SECRETARIA"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "SECRETARIA",
+        "prosseguimento do feito"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:18:15.750442+00:00"
+}

@@ -1,0 +1,66 @@
+{
+  "documento_numero": "016233325",
+  "protocolo": "00227.000142_2025-89",
+  "source_file": "18085175.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa_juridica": [
+      {
+        "text": "Piauiprev"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "Superintendência de Gestão Administrativa e Controle dos Gastos"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Superintendente"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.sead.pi.gov.br/"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "contratou": [
+      [
+        "CIASPI",
+        "veículo"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:47:17.116165+00:00"
+}

@@ -1,0 +1,222 @@
+{
+  "documento_numero": "016028165",
+  "protocolo": "00227.000006_2025-99",
+  "source_file": "17855995.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "KLEBER SOARES"
+      },
+      {
+        "text": "VALDY DE MOURA FE"
+      },
+      {
+        "text": "GERSON LIMA DAMIÃO"
+      },
+      {
+        "text": "GERSON PEREIRA SILVA"
+      },
+      {
+        "text": "ROGERIO SIDNEY SILVA"
+      },
+      {
+        "text": "IVAN DOS SANTOS PORTO"
+      },
+      {
+        "text": "CARLOS ALBERTO DUARTE"
+      },
+      {
+        "text": "JOSIAS JOSE GONCALVES"
+      },
+      {
+        "text": "JOÃO AVELINO DE SOUSA"
+      },
+      {
+        "text": "RAYFRAN PRADO DE MOURA"
+      },
+      {
+        "text": "EDGAR PEREIRA DE JESUS"
+      },
+      {
+        "text": "WILSON FERREIRA MÁXIMO"
+      },
+      {
+        "text": "FABIANO DE JESUS FARIAS"
+      },
+      {
+        "text": "ANTONIO DILSON DA SILVA"
+      },
+      {
+        "text": "ADRIALDO MARTINS VELOSO"
+      },
+      {
+        "text": "EDISON DE DEUS CARVALHO"
+      },
+      {
+        "text": "GILFRAN DE SOUSA GUEDES"
+      },
+      {
+        "text": "FRANCISCO GOMES DA SILVA"
+      },
+      {
+        "text": "JOSE DE RIBAMAR FERREIRA"
+      },
+      {
+        "text": "FRANCISCO CID WEBERTH M."
+      },
+      {
+        "text": "FRANCISCO PIRES DA SILVA"
+      },
+      {
+        "text": "JURANDI GOMES DOS SANTOS"
+      },
+      {
+        "text": "FRANCISCO JOSÉ DE FREITAS"
+      },
+      {
+        "text": "JOSE MARIA BARROS DA SILVA"
+      },
+      {
+        "text": "CARLOS ALBERTO SOARES LIMA"
+      },
+      {
+        "text": "FRANCISCO MARQUES DA SILVA"
+      },
+      {
+        "text": "ATENILDO PEREIRA DE ARAUJO"
+      },
+      {
+        "text": "FRANCISCO DE ASSIS MARQUES"
+      },
+      {
+        "text": "VALMIR PEREIRA DE OLIVEIRA"
+      },
+      {
+        "text": "RAIMUNDO JOSÉ SOARES JÚNIOR"
+      },
+      {
+        "text": "PEDRO ALVES DOS SANTOS FILHO"
+      },
+      {
+        "text": "OLIVEIRA DE SOUSA NUNES NETO"
+      },
+      {
+        "text": "VALDILENO PEREIRA DOS SANTOS"
+      },
+      {
+        "text": "MILTON JUNIOR JOVINO DE SOUSA"
+      },
+      {
+        "text": "CARLOS ANTONIO DA SILVA SOUSA"
+      },
+      {
+        "text": "FRANCISCO SOUSA DO NASCIMENTO"
+      },
+      {
+        "text": "JOSE AIRTON CALISTA RODRIGUES"
+      },
+      {
+        "text": "ELISMAR NASCIMENTO DOS SANTOS"
+      },
+      {
+        "text": "ARESTIDES RIBEIRO SOARES NETO"
+      },
+      {
+        "text": "ATEVALDO MATEUS DE SOUSA LIRA"
+      },
+      {
+        "text": "MARCIO FERNANDES DE SOUSA COSTA"
+      },
+      {
+        "text": "JAMES IDEAN DAS CHAGAS CERQUEIRA"
+      },
+      {
+        "text": "CARLOS EDUARDO BARBOSA DOS SANTOS"
+      },
+      {
+        "text": "MAURICIO DE LACERDA ALMEIDA FILHO"
+      },
+      {
+        "text": "FRANCISCO JONILSON DA SILVA MORAIS"
+      },
+      {
+        "text": "ANTONIO CARLOS NASCIMENTO DE SOUSA"
+      },
+      {
+        "text": "GERALDO FRANCISCO DOS SANTOS ABREU"
+      },
+      {
+        "text": "FRANCISCO FLÁVIO RODRIGUES DOS SANTOS"
+      },
+      {
+        "text": "FRANCISCO CID WEBERTH MARTINS DA SILVA"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "FUNDAÇÃO PIAUÍ PREVIDÊNCIA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "PIAUIPREV-PI"
+      },
+      {
+        "text": "COORDENAÇÃO DE INATIVOS"
+      },
+      {
+        "text": "FUNDAÇÃO PIAUÍ PREVIDÊNCIA"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "militares"
+      },
+      {
+        "text": "Senhor (a)"
+      },
+      {
+        "text": "coordenador (a)"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "designou": [
+      [
+        "Órgão",
+        "militares"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:50:10.645359+00:00"
+}

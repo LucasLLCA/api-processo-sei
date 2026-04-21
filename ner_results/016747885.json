@@ -1,0 +1,70 @@
+{
+  "documento_numero": "016747885",
+  "protocolo": "00224.000078_2025-66",
+  "source_file": "18653237.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Jacylenne Coelho Bezerra Fortes"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "ASSESSORIA LICITAÇÃO"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Superintendente de Licitações e Contratos"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "Jacylenne Coelho",
+        "digitalmente"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "autos em epígrafe",
+        "verificação de viabilidade no quantitativo"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:21:06.148254+00:00"
+}

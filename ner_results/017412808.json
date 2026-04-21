@@ -1,0 +1,74 @@
+{
+  "documento_numero": "017412808",
+  "protocolo": "00226.000029_2025-11",
+  "source_file": "19380720.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "ISBPI-PI"
+      },
+      {
+        "text": "GABINETE DO DIRETOR GERAL"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "Diretoria Administrativa e Financeira"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "DIRETOR"
+      },
+      {
+        "text": "Presidente"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "Despacho ASTEC",
+        "Nota de Reserva"
+      ]
+    ],
+    "assinou": [
+      [
+        "Despacho ASTEC",
+        "Nota de Reserva"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:45:13.749648+00:00"
+}

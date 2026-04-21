@@ -1,0 +1,61 @@
+{
+  "documento_numero": "016388194",
+  "protocolo": "00227.000356_2025-55",
+  "source_file": "18257590.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "Superintendência de Gestão de Pessoas"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "DIRETORIA DE PAGAMENTO DE PESSOAL"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.sead.pi.gov.br/"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "Despacho",
+        "Superintendência de Gestão de Pessoas"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:01:04.340504+00:00"
+}

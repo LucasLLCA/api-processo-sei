@@ -1,0 +1,103 @@
+{
+  "documento_numero": "017480631",
+  "protocolo": "00227.000076_2025-47",
+  "source_file": "19455580.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Sousa Martins Júnior"
+      },
+      {
+        "text": "Carlos Castelo Branco"
+      },
+      {
+        "text": "Paulo Roberto Teixeira"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "FROTAS S. A."
+      },
+      {
+        "text": "CS BRASIL FROTAS S.A"
+      },
+      {
+        "text": "FUNDAÇÃO PIAUÍ PREVIDÊNCIA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "PIAUIPREV"
+      },
+      {
+        "text": "Gerência de Logística"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "Fundação Piauí Previdência"
+      },
+      {
+        "text": "Gerência de Patrimônio da PIAUIPREV"
+      },
+      {
+        "text": "Secretaria de Administração do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretaria"
+      },
+      {
+        "text": "Coordenador de Logística"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "contrato"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "CONTRATADA",
+        "contrato"
+      ],
+      [
+        "Agente Fiscalizador",
+        "presente documento"
+      ]
+    ],
+    "contratou": [
+      [
+        "FUNDAÇÃO PIAUÍ PREVIDÊNCIA",
+        "CS BRASIL"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:39:28.785667+00:00"
+}

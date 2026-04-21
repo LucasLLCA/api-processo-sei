@@ -1,0 +1,69 @@
+{
+  "documento_numero": "016307246",
+  "protocolo": "00227.000271_2025-77",
+  "source_file": "18168096.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Emanuel Francisco Santos Oliveira"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "FUNDAÇÃO PIAUÍ PREVIDÊNCIA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "Gabinete da Presidência"
+      },
+      {
+        "text": "DIRETORIA DE GESTÃO DE BENEFÍCIOS"
+      },
+      {
+        "text": "Diretoria do Fundo de Previdência"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretora de Gestão de Benefícios"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "contratou": [
+      [
+        "Emanuel Francisco Santos Oliveira",
+        "contracheque"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:54:59.971973+00:00"
+}

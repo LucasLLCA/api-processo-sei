@@ -1,0 +1,51 @@
+{
+  "documento_numero": "016155106",
+  "protocolo": "00240.000057_2025-42",
+  "source_file": "17997833.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "SADA-PI"
+      },
+      {
+        "text": "COORDENAÇÃO DE RECURSOS HUMANOS"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "Despacho",
+        "Diretoria Financeira"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:29:39.674681+00:00"
+}

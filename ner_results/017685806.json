@@ -1,0 +1,64 @@
+{
+  "documento_numero": "017685806",
+  "protocolo": "00153.000061_2025-90",
+  "source_file": "19680338.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "James Lane Ramos de Sousa"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SETUR-PI"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "Coordenador"
+      }
+    ],
+    "numero_processo": [
+      {
+        "text": "00153.000061/2025-90"
+      }
+    ],
+    "url": [
+      {
+        "text": "https://portal.sefaz.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "ata"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T07:26:15.065449+00:00"
+}

@@ -1,0 +1,65 @@
+{
+  "documento_numero": "016746209",
+  "protocolo": "00227.000072_2025-69",
+  "source_file": "18651448.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Carlos Castelo Branco"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "GABINETE GERAL DA PRESIDÊNCIA"
+      },
+      {
+        "text": "DIRETORIA ADMINISTRATIVA E FINANCEIRA"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "GELOG",
+        "instrução deste processo"
+      ]
+    ],
+    "solicitou": [
+      [
+        "DIRETORIA ADMINISTRATIVA E FINANCEIRA",
+        "aquisição de bens móveis"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:59:51.620252+00:00"
+}

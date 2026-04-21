@@ -1,0 +1,70 @@
+{
+  "documento_numero": "017594525",
+  "protocolo": "00226.000029_2025-11",
+  "source_file": "19580277.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa_juridica": [
+      {
+        "text": "ASTEC"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "ISBPI-PI"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "DIRETORIA ADMINISTRATIVA E FINANCEIRA"
+      },
+      {
+        "text": "INSTITUTO DE SANEAMENTO BÁSICO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Presidente"
+      },
+      {
+        "text": "Assessor(a)"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "contrato"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "ASSESSORIA TÉCNICA",
+        "Quadro Resumo de Pedidos"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:46:13.130346+00:00"
+}

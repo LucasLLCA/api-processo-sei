@@ -1,0 +1,79 @@
+{
+  "documento_numero": "017753977",
+  "protocolo": "00226.000016_2025-34",
+  "source_file": "19754869.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Gilson Dias de Macedo Filho"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "CFM"
+      },
+      {
+        "text": "Diretoria de Controle de Atos Oficiais"
+      },
+      {
+        "text": "Despacho SECRETARIA DE ESTADO DA EDUCAÇÃO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretor"
+      },
+      {
+        "text": "SECRETARIA"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "Decreto",
+        "disposição do servidor"
+      ]
+    ],
+    "solicitou": [
+      [
+        "ISBPI/PI",
+        "autorização"
+      ]
+    ],
+    "contratou": [
+      [
+        "Secretaria de Estado da Educação",
+        "Gilson Dias de Macedo Filho"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:30:38.451623+00:00"
+}

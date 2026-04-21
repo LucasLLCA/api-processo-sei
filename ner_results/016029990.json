@@ -1,0 +1,76 @@
+{
+  "documento_numero": "016029990",
+  "protocolo": "00226.000002_2025-11",
+  "source_file": "17858052.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa_juridica": [
+      {
+        "text": "Instituto de Saneamento Básico do Piauí"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "Gabinete do Diretor Geral"
+      },
+      {
+        "text": "Tribunal de Conas da União"
+      },
+      {
+        "text": "Instituo de Saneamento Básico do Piauí"
+      },
+      {
+        "text": "Instituto de Saneamento Básico do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretor"
+      },
+      {
+        "text": "Presidente"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "declaracao"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "curso",
+        "equipe"
+      ]
+    ],
+    "exonerou": [
+      [
+        "Modalidades de Licitação",
+        "modalidades ultrapassadas"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:25:28.490286+00:00"
+}

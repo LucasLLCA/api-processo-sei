@@ -1,0 +1,87 @@
+{
+  "documento_numero": "016329143",
+  "protocolo": "00227.000076_2025-47",
+  "source_file": "18192332.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Flávio Chaib"
+      },
+      {
+        "text": "Carlos Castelo Branco"
+      },
+      {
+        "text": "AILDO DE SOUSA MARTINS JÚNIOR"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "FUNDAÇÃO PIAUÍ PREVIDÊNCIA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "PRESIDENTE"
+      },
+      {
+        "text": "Suplente do Fiscal"
+      }
+    ],
+    "decreto": [
+      {
+        "text": "Decreto nº 15.093/2013"
+      },
+      {
+        "text": "Decreto nº 21.872/2023"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "portaria"
+  },
+  "relations": {
+    "contratou": [
+      [
+        "FUNDAÇÃO PIAUÍ PREVIDÊNCIA",
+        "Contrato Administrativo nº 01/2025"
+      ]
+    ],
+    "designou": [
+      [
+        "Art. 1",
+        "servidor da FUNDAÇÃO PIAUÍ PREVIDÊNCIA - PIAUIPREV"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "relatório",
+        "superior hierárquico"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:17:49.343059+00:00"
+}

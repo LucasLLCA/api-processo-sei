@@ -1,0 +1,144 @@
+{
+  "documento_numero": "016318789",
+  "protocolo": "00227.000076_2025-47",
+  "source_file": "18180942.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Carlos Castelo Branco"
+      },
+      {
+        "text": "PAULO ROBERTO TEIXEIRA"
+      },
+      {
+        "text": "Danusa Brito Pereira Santiago"
+      },
+      {
+        "text": "ANSELMO TOLENTINO SOARES JUNIOR/ PAULO ROBERTO"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "CS BRASIL"
+      },
+      {
+        "text": "SISTEMA BANCO DE PREÇOS"
+      },
+      {
+        "text": "Fundação Piauí Previdência"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "PIAUIPREV-PI"
+      },
+      {
+        "text": "Administração Pública"
+      },
+      {
+        "text": "Fundação Piauí Previdência"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "Tribunal de Contas do Estado do P"
+      },
+      {
+        "text": "Tribunal de Contas do Estado do Piauí"
+      },
+      {
+        "text": "Assembleia Legislativa do Estado do Piauí"
+      },
+      {
+        "text": "SECRETARIA DE ADMINISTRAÇÃO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "COORDENADORIA ESTADUAL DE DESENVOLVIMENTO DOS TERRITÓRIOS"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretaria"
+      },
+      {
+        "text": "Gerente de Logística"
+      }
+    ],
+    "email": [
+      {
+        "text": "licitacao.frotas@csfrotas.com.br"
+      }
+    ],
+    "assunto": [
+      {
+        "text": "pesquisa de preços"
+      }
+    ],
+    "objeto_licitacao": [
+      {
+        "text": "pesquisa de preços"
+      },
+      {
+        "text": "ADESÃO LOCAÇÃO DE VEÍCULOS"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "ata"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "Danusa Brito Pereira Santiago",
+        "eletronicamente"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "pesquisa",
+        "Relatório de Cotação"
+      ]
+    ],
+    "exonerou": [
+      [
+        "Pesquisa de Preços",
+        "preços de valores repetidos"
+      ]
+    ],
+    "contratou": [
+      [
+        "setor",
+        "cesta de preços"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:17:05.260788+00:00"
+}

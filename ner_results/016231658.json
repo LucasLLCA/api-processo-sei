@@ -1,0 +1,70 @@
+{
+  "documento_numero": "016231658",
+  "protocolo": "00226.000029_2025-11",
+  "source_file": "18083308.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa_juridica": [
+      {
+        "text": "Instituto de Saneamento Básico do Piauí"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretor Geral"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "DIRETOR GERAL",
+        "FORMALIZAÇÃO DE DEMANDA"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "SEAD",
+        "continuidade do processo"
+      ]
+    ],
+    "designou": [
+      [
+        "DIRETOR GERAL",
+        "Instituto de Saneamento Básico do Piauí"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:43:27.199356+00:00"
+}

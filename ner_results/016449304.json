@@ -1,0 +1,119 @@
+{
+  "documento_numero": "016449304",
+  "protocolo": "00153.000008_2025-99",
+  "source_file": "18325629.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Felipe Silva"
+      },
+      {
+        "text": "Edilene Nery"
+      },
+      {
+        "text": "Carolina Rocha Gomes"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "Empresa Texeira e Leite"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "Secretaria"
+      },
+      {
+        "text": "Administração Pública"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretaria"
+      }
+    ],
+    "data": [
+      {
+        "text": "mês de /"
+      },
+      {
+        "text": "22 de abril de 2024"
+      },
+      {
+        "text": "22 de abril de 2025"
+      }
+    ],
+    "vigencia": [
+      {
+        "text": "12 meses"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "contrato"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "responsável",
+        "notas de entrega"
+      ]
+    ],
+    "designou": [
+      [
+        "portaria específica",
+        "Fiscal"
+      ]
+    ],
+    "autorizou": [
+      [
+        "Órgão/Entidade e Fiscal de Contrato",
+        "instrumento de controle"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "notas de entrega",
+        "Fiscal"
+      ]
+    ],
+    "solicitou": [
+      [
+        "demanda institucional",
+        "ampliação do quantitativo de água"
+      ],
+      [
+        "Encaminhamento",
+        "Valor solicitado (R$)"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:50:02.600508+00:00"
+}

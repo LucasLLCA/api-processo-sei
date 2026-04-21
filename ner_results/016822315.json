@@ -1,0 +1,70 @@
+{
+  "documento_numero": "016822315",
+  "protocolo": "00153.000073_2025-14",
+  "source_file": "18734966.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa_juridica": [
+      {
+        "text": "CAJU PRODUÇÕES E EVENTOS LTDA."
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "Gerência Financeira"
+      },
+      {
+        "text": "COORDENAÇÃO ADMINISTRATIVA"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.turismo.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "SETUR-PI",
+        "Gerência Financeira"
+      ]
+    ],
+    "solicitou": [
+      [
+        "SETUR-PI",
+        "prestação de contas"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:41:12.668939+00:00"
+}

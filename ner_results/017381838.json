@@ -1,0 +1,149 @@
+{
+  "documento_numero": "017381838",
+  "protocolo": "00153.000001_2025-77",
+  "source_file": "19346719.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "SAMUEL PONTES DO NASCIMENTO"
+      },
+      {
+        "text": "Jacylenne Coêlho Bezerra Fortes"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "SERVFAZ SERVIÇOS DE MÃO DE OBRA"
+      },
+      {
+        "text": "EMPRESA SERVFAZ SERVIÇOS DE MÃO DE OBRA LTDA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEGOV"
+      },
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "UNIGGP/SEFAZ"
+      },
+      {
+        "text": "ASSESSORIA LICITAÇÃO"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "ADMINISTRAÇÃO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "SECRETARIA DE ESTADO DO TURISMO - SETUR-PI"
+      },
+      {
+        "text": "Secretaria de Administração do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "Superintendente de Licitações e Contratos Administrativos"
+      }
+    ],
+    "cnpj": [
+      {
+        "text": "10.013.974/0001-63"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "contrato"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "Estado do Piauí",
+        "pedido de autorização"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "SECRETARIA DE ESTADO DO TURISMO - SETUR-PI",
+        "pedido de autorização"
+      ],
+      [
+        "Administração do Estado do Piauí",
+        "SAMUEL PONTES DO NASCIMENTO"
+      ]
+    ],
+    "solicitou": [
+      [
+        "órgão",
+        "autorização do Secretário ID 016958992"
+      ]
+    ],
+    "autorizou": [
+      [
+        "Secretário de Administração do Estado do Piauí",
+        "SECRETARIA DE ESTADO DO TURISMO - SETUR-PI"
+      ],
+      [
+        "Administração do Estado do Piauí",
+        "SAMUEL PONTES DO NASCIMENTO"
+      ]
+    ],
+    "contratou": [
+      [
+        "SERVFAZ SERVIÇOS DE MÃO DE OBRA",
+        "serviço de mão de obra terceirizada"
+      ],
+      [
+        "Administração do Estado do Piauí",
+        "SAMUEL PONTES DO NASCIMENTO"
+      ]
+    ],
+    "nomeou": [
+      [
+        "Administração do Estado do Piauí",
+        "SAMUEL PONTES DO NASCIMENTO"
+      ]
+    ],
+    "designou": [
+      [
+        "Administração do Estado do Piauí",
+        "SAMUEL PONTES DO NASCIMENTO"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:46:14.382835+00:00"
+}

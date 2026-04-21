@@ -1,0 +1,77 @@
+{
+  "documento_numero": "016156718",
+  "protocolo": "00226.000017_2025-89",
+  "source_file": "17999601.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Dr. Magno Pires Alves"
+      },
+      {
+        "text": "OTÁVIO AUGUSTO MARTINS"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "REALJET INFORMÁTICA COMÉRCIO E SERVICOS LTDA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "GABINETE DO DIRETOR GERAL"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "INSTITUTO DE SANEAMENTO BÁSICO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretor Geral"
+      }
+    ],
+    "email": [
+      {
+        "text": "otavio@realjetteresina.com.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "Senhoria",
+        "Manifestação"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:33:01.734221+00:00"
+}

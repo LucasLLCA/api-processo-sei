@@ -1,0 +1,90 @@
+{
+  "documento_numero": "016899100",
+  "protocolo": "00153.000050_2025-18",
+  "source_file": "18819120.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Jacylenne Coêlho"
+      },
+      {
+        "text": "LUCYVALDO A PIAUILINO"
+      },
+      {
+        "text": "Marcelo Rodrigues da Costa"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "SANTA CLARA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "ASSESSORIA LICITAÇÃO"
+      },
+      {
+        "text": "Secretaria de Administração do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário de Turismo"
+      },
+      {
+        "text": "Superintendente de Licitações e Contratos"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "Marcelo Rodrigues da Costa",
+        "Conhecimento de ARP"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "demanda",
+        "órgão requerente"
+      ]
+    ],
+    "autorizou": [
+      [
+        "SEAD-PI",
+        "LIBERAÇÃO"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:16:45.790467+00:00"
+}

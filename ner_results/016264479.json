@@ -1,0 +1,82 @@
+{
+  "documento_numero": "016264479",
+  "protocolo": "00152.000049_2025-95",
+  "source_file": "18120404.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "JANAINNA PINTO MARQUES TAVARES"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SDE-PI"
+      },
+      {
+        "text": "GABINETE GERAL"
+      },
+      {
+        "text": "Gerência de Engenharia"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretária de Estado do Desenvolvimento Econômico do Piauí"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "termo_referencia"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "SDE-PI/GAB",
+        "Gerência de Engenharia"
+      ]
+    ],
+    "designou": [
+      [
+        "exposto",
+        "abertura de Processo Administrativo"
+      ]
+    ],
+    "autorizou": [
+      [
+        "JANAINNA PINTO MARQUES TAVARES",
+        "abertura de processo administrativo"
+      ]
+    ],
+    "solicitou": [
+      [
+        "órgãos competentes",
+        "comprovação da referida titularidade"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:25:03.503328+00:00"
+}

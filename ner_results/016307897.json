@@ -1,0 +1,62 @@
+{
+  "documento_numero": "016307897",
+  "protocolo": "00153.000073_2025-14",
+  "source_file": "18168817.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "Gabinete"
+      },
+      {
+        "text": "SETUR-PI"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.turismo.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "Despacho",
+        "Gabinete"
+      ]
+    ],
+    "solicitou": [
+      [
+        "caso",
+        "conhecimento e providência"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:31:29.713076+00:00"
+}

@@ -1,0 +1,69 @@
+{
+  "documento_numero": "017443660",
+  "protocolo": "00153.000061_2025-90",
+  "source_file": "19414699.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "FRANCISCO EDUARDO SOUSA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "CCOM-PI"
+      },
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "Diretoria Administrativa e Financeira"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretor de Patrocínios e Eventos"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.turismo.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "Despacho",
+        "Diretoria Administrativa e Financeira"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:25:43.264953+00:00"
+}

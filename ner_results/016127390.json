@@ -1,0 +1,72 @@
+{
+  "documento_numero": "016127390",
+  "protocolo": "00226.000020_2025-01",
+  "source_file": "17966835.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "SAMUEL PONTES DO NASCIMENTO"
+      },
+      {
+        "text": "DR. MAGNO PIRES ALVES FILHO"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "ARP"
+      },
+      {
+        "text": "Instituto de Saneamento Básico do Piauí"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "GABINETE DO DIRETOR GERAL"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "Diretor Geral"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "ação",
+        "cooperação"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:39:24.280445+00:00"
+}

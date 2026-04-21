@@ -1,0 +1,71 @@
+{
+  "documento_numero": "016258547",
+  "protocolo": "00095.000544_2025-26",
+  "source_file": "18113862.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "PEDRO ALEXANDRE CABRAL DE OLIVEIRA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEJUS"
+      },
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "Diretoria de Logística e Abastecimento"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretor"
+      },
+      {
+        "text": "Substituto"
+      },
+      {
+        "text": "Superintendente de Gestão Administrativa"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.sead.pi.gov.br/"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "portaria"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T06:16:02.556391+00:00"
+}

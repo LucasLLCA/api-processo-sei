@@ -1,0 +1,103 @@
+{
+  "documento_numero": "016356604",
+  "protocolo": "00152.000065_2025-88",
+  "source_file": "18222662.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Jose Gil Barbosa"
+      },
+      {
+        "text": "José Arimateia Carvalho Júnior"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "ABNT"
+      },
+      {
+        "text": "DIPALIMP"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD"
+      },
+      {
+        "text": "SDE-PI"
+      },
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "SDE / PI"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "Diretoria de Unidade Administrativa e Financeira"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "REPRESENTANTE"
+      }
+    ],
+    "email": [
+      {
+        "text": "dipallimpdistribuidora@hotmail.com"
+      }
+    ],
+    "cnpj": [
+      {
+        "text": "CNPJ 17.897.450/0001-21"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "ata"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "Memorando",
+        "Diretoria de Unidade Administrativa e Financeira"
+      ]
+    ],
+    "contratou": [
+      [
+        "Secretaria de Estado da Administração - SEAD",
+        "REGISTRO DE PREÇO"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:29:38.574330+00:00"
+}

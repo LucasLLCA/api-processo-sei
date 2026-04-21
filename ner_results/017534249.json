@@ -1,0 +1,205 @@
+{
+  "documento_numero": "017534249",
+  "protocolo": "00240.000128_2025-15",
+  "source_file": "19514165.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "estudante"
+      },
+      {
+        "text": "estagiário"
+      },
+      {
+        "text": "ESTAGIÁRIO(A)"
+      },
+      {
+        "text": "SAMUEL PONTES DO NASCIMENTO"
+      },
+      {
+        "text": "MIRIAN ISABEL ABREU DE OLIVEIRA"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "CONCEDENTE"
+      },
+      {
+        "text": "FÁBIO ABREU COSTA"
+      },
+      {
+        "text": "INSTITUIÇÃO DE ENSINO"
+      },
+      {
+        "text": "UNIVERSIDADE FEDERAL DO PIAUI-UFPI"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "UNIVERSIDADE FEDERAL DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "preposto"
+      },
+      {
+        "text": "dirigente"
+      },
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "estagiário"
+      },
+      {
+        "text": "supervisor"
+      },
+      {
+        "text": "orientador"
+      },
+      {
+        "text": "funcionário"
+      },
+      {
+        "text": "ESTAGIÁRIO(A)"
+      },
+      {
+        "text": "REPRESENTANTE LEGAL"
+      },
+      {
+        "text": "secretário acadêmico"
+      },
+      {
+        "text": "coordenador do curso"
+      },
+      {
+        "text": "professor orientador"
+      }
+    ],
+    "assunto": [
+      {
+        "text": "Termo de Compromisso"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.sead.pi.gov.br/"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "contrato"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "estudante",
+        "estágio"
+      ],
+      [
+        "preenchimento",
+        "Termo Aditivo"
+      ],
+      [
+        "partes",
+        "instrumento"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "plano de atividades",
+        "termo de compromisso"
+      ],
+      [
+        "VIII",
+        "ESTAGIÁRIO(a)"
+      ],
+      [
+        "INSTITUIÇÃO DE ENSINO",
+        "professor orientador"
+      ]
+    ],
+    "contratou": [
+      [
+        "ESTAGIÁRIO",
+        "Plano de Atividades"
+      ],
+      [
+        "estagiário",
+        "contrato"
+      ],
+      [
+        "CONCEDENTE",
+        "seguro contra acidentes pessoais"
+      ],
+      [
+        "responsabilidade",
+        "seguro"
+      ],
+      [
+        "CONCEDENTE",
+        "ESTAGIÁRIO(A)"
+      ],
+      [
+        "MIRIAN ISABEL",
+        "DE OLIVEIRA"
+      ]
+    ],
+    "designou": [
+      [
+        "CONCEDENTE",
+        "funcionário"
+      ],
+      [
+        "INSTITUIÇÃO DE ENSINO",
+        "professor orientador"
+      ],
+      [
+        "CONCEDENTE",
+        "TERMO DE COMPROMISSO"
+      ]
+    ],
+    "solicitou": [
+      [
+        "ESTAGIÁRIO",
+        "apresentação periódica"
+      ],
+      [
+        "estagiário",
+        "ESTAGIÁRIO(A)"
+      ]
+    ],
+    "nomeou": [
+      [
+        "INSTITUIÇÃO DE ENSINO",
+        "professor orientador"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T11:11:02.910966+00:00"
+}

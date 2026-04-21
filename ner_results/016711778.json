@@ -1,0 +1,65 @@
+{
+  "documento_numero": "016711778",
+  "protocolo": "00201.000067_2025-44",
+  "source_file": "18613842.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa_juridica": [
+      {
+        "text": "Diretoria de Logística e Abastecimento"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEMPI-PI"
+      },
+      {
+        "text": "Ofício SECRETARIA DE FAZENDA DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretor"
+      },
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "Gerente de Apoio Administrativo"
+      }
+    ],
+    "url": [
+      {
+        "text": "https://portal.sefaz.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T08:14:24.433348+00:00"
+}

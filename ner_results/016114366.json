@@ -1,0 +1,75 @@
+{
+  "documento_numero": "016114366",
+  "protocolo": "00240.000047_2025-15",
+  "source_file": "17952303.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Eliane Carvalho"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SADA-PI"
+      },
+      {
+        "text": "Gabinete Geral"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretaria"
+      },
+      {
+        "text": "Coord. de Convênios-SADA"
+      }
+    ],
+    "objeto_licitacao": [
+      {
+        "text": "aquisição de veículos automotores"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "contrato"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "V. Exª",
+        "instrução processual"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "Memorando",
+        "Gabinete Geral"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:11:10.539012+00:00"
+}

@@ -1,0 +1,87 @@
+{
+  "documento_numero": "016477564",
+  "protocolo": "00153.000089_2025-27",
+  "source_file": "18357164.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa_juridica": [
+      {
+        "text": "S LTDA"
+      },
+      {
+        "text": "LEANDRO COMERCIO E SERVICOS ESPORTIVOS LTDA"
+      },
+      {
+        "text": "BANDEIRADA GLOBAL INDUSTRIA E COMERCIO LTDA"
+      },
+      {
+        "text": "BANDEIRADA VIVOMED DISTRIBUIDORA HOSPITALAR LTDA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "Assessoria de Licitação"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      }
+    ],
+    "objeto_licitacao": [
+      {
+        "text": "Documento Oficial"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "Parecer SEFAZ",
+        "SEAD/PI"
+      ]
+    ],
+    "solicitou": [
+      [
+        "órgão requerente",
+        "demanda"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:10:14.718876+00:00"
+}

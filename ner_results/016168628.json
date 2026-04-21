@@ -1,0 +1,72 @@
+{
+  "documento_numero": "016168628",
+  "protocolo": "00201.000024_2025-69",
+  "source_file": "18012942.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Zenaide Batista"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEMPI"
+      },
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretária"
+      },
+      {
+        "text": "Secretria de Estado das Mulheres"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.sead.pi.gov.br/"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "palestra",
+        "atividade interna alusiva à campnha Janeiro Branco"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:11:38.614018+00:00"
+}

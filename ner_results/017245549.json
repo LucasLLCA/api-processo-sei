@@ -1,0 +1,179 @@
+{
+  "documento_numero": "017245549",
+  "protocolo": "00240.000047_2025-15",
+  "source_file": "19197419.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "contratado"
+      },
+      {
+        "text": "Contratante"
+      },
+      {
+        "text": "FABIO ABREU COSTA"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "Contratado"
+      },
+      {
+        "text": "contratante"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "fiscal"
+      },
+      {
+        "text": "Administração"
+      },
+      {
+        "text": "DOTAÇÃO ORÇAMENTÁRIA"
+      },
+      {
+        "text": "autoridade competente"
+      },
+      {
+        "text": "Foro da cidade Teresina/PI"
+      },
+      {
+        "text": "SECRETARIA DA ASSISTÊNCIA TÉCNICA E DEFESA AGROPECUÁRIA"
+      },
+      {
+        "text": "SECRETARIA DE ASSISTÊNCIA TÉCNICA DE DEFESA AGROPECUÁRIA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "prepostos"
+      },
+      {
+        "text": "SECRETÁRIO"
+      },
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "empregados"
+      },
+      {
+        "text": "subordinados"
+      },
+      {
+        "text": "agente público"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "contrato"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "ESTADO DO PIAUÍ",
+        "TERMO DE CONTRATO"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "SECRETARIA DA ASSISTÊNCIA TÉCNICA E DEFESA AGROPECUÁRIA",
+        "TERMO DE CONTRATO"
+      ],
+      [
+        "contratado",
+        "setor responsável"
+      ],
+      [
+        "Multa",
+        "cobrança judicial"
+      ]
+    ],
+    "assinou": [
+      [
+        "Contratado",
+        "obrigações"
+      ],
+      [
+        "contratado",
+        "compromissos"
+      ],
+      [
+        "partes",
+        "contrato"
+      ]
+    ],
+    "contratou": [
+      [
+        "contratante",
+        "preços"
+      ],
+      [
+        "contratante",
+        "Contratado"
+      ],
+      [
+        "contratado",
+        "contrato"
+      ],
+      [
+        "contratante",
+        "despesas"
+      ],
+      [
+        "contratante",
+        "contrato"
+      ],
+      [
+        "Responsável legal",
+        "TESTEMUNHAS"
+      ]
+    ],
+    "nomeou": [
+      [
+        "fiscal do contrato",
+        "empregados"
+      ],
+      [
+        "FORO",
+        "Foro da cidade Teresina/PI"
+      ]
+    ],
+    "designou": [
+      [
+        "fiscal do contrato",
+        "empregados"
+      ],
+      [
+        "FORO",
+        "Foro da cidade Teresina/PI"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:24:55.890720+00:00"
+}

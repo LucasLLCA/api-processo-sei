@@ -1,0 +1,87 @@
+{
+  "documento_numero": "016741912",
+  "protocolo": "00153.000073_2025-14",
+  "source_file": "18646757.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "DR. Hélio"
+      },
+      {
+        "text": "JOAQUIM DE OLIVEIRA JUNIOR"
+      },
+      {
+        "text": "WAGNER JARDEL PONTES GOMES"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "CAJU PRODUCOES E EVENTOS LTDA."
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "Controladoria-Geral do Estado"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "secretaria"
+      },
+      {
+        "text": "presidente"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "designou": [
+      [
+        "entidade fazendária",
+        "processo de licitação"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "ofícios do presidente do Poder Legislativo",
+        "secretaria"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:38:45.764172+00:00"
+}

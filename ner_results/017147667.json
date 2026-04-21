@@ -1,0 +1,114 @@
+{
+  "documento_numero": "017147667",
+  "protocolo": "00227.000076_2025-47",
+  "source_file": "19090699.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Flávio Chaib"
+      },
+      {
+        "text": "Marcelo Nunes"
+      },
+      {
+        "text": "PAULO ROBERTO TEIXEIRA"
+      },
+      {
+        "text": "MARIA ALESSANDRA BAZARIAN DE SOUSA"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "CS BRASIL FROTAS S.A."
+      },
+      {
+        "text": "Fundação Piauí Previdência"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD"
+      },
+      {
+        "text": "RPPS"
+      },
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "PIAUIPREV"
+      },
+      {
+        "text": "DIRETORIA DE CONTRATOS"
+      },
+      {
+        "text": "Fundação Piauí Previdência"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Presidente"
+      },
+      {
+        "text": "Secretário de Governo"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "contrato"
+  },
+  "relations": {
+    "contratou": [
+      [
+        "CS BRASIL FROTAS S.A.",
+        "empresa CS BRASIL FROTAS S.A."
+      ]
+    ],
+    "nomeou": [
+      [
+        "Marcelo Nunes",
+        "Secretário de Governo"
+      ]
+    ],
+    "autorizou": [
+      [
+        "SEFAZ",
+        "Autorização da Reserva Orçamentária"
+      ]
+    ],
+    "assinou": [
+      [
+        "FLÁVIO CHAIB",
+        "contrato"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:37:34.629543+00:00"
+}

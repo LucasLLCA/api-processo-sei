@@ -1,0 +1,192 @@
+{
+  "documento_numero": "017345150",
+  "protocolo": "00153.000061_2025-90",
+  "source_file": "19306534.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa_juridica": [
+      {
+        "text": "RAFFA ESTRUTURAS E EVENTOS LTDA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "CCOM"
+      },
+      {
+        "text": "CCOM-PI"
+      },
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "Governo do Piauí"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "SECRETARIA ESTADUAL DE TURISMO"
+      },
+      {
+        "text": "diretoria de Diretoria de Marketing"
+      },
+      {
+        "text": "Coordenadoria de Comunicação Social do Estado"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Governador"
+      },
+      {
+        "text": "Secretaria"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "parecer_juridico"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "Governo do Estado",
+        "patrocínios"
+      ],
+      [
+        "Governador",
+        "patrocínio"
+      ],
+      [
+        "recurso",
+        "iniciativa a ser patrocinada"
+      ],
+      [
+        "governo do Piauí",
+        "FESTIVAL DO CARANGUEJO"
+      ]
+    ],
+    "solicitou": [
+      [
+        "SECRETARIA ESTADUAL DE TURISMO -SETUR",
+        "SEGUNDO FESTIVAL DO CARANGUEJO"
+      ],
+      [
+        "proposta",
+        "apoio"
+      ],
+      [
+        "entidade interessada",
+        "requerimento"
+      ],
+      [
+        "órgão solicitante",
+        "mais informações"
+      ]
+    ],
+    "contratou": [
+      [
+        "RAFFA ESTRUTURAS E EVENTOS LTDA",
+        "SEGUNDO FESTIVAL DO CARANGUEJO"
+      ],
+      [
+        "patrocínio",
+        "contrato de patrocínio"
+      ],
+      [
+        "Fiscal",
+        "SETUR-PI"
+      ],
+      [
+        "governo do Piauí",
+        "projeto SEGUNDO FESTIVAL DO CARANGUEJO"
+      ]
+    ],
+    "exonerou": [
+      [
+        "Lei nº 7.948",
+        "Lei nº 7.884"
+      ],
+      [
+        "observações",
+        "provas de serviço"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "projetos de patrocínios",
+        "apreciação da área técnica desta CCOM"
+      ],
+      [
+        "proposta",
+        "planejamento estratégico"
+      ],
+      [
+        "Matriz",
+        "patrocinador"
+      ],
+      [
+        "diretoria de Diretoria de Marketing",
+        "prosseguimento do PATROCÍNIO"
+      ],
+      [
+        "Projeto",
+        "órgão solicitante"
+      ]
+    ],
+    "nomeou": [
+      [
+        "plano de mídia",
+        "placa de outdoor"
+      ]
+    ],
+    "designou": [
+      [
+        "art. 17, §4º",
+        "contratos de patrocínio"
+      ],
+      [
+        "projeto",
+        "placa de outdoor"
+      ],
+      [
+        "Matriz",
+        "patrocinador"
+      ],
+      [
+        "governo do Piauí",
+        "marca do Governo do Estado"
+      ]
+    ],
+    "assinou": [
+      [
+        "Governo do Estado",
+        "marca do patrocinador"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:25:29.868990+00:00"
+}

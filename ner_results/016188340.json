@@ -1,0 +1,64 @@
+{
+  "documento_numero": "016188340",
+  "protocolo": "00240.000116_2025-82",
+  "source_file": "18035046.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "VALÉRIA DE SOUSA SANTOS"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SADA-PI"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "Secretária"
+      },
+      {
+        "text": "Diretora Administrativa e Financeira"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "VALÉRIA DE SOUSA SANTOS",
+        "abertura de processo"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:33:55.741785+00:00"
+}

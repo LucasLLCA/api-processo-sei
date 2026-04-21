@@ -1,0 +1,77 @@
+{
+  "documento_numero": "016208864",
+  "protocolo": "00227.000076_2025-47",
+  "source_file": "18057895.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Carlos Castelo Branco"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "PIAUIPREV"
+      },
+      {
+        "text": "COEFIN/DIAF"
+      },
+      {
+        "text": "Diretoria de Contratos"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "DIRETORIA ADMINISTRATIVA E FINANCEIRA"
+      },
+      {
+        "text": "SECRETARIA DE ADMINISTRAÇÃO DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "ata"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "Autorizo",
+        "Gestor da PIAUIPREV"
+      ],
+      [
+        "União",
+        "contratada"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:13:17.353852+00:00"
+}

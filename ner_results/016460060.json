@@ -1,0 +1,82 @@
+{
+  "documento_numero": "016460060",
+  "protocolo": "00240.000243_2025-81",
+  "source_file": "18337624.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Marçal Justen Filho"
+      },
+      {
+        "text": "JOAQUIM HENRIQUE GAMA NETO"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "particular"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SADA-PI"
+      },
+      {
+        "text": "Administração"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "Engenheiro Civil"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "parecer_juridico"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "parecer técnico",
+        "Parecer Governo do Estado do Piauí"
+      ]
+    ],
+    "contratou": [
+      [
+        "contratada",
+        "empreendimento"
+      ],
+      [
+        "Administração",
+        "empreitada por preço global"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T11:27:49.732676+00:00"
+}

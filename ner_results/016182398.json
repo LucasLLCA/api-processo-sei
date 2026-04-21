@@ -1,0 +1,44 @@
+{
+  "documento_numero": "016182398",
+  "protocolo": "00226.000002_2025-11",
+  "source_file": "18028324.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "Gerência de Atas"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "certidao"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T08:26:16.616050+00:00"
+}

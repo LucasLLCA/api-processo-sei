@@ -1,0 +1,79 @@
+{
+  "documento_numero": "016451529",
+  "protocolo": "00115.000030_2025-95",
+  "source_file": "18328151.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "MARCELLA CASTELO BRANCO CARVALHO CAMPELO"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SSP-PI"
+      },
+      {
+        "text": "GOV-PI"
+      },
+      {
+        "text": "Tribunal de Justiça do Estado do Piauí TJPI"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Presidente"
+      },
+      {
+        "text": "Secretaria"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "parecer_juridico"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "decreto",
+        "Disposição da servidora MARCELLA CASTELO BRANCO CARVALHO CAMPELO"
+      ]
+    ],
+    "assinou": [
+      [
+        "Senhor Presidente",
+        "decreto"
+      ]
+    ],
+    "contratou": [
+      [
+        "Tribunal de Justiça do Estado do Piauí TJPI",
+        "MARCELLA CASTELO BRANCO CARVALHO CAMPELO"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:19:28.723427+00:00"
+}

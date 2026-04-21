@@ -1,0 +1,77 @@
+{
+  "documento_numero": "016288529",
+  "protocolo": "00227.000076_2025-47",
+  "source_file": "18147228.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Flávio Chaib"
+      },
+      {
+        "text": "Jacylenne Coêlho Bezerra Fortes"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "Fundação Piauí Previdência"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEFAZ"
+      },
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "Superintendência"
+      },
+      {
+        "text": "ASSESSORIA LICITAÇÃO"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Presidente"
+      },
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "Superintendente de Licitações e Contratos-SLC"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T09:14:46.479385+00:00"
+}

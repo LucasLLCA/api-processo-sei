@@ -1,0 +1,65 @@
+{
+  "documento_numero": "017329771",
+  "protocolo": "00152.000049_2025-95",
+  "source_file": "19289652.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Caroline Viveiros Moura da Cruz"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "OPA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SDE-PI"
+      },
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "Diretoria de Gestão do Patrimônio"
+      },
+      {
+        "text": "SUPERINTENDÊNCIA DE PATRIMÔNIO IMOBILIÁRIO"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Superintendente"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T06:29:09.689276+00:00"
+}

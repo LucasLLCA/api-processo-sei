@@ -1,0 +1,378 @@
+{
+  "documento_numero": "016445075",
+  "protocolo": "00240.000116_2025-82",
+  "source_file": "18320918.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "pregoeiro"
+      },
+      {
+        "text": "proponente"
+      },
+      {
+        "text": "licitante vencedor"
+      },
+      {
+        "text": "agricultor familiar"
+      },
+      {
+        "text": "microempreendedor individual - MEI"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "microempresa"
+      },
+      {
+        "text": "Microempresas"
+      },
+      {
+        "text": "empresa licitante"
+      },
+      {
+        "text": "empresas brasileiras"
+      },
+      {
+        "text": "sociedade cooperativa"
+      },
+      {
+        "text": "empresas de pequeno porte"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "Rec"
+      },
+      {
+        "text": "TCE-PI"
+      },
+      {
+        "text": "Pregoeiro"
+      },
+      {
+        "text": "consulados"
+      },
+      {
+        "text": "embaixadas"
+      },
+      {
+        "text": "Receita Federal"
+      },
+      {
+        "text": "órgãos de controle"
+      },
+      {
+        "text": "Administração Pública"
+      },
+      {
+        "text": "Controladoria-Geral do Estado"
+      },
+      {
+        "text": "comissão permanente de licitações"
+      },
+      {
+        "text": "SECRETARIA DA ASSISTÊNCIA TÉCNICA E DEFESA AGROPECUÁRIA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "gerente"
+      },
+      {
+        "text": "dirigente"
+      },
+      {
+        "text": "acionista"
+      },
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "controlador"
+      },
+      {
+        "text": "subcontratado"
+      },
+      {
+        "text": "agente público"
+      }
+    ],
+    "assunto": [
+      {
+        "text": "habilitação"
+      }
+    ],
+    "objeto_licitacao": [
+      {
+        "text": "habilitação"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "licitacao"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "comissão permanente de licitações",
+        "interessados"
+      ],
+      [
+        "Registro",
+        "formação do cadastro de reserva"
+      ],
+      [
+        "microempresas",
+        "documentação de h"
+      ],
+      [
+        "Microempresas",
+        "documentação de habilitação"
+      ],
+      [
+        "licitantes",
+        "PROPOSTA"
+      ],
+      [
+        "licitantes",
+        "documentos de habilitação"
+      ],
+      [
+        "declaração",
+        "documentos de habilitação"
+      ],
+      [
+        "licitante",
+        "proposta"
+      ],
+      [
+        "licitantes",
+        "LANCES"
+      ],
+      [
+        "sistema",
+        "aviso de fechamento"
+      ],
+      [
+        "sistema",
+        "lances"
+      ],
+      [
+        "licitantes",
+        "lances intermediários"
+      ],
+      [
+        "licitante",
+        "Planilha"
+      ],
+      [
+        "amostra",
+        "Pregoeiro"
+      ]
+    ],
+    "autorizou": [
+      [
+        "Parte Específica deste Edital",
+        "Sistema de Registro de Preços"
+      ],
+      [
+        "Parte Específica deste Edital",
+        "participação de empresas"
+      ],
+      [
+        "Administração",
+        "licitação"
+      ],
+      [
+        "Lei Complementar nº 123, de 2006",
+        "direito ao tratamento favorecido"
+      ],
+      [
+        "pregoeiro",
+        "reinício da disputa"
+      ],
+      [
+        "órgãos de controle",
+        "tegridade"
+      ],
+      [
+        "Administração",
+        "amostra"
+      ]
+    ],
+    "solicitou": [
+      [
+        "licitantes",
+        "cotar os bens ou serviços"
+      ],
+      [
+        "Microempresas",
+        "documentação de habilitação"
+      ],
+      [
+        "licitantes",
+        "PROPOSTA"
+      ],
+      [
+        "licitantes",
+        "documentos de habilitação"
+      ],
+      [
+        "licitantes",
+        "lances"
+      ],
+      [
+        "licitantes",
+        "lance"
+      ],
+      [
+        "licitantes",
+        "lances intermediários"
+      ],
+      [
+        "pregoeiro",
+        "licitante mais bem classificado"
+      ],
+      [
+        "licitante",
+        "prazo"
+      ],
+      [
+        "Pregoeiro",
+        "apresentação de amostra"
+      ],
+      [
+        "licitante",
+        "amostra"
+      ]
+    ],
+    "assinou": [
+      [
+        "proponente",
+        "compromisso de executar o objeto"
+      ],
+      [
+        "licitante vencedor",
+        "contrato"
+      ],
+      [
+        "empresa estrangeira",
+        "contrato"
+      ]
+    ],
+    "contratou": [
+      [
+        "fornecedores",
+        "contratações"
+      ],
+      [
+        "contratado",
+        "projeto básico"
+      ],
+      [
+        "sistema",
+        "propostas classificadas"
+      ],
+      [
+        "licitantes",
+        "lance"
+      ],
+      [
+        "licitantes",
+        "lances intermediários"
+      ],
+      [
+        "sistema",
+        "lances"
+      ],
+      [
+        "Contratante",
+        "item"
+      ],
+      [
+        "licitante vencedor",
+        "contrato"
+      ],
+      [
+        "empresa estrangeira",
+        "contrato"
+      ]
+    ],
+    "nomeou": [
+      [
+        "empresa-líder",
+        "representante das consorciadas"
+      ],
+      [
+        "consulta aos cadastros",
+        "empresa licitante"
+      ],
+      [
+        "23. 7.8",
+        "proposta vencedora"
+      ]
+    ],
+    "designou": [
+      [
+        "empresa-líder",
+        "representante das consorciadas"
+      ],
+      [
+        "sistema",
+        "lances"
+      ],
+      [
+        "23. 7.8",
+        "proposta vencedora"
+      ],
+      [
+        "item 1.1",
+        "Cadastro eletrônico de fornecedores"
+      ]
+    ],
+    "exonerou": [
+      [
+        "falsidade da declaração",
+        "licitante"
+      ],
+      [
+        "pagamento",
+        "percentuais"
+      ],
+      [
+        "negociação",
+        "primeiro colocado"
+      ],
+      [
+        "apresentação de regularidade",
+        "documentos já apresentados"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:48:22.795434+00:00"
+}

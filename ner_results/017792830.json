@@ -1,0 +1,66 @@
+{
+  "documento_numero": "017792830",
+  "protocolo": "00226.000016_2025-34",
+  "source_file": "19797441.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "GILSON DIAS DE MACEDO FILHO"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SGI"
+      },
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "ISBPI-PI"
+      },
+      {
+        "text": "Diretoria de Desenvolvimento de Pessoas"
+      },
+      {
+        "text": "Secretaria de Administração do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "SECRETARIA"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T08:31:28.973378+00:00"
+}

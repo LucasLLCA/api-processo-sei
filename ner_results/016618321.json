@@ -1,0 +1,86 @@
+{
+  "documento_numero": "016618321",
+  "protocolo": "00152.000065_2025-88",
+  "source_file": "18511781.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa_juridica": [
+      {
+        "text": "FONPLAST"
+      },
+      {
+        "text": "DIPALIMP"
+      },
+      {
+        "text": "E PRODUTOS ALIMENTICIOS E LIMPEZA LTDA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "Gabinete Geral"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "valor_monetario": [
+      {
+        "text": "R$996,00"
+      }
+    ],
+    "assunto": [
+      {
+        "text": "Licitação"
+      }
+    ],
+    "objeto_licitacao": [
+      {
+        "text": "Licitação"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "licitacao"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "órgão requerente",
+        "demanda"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "envio",
+        "SEAD/PI"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:32:31.861802+00:00"
+}

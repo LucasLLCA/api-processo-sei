@@ -1,0 +1,82 @@
+{
+  "documento_numero": "016827174",
+  "protocolo": "00224.000078_2025-66",
+  "source_file": "18740192.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "FILHO EIRELI"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "Marca Própria S. C. DE SOUSA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "Assessoria de Licitação"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "Apostila",
+        "cursos diversos"
+      ]
+    ],
+    "designou": [
+      [
+        "MARCA/ MODELO",
+        "Revista"
+      ]
+    ],
+    "solicitou": [
+      [
+        "administração Exclusivo",
+        "PAPEL OFICIO"
+      ]
+    ],
+    "contratou": [
+      [
+        "administração Exclusivo",
+        "PAPEL OFICIO"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:24:22.357591+00:00"
+}

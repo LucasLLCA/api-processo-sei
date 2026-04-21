@@ -1,0 +1,93 @@
+{
+  "documento_numero": "016717978",
+  "protocolo": "00152.000049_2025-95",
+  "source_file": "18620553.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "RAQUEL"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "IAPEP"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SIPAT"
+      },
+      {
+        "text": "SDE-PI"
+      },
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "Secretaria de Segurança Pública"
+      },
+      {
+        "text": "GERÊNCIA DE PATRIMÔNIO IMOBILIÁRIO"
+      },
+      {
+        "text": "Diretoria de Gestão de Patrimônio Imobiliário"
+      },
+      {
+        "text": "Secretaria do Desenvolvimento Econômico do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "MAGALHÃES Gerente de Patrimônio Imobiliário"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "Diretoria de Gestão de Patrimônio Imobiliário",
+        "Despacho"
+      ]
+    ],
+    "designou": [
+      [
+        "Secretaria de Segurança Pública",
+        "imóvel"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:28:20.497258+00:00"
+}

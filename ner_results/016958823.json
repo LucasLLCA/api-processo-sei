@@ -1,0 +1,71 @@
+{
+  "documento_numero": "016958823",
+  "protocolo": "00240.000116_2025-82",
+  "source_file": "18884780.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "CGFR"
+      },
+      {
+        "text": "GOV-PI"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "GOVERNO DO ESTADO DO PIAUÍ",
+        "Despacho"
+      ]
+    ],
+    "nomeou": [
+      [
+        "Governo do Estado do Piauí",
+        "GOV-PI"
+      ]
+    ],
+    "designou": [
+      [
+        "Governo do Estado do Piauí",
+        "GOV-PI"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:59:35.089969+00:00"
+}

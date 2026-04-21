@@ -1,0 +1,87 @@
+{
+  "documento_numero": "017164599",
+  "protocolo": "00227.000072_2025-69",
+  "source_file": "19109284.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Jacylenne Coelho"
+      },
+      {
+        "text": "Mara Lilinne Leal de Sousa Lima"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "MICROTECNICA INFORMATICA LTDA."
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEADPREV-PI"
+      },
+      {
+        "text": "órgão gerenciador"
+      },
+      {
+        "text": "DIRETORIA DE CONTRATOS"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "Diretoria Administrativa e Financeira"
+      },
+      {
+        "text": "SUPERINTENDÊNCIA DE LICITAÇÃO E CONTRATOS"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "Superintendente"
+      },
+      {
+        "text": "Diretora de Contratos"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "presente situação",
+        "órgão gerenciador"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:04:42.091287+00:00"
+}

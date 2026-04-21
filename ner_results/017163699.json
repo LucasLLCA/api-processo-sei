@@ -1,0 +1,75 @@
+{
+  "documento_numero": "017163699",
+  "protocolo": "00152.000049_2025-95",
+  "source_file": "19108303.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Bárbara Dantas de Sousa"
+      },
+      {
+        "text": "SAMUEL PONTES DO NASCIMENTO"
+      },
+      {
+        "text": "Janainna Pinto Marques Tavares"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SDE"
+      },
+      {
+        "text": "SIPAT"
+      },
+      {
+        "text": "SDE-PI"
+      },
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "GABINETE GERAL"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "Diretora de Gestão do Patrimônio Imobiliário"
+      },
+      {
+        "text": "Secretária de Estado do Desenvolvimento Econômico"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T06:28:54.204351+00:00"
+}

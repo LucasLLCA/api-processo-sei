@@ -1,0 +1,86 @@
+{
+  "documento_numero": "016493288",
+  "protocolo": "00240.000243_2025-81",
+  "source_file": "18374346.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa_juridica": [
+      {
+        "text": "empresas de engenharia"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SADA-PI"
+      },
+      {
+        "text": "COMISSÃO PERMANENTE DE LICITAÇÃO"
+      },
+      {
+        "text": "SECRETARIA DA ASSISTÊNCIA TÉCNICA E DEFESA AGROPECUÁRIA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretor de Infra Estrutura Rural"
+      }
+    ],
+    "assunto": [
+      {
+        "text": "Pesquisa de Preço"
+      }
+    ],
+    "objeto_licitacao": [
+      {
+        "text": "Pesquisa de Preço"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "licitacao"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "Diretor de Infra Estrutura Rural",
+        "Memorando"
+      ]
+    ],
+    "solicitou": [
+      [
+        "setor",
+        "contato com empresas de engenharia"
+      ]
+    ],
+    "contratou": [
+      [
+        "setor",
+        "empresas de engenharia"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T11:30:20.815819+00:00"
+}

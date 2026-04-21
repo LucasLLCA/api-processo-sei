@@ -1,0 +1,161 @@
+{
+  "documento_numero": "016667000",
+  "protocolo": "00153.000075_2025-11",
+  "source_file": "18565003.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "patrocinado"
+      },
+      {
+        "text": "João Angeline da Silva"
+      },
+      {
+        "text": "Karolaine de Araújo Freitas"
+      },
+      {
+        "text": "Alexsander Bruno Sampaio Borges"
+      },
+      {
+        "text": "Elisson Rondinele Rodrigues Borges"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "CPL-SETUR/PI"
+      },
+      {
+        "text": "PRODUÇÕES E EVENTOS"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "CCOM"
+      },
+      {
+        "text": "patrocinador"
+      },
+      {
+        "text": "administração pública"
+      },
+      {
+        "text": "Diretoria de Licitação"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "Procuradoria Geral do Estado"
+      },
+      {
+        "text": "Coordenadoria de Comunicação Social – CCOM"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretor"
+      },
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "Presidente"
+      },
+      {
+        "text": "Membro da CPL-SETUR/PI"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "parecer_juridico"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "patrocinador",
+        "contrato de patrocínio"
+      ],
+      [
+        "idades integrantes do poder executivo estadual",
+        "contrato"
+      ],
+      [
+        "patrocinador",
+        "nome e/o"
+      ],
+      [
+        "patrocinador",
+        "nome"
+      ]
+    ],
+    "solicitou": [
+      [
+        "proponente",
+        "patrocínio"
+      ],
+      [
+        "patrocinado",
+        "projeto de patrocínio"
+      ],
+      [
+        "administração pública",
+        "apoio governamental"
+      ],
+      [
+        "órgão responsável",
+        "patrocínio"
+      ],
+      [
+        "Administração",
+        "serviços"
+      ],
+      [
+        "Lei das Licitações Públicas",
+        "patrocínio"
+      ]
+    ],
+    "contratou": [
+      [
+        "patrocinador",
+        "contrato de patrocínio"
+      ]
+    ],
+    "exonerou": [
+      [
+        "Coordenadoria de Comunicação Social – CCOM",
+        "inserção"
+      ]
+    ],
+    "autorizou": [
+      [
+        "Sr. Secretário",
+        "Termo de Ratificação"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:48:30.556163+00:00"
+}

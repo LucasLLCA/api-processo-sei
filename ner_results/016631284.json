@@ -1,0 +1,61 @@
+{
+  "documento_numero": "016631284",
+  "protocolo": "00153.000056_2025-87",
+  "source_file": "18525933.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa_juridica": [
+      {
+        "text": "ABNT"
+      },
+      {
+        "text": "DISTRIBUIÇÃO E SERVIÇOS EM GERAL DO NORDESTE LTDA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "Comissão de Gestão Financeira e Gestão por Resultados"
+      }
+    ],
+    "email": [
+      {
+        "text": "comercial@disnor.com.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "ata"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "ABNT",
+        "norma técnica 14865/2002"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:18:46.079679+00:00"
+}

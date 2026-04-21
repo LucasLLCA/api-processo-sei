@@ -1,0 +1,109 @@
+{
+  "documento_numero": "017111126",
+  "protocolo": "00153.000086_2025-93",
+  "source_file": "19051026.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "pessoa física"
+      },
+      {
+        "text": "Ana Carolina Rocha Gomes"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "Administração Pública"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "Núcleo de Controle Interno"
+      },
+      {
+        "text": "Superintendência de Controladoria Geral do Estado"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      }
+    ],
+    "data": [
+      {
+        "text": "Março/2025"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "contrato"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "autoridade competente",
+        "serviços"
+      ]
+    ],
+    "solicitou": [
+      [
+        "Órgão/Entidade",
+        "contratação artística"
+      ],
+      [
+        "Órgão/Entidade",
+        "demanda"
+      ]
+    ],
+    "nomeou": [
+      [
+        "portaria específica",
+        "Fiscal de contratos"
+      ]
+    ],
+    "designou": [
+      [
+        "portaria específica",
+        "Fiscal de contratos"
+      ]
+    ],
+    "autorizou": [
+      [
+        "autoridade competente",
+        "serviços"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "Encaminhamento",
+        "Núcleo de Controle Interno"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:07:13.862739+00:00"
+}

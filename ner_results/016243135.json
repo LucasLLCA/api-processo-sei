@@ -1,0 +1,74 @@
+{
+  "documento_numero": "016243135",
+  "protocolo": "00227.000266_2025-64",
+  "source_file": "18096279.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "FRANCISCO NORMANDES ALVES DO NASCIMENTO"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "FUNDAÇÃO PIAUÍ PREVIDÊNCIA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "Governo do Estado do Piauí"
+      }
+    ],
+    "email": [
+      {
+        "text": "nnnascimento000@gmail.com"
+      }
+    ],
+    "cpf": [
+      {
+        "text": "CPF Nº 190.022.443-04"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "FRANCISCO NORMANDES ALVES DO NASCIMENTO",
+        "PROTOCOLO"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "PROTOCOLO",
+        "FRANCISCO NORMANDES ALVES DO NASCIMENTO"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:53:30.251394+00:00"
+}

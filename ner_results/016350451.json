@@ -1,0 +1,82 @@
+{
+  "documento_numero": "016350451",
+  "protocolo": "00240.000029_2025-25",
+  "source_file": "18215889.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "KÉRCIA KARENINA"
+      },
+      {
+        "text": "Samuel Pontes do Nascimento"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "Prefeitura Municipal de Oeiras (PI)"
+      },
+      {
+        "text": "Conselho Estadual de Gestão de Pessoas"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretora de Atos"
+      },
+      {
+        "text": "Secretário Estadual de Administração"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "contratou": [
+      [
+        "KÉRCIA KARENINA",
+        "BATISTA RODRIGUES"
+      ]
+    ],
+    "nomeou": [
+      [
+        "KÉRCIA KARENINA",
+        "BATISTA RODRIGUES"
+      ]
+    ],
+    "designou": [
+      [
+        "KÉRCIA KARENINA",
+        "BATISTA RODRIGUES"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:06:49.773362+00:00"
+}

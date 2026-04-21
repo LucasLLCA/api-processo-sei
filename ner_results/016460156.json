@@ -1,0 +1,65 @@
+{
+  "documento_numero": "016460156",
+  "protocolo": "00240.000243_2025-81",
+  "source_file": "18337729.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa_juridica": [
+      {
+        "text": "efic"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "Teresina-PI"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "licitacao"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "procedimento licitatório",
+        "estudo técnico preliminaR"
+      ],
+      [
+        "características",
+        "elaboração do Estudo Técnico Preliminar"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T11:28:12.707041+00:00"
+}

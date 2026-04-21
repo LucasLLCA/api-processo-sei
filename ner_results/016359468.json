@@ -1,0 +1,70 @@
+{
+  "documento_numero": "016359468",
+  "protocolo": "00223.000095_2025-11",
+  "source_file": "18225783.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Bruna Moura de Matos"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "CIASPI"
+      },
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Assessora Especial da Diretoria"
+      }
+    ],
+    "email": [
+      {
+        "text": "juliana.veras@sead.pi.gov.br"
+      }
+    ],
+    "numero_processo": [
+      {
+        "text": "016359468"
+      },
+      {
+        "text": "00223.000095/2025-11"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T08:19:10.619547+00:00"
+}

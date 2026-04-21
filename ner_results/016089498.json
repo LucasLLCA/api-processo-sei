@@ -1,0 +1,73 @@
+{
+  "documento_numero": "016089498",
+  "protocolo": "00227.000056_2025-76",
+  "source_file": "17924419.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Marina Bandeira Alves"
+      },
+      {
+        "text": "Rozeli David Machado Castelo Branco"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "Diretoria de Pagamento de Pessoal"
+      },
+      {
+        "text": "Diretoria de Gestão de Benefícios"
+      },
+      {
+        "text": "GERÊNCIA DE FOLHA DE BENEFÍCIOS PREVIDENCIÁRIOS"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "professora"
+      },
+      {
+        "text": "Gerente da Folha de Benefícios"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "Diretoria de Gestão de Benefícios",
+        "análise de erro"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:58:19.762715+00:00"
+}

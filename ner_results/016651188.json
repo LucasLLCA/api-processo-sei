@@ -1,0 +1,67 @@
+{
+  "documento_numero": "016651188",
+  "protocolo": "00153.000086_2025-93",
+  "source_file": "18547727.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "SEPLAN-PI"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Chefia de Gabinete"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.seplan.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "Governo do Estado do Piauí",
+        "SEPLAN_Despacho"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "DESPACHO",
+        "Chefia de Gabinete"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:04:52.849777+00:00"
+}

@@ -1,0 +1,63 @@
+{
+  "documento_numero": "016245370",
+  "protocolo": "00095.000544_2025-26",
+  "source_file": "18098888.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "SAMUEL PONTES DO NASCIMENTO"
+      },
+      {
+        "text": "CARLOS AUGUSTO GOMES DE SOUZA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEJUS"
+      },
+      {
+        "text": "SEJUS-PI"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário de Administração do Estado do Piauí"
+      },
+      {
+        "text": "DIRETOR DA UNIDADE DE ADMINISTRAÇÃO PENITENCIÁRIA"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T06:15:43.427762+00:00"
+}

@@ -1,0 +1,57 @@
+{
+  "documento_numero": "016471383",
+  "protocolo": "00153.000075_2025-11",
+  "source_file": "18350232.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "MUSSOLINE"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "CCOM-PI"
+      },
+      {
+        "text": "GABINETE DA COORDENADORIA GERAL"
+      },
+      {
+        "text": "COORDENADORIA DE COMUNICAÇÃO SOCIAL"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Coordenador de Comunicação Social"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T07:46:42.261693+00:00"
+}

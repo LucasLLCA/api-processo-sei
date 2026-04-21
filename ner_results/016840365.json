@@ -1,0 +1,170 @@
+{
+  "documento_numero": "016840365",
+  "protocolo": "00227.000072_2025-69",
+  "source_file": "18754713.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Carlos Castelo Branco"
+      },
+      {
+        "text": "ROBERTO MARCIO NARDES"
+      },
+      {
+        "text": "LUIZ AUGUSTO DA COSTA BICHARA"
+      },
+      {
+        "text": "CLAUDIO JOSE FREITAS DE SAMPAIO"
+      },
+      {
+        "text": "Adriana Núbia da Costa Carvalho"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "Sistema Banco de Preços"
+      },
+      {
+        "text": "Fundação Piauí Previdência"
+      },
+      {
+        "text": "MICROTÉCNICA INFORMÁTICA LTDA"
+      },
+      {
+        "text": "C J FREITAS DE SAMPAIO EIRELLI-EPP"
+      },
+      {
+        "text": "INSTITUTO DE DESENVOLVIMENTO DO PIAUÍ"
+      },
+      {
+        "text": "GLOBAL SMART SOLUÇÕES INTELIGENTES LTDA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "DIAF/PIAUIPREV"
+      },
+      {
+        "text": "Administração Pública"
+      },
+      {
+        "text": "Fundação Piauí Previdência"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "Tribunal de Contas do Estado do Piauí"
+      },
+      {
+        "text": "Secretaria de Administração do Estado"
+      },
+      {
+        "text": "SECRETARIA DA ADMINISTRAÇÃO DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "Coordenador"
+      }
+    ],
+    "email": [
+      {
+        "text": "licitacao@microtecnica.com.br"
+      },
+      {
+        "text": "financeiro@globalsmart.com.br"
+      }
+    ],
+    "valor_monetario": [
+      {
+        "text": "R$ 711,90"
+      },
+      {
+        "text": "R$ 2.814,85"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "ata"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "FUNDAÇÃO PIAUÍ PREVIDÊNCIA",
+        "PESQUISA DE PREÇOS"
+      ],
+      [
+        "pesquisa de preços",
+        "valor de referência"
+      ],
+      [
+        "solicitação de Liberação",
+        "Ata de Registro de Preços"
+      ]
+    ],
+    "contratou": [
+      [
+        "CONTRATAÇÃO",
+        "EQUIPAMENTOS E ELETRODOMÉSTICOS"
+      ],
+      [
+        "Administração Pública",
+        "contratações"
+      ],
+      [
+        "INSTITUTO DE DESENVOLVIMENTO DO PIAUÍ",
+        "empresa (s)"
+      ]
+    ],
+    "assinou": [
+      [
+        "Assessoria",
+        "eletronicamente"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "pesquisa",
+        "Relatório de Cotação"
+      ]
+    ],
+    "autorizou": [
+      [
+        "Secretaria de Administração do Estado",
+        "Pregão Eletrônico nº 06/2024"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:03:03.050249+00:00"
+}

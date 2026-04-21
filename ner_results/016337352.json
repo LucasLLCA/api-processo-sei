@@ -1,0 +1,78 @@
+{
+  "documento_numero": "016337352",
+  "protocolo": "00095.000717_2025-14",
+  "source_file": "18201468.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "JESSICA SANTOS LEAL"
+      },
+      {
+        "text": "Susana Anjos Jaskowiak"
+      },
+      {
+        "text": "HICARO BORGES DE ARAUJO"
+      },
+      {
+        "text": "AMANDA KELLY IBIAPINA VIANA"
+      },
+      {
+        "text": "ABNER CORJES TELES MAGALHAES"
+      },
+      {
+        "text": "BENEDITO FERREIRADANTAS NETO"
+      },
+      {
+        "text": "GEISA CRONEMBERG LOBÃO DO REGO"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "SEJUS-PI"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Senhora Diretora"
+      },
+      {
+        "text": "GERÊNCIA DE PESSOAL"
+      },
+      {
+        "text": "GERÊNCIA DE FOLHA DE PAGAMENTO"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T06:17:11.108060+00:00"
+}

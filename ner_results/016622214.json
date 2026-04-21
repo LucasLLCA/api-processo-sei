@@ -1,0 +1,191 @@
+{
+  "documento_numero": "016622214",
+  "protocolo": "00240.000116_2025-82",
+  "source_file": "18515968.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "CHRISTIANNE"
+      },
+      {
+        "text": "usten Filho"
+      },
+      {
+        "text": "Arídio Silva"
+      },
+      {
+        "text": "Marçal Justen Filho"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "CHRISTIANNE"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "CGE"
+      },
+      {
+        "text": "PGE"
+      },
+      {
+        "text": "SEAD"
+      },
+      {
+        "text": "SADA"
+      },
+      {
+        "text": "CGE-PI"
+      },
+      {
+        "text": "SADA-PI"
+      },
+      {
+        "text": "SEADPREV"
+      },
+      {
+        "text": "Secretaria de Saúde"
+      },
+      {
+        "text": "Administração Pública"
+      },
+      {
+        "text": "Poder Executivo Estadual"
+      },
+      {
+        "text": "Secretaria de Administração"
+      },
+      {
+        "text": "Controladoria-Geral do Estado"
+      },
+      {
+        "text": "Controladoria Geral do Estado"
+      },
+      {
+        "text": "PROCURADORIA GERAL DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Procurador"
+      },
+      {
+        "text": "Secretaria"
+      },
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "PROCURADORA"
+      },
+      {
+        "text": "Controlador Geral do Estado"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "parecer_juridico"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "relatório",
+        "Autorizo da contratação"
+      ],
+      [
+        "gestor da SADEA",
+        "realização do certame"
+      ],
+      [
+        "Secretaria de Administração",
+        "abertura da licitação"
+      ],
+      [
+        "Lei nº 7.482/2021",
+        "pregão eletrônico"
+      ],
+      [
+        "Administração Pública",
+        "processo licitatório"
+      ]
+    ],
+    "assinou": [
+      [
+        "consultoria jurídica",
+        "documentos"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "SEAD",
+        "objetos"
+      ]
+    ],
+    "exonerou": [
+      [
+        "Lei nº 7.884",
+        "SEADPREV"
+      ],
+      [
+        "Lei nº 7.884/22",
+        "LC nº 28/03"
+      ]
+    ],
+    "designou": [
+      [
+        "SEAD",
+        "objetos"
+      ],
+      [
+        "Mapa de riscos",
+        "Termo de Referência"
+      ],
+      [
+        "CHRISTIANNE",
+        "PROCURADORA SETORIAL PLC/PGE"
+      ]
+    ],
+    "nomeou": [
+      [
+        "mapa de riscos",
+        "Termo de Referência"
+      ],
+      [
+        "CHRISTIANNE",
+        "PROCURADORA SETORIAL PLC/PGE"
+      ]
+    ],
+    "contratou": [
+      [
+        "microempresas",
+        "itens de contratação"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:51:09.186949+00:00"
+}

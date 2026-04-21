@@ -1,0 +1,122 @@
+{
+  "documento_numero": "016521690",
+  "protocolo": "00240.000243_2025-81",
+  "source_file": "18405696.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa_juridica": [
+      {
+        "text": "Dream Engenharia"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "Administração Pública"
+      },
+      {
+        "text": "Poder Executivo federal"
+      },
+      {
+        "text": "Poder Executivo estadual"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "Diretoria de Infra Estrutura Rural"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "contrato"
+  },
+  "relations": {
+    "contratou": [
+      [
+        "GOVERNO DO ESTADO DO PIAUÍ",
+        "empresa especializada"
+      ],
+      [
+        "Administração Pública",
+        "Contratações"
+      ],
+      [
+        "Administração Pública",
+        "contratações"
+      ],
+      [
+        "Poder Executivo estadual",
+        "empresa Dream Engenharia"
+      ]
+    ],
+    "autorizou": [
+      [
+        "Decretos Estaduais",
+        "contratação direta"
+      ],
+      [
+        "Poder Executivo federal",
+        "tabela de referência"
+      ]
+    ],
+    "solicitou": [
+      [
+        "Pesquisa",
+        "solicitação formal de cotação"
+      ],
+      [
+        "fornecedores",
+        "solicitação formal de cotação"
+      ],
+      [
+        "Diretoria de Infra Estrutura Rural",
+        "nomes de empresas"
+      ],
+      [
+        "Administração Pública",
+        "necessidades emergenciais"
+      ]
+    ],
+    "nomeou": [
+      [
+        "Diretoria de Infra Estrutura Rural",
+        "Empresas"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "ESCOLHA DO FORNECEDOR",
+        "Administração Pública"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T11:32:26.917451+00:00"
+}

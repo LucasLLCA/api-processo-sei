@@ -1,0 +1,57 @@
+{
+  "documento_numero": "016544024",
+  "protocolo": "00153.000073_2025-14",
+  "source_file": "18430114.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "Diretoria de Promoção e Eventos"
+      },
+      {
+        "text": "Coordenadoria de Comunicação Social – CCOM-PI"
+      }
+    ],
+    "data": [
+      {
+        "text": "10 de fevereiro de 2025"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.turismo.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T07:35:46.307282+00:00"
+}

@@ -1,0 +1,82 @@
+{
+  "documento_numero": "016958992",
+  "protocolo": "00153.000001_2025-77",
+  "source_file": "18884959.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Jardel Pontes Gomes"
+      },
+      {
+        "text": "SAMUEL PONTES DO NASCIMENTO"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "SEADPREV/PI"
+      },
+      {
+        "text": "Controladoria-Geral do Estado"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "Diretor Administrativo e Financeiro"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "autoridade competente",
+        "prorrogação do prazo"
+      ]
+    ],
+    "contratou": [
+      [
+        "órgão",
+        "contrato"
+      ]
+    ],
+    "autorizou": [
+      [
+        "autoridade competente",
+        "celebração de termo aditivo"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:42:59.929276+00:00"
+}

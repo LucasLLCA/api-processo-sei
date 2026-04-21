@@ -1,0 +1,333 @@
+{
+  "documento_numero": "016399035",
+  "protocolo": "00240.000116_2025-82",
+  "source_file": "18269650.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "CONTRATANTE"
+      },
+      {
+        "text": "João Cabral"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "POTY"
+      },
+      {
+        "text": "BETÂNIA"
+      },
+      {
+        "text": "PALMEIRA"
+      },
+      {
+        "text": "CONCÓRDIA"
+      },
+      {
+        "text": "RIO MARIA"
+      },
+      {
+        "text": "CONTRATADA"
+      },
+      {
+        "text": "CONTRATANTE"
+      },
+      {
+        "text": "EMPRESA (....)"
+      },
+      {
+        "text": "Empresa (.....)"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "TST"
+      },
+      {
+        "text": "LGPD"
+      },
+      {
+        "text": "CADUF/PI"
+      },
+      {
+        "text": "conselhos"
+      },
+      {
+        "text": "Estado do Piauí"
+      },
+      {
+        "text": "Poder Judiciário"
+      },
+      {
+        "text": "comissão/servidor"
+      },
+      {
+        "text": "Ministério Público"
+      },
+      {
+        "text": "autoridade competente"
+      },
+      {
+        "text": "Administração Pública"
+      },
+      {
+        "text": "Autoridade fiscalizadora"
+      },
+      {
+        "text": "Receita Federal do Brasil"
+      },
+      {
+        "text": "orçamento do Estado do Piauí"
+      },
+      {
+        "text": "foro da Comarca de Teresina (PI)"
+      },
+      {
+        "text": "Órgãos de controle administrativo"
+      },
+      {
+        "text": "Procuradoria-Geral do Estado do Piauí"
+      },
+      {
+        "text": "Procuradoria-Geral da Fazenda Nacional"
+      },
+      {
+        "text": "Secretaria da Receita Federal do Brasil"
+      },
+      {
+        "text": "Secretário da Receita Federal do Brasil"
+      },
+      {
+        "text": "Autoridade Nacional de Proteção de Dados - ANPD"
+      },
+      {
+        "text": "SECRETARIA DA ASSISTÊNCIA TÉCNICA E DEFESA AGROPECUÁRIA"
+      },
+      {
+        "text": "Secretaria de Assistência Técnica e Defesa Agropecuária"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "prepostos"
+      },
+      {
+        "text": "SECRETÁRIO"
+      },
+      {
+        "text": "Secretaria"
+      },
+      {
+        "text": "empregados"
+      },
+      {
+        "text": "subordinados"
+      },
+      {
+        "text": "funcionários"
+      },
+      {
+        "text": "representante"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "contrato"
+  },
+  "relations": {
+    "contratou": [
+      [
+        "ESTADO DO PIAUÍ",
+        "EMPRESA (....)"
+      ],
+      [
+        "partes",
+        "TERMO DE CONTRATO"
+      ],
+      [
+        "contratada",
+        "preços"
+      ],
+      [
+        "CONTRATADA",
+        "contrato"
+      ],
+      [
+        "CONTRATANTE",
+        "contrato"
+      ],
+      [
+        "Contrato",
+        "empresa especializada"
+      ],
+      [
+        "Contratante",
+        "contratada"
+      ]
+    ],
+    "nomeou": [
+      [
+        "ravante",
+        "CONTRATADA"
+      ],
+      [
+        "CLÁUSULA DÉCIMA PRIMEIRA – FISCALIZAÇÃO",
+        "representante par"
+      ],
+      [
+        "autoridade competente",
+        "representante"
+      ],
+      [
+        "CONTRATAN",
+        "dados pessoais"
+      ],
+      [
+        "CLAUSULA DÉCIMA SÉTIMA – DO FORO",
+        "foro da Comarca de Teresina (PI)"
+      ],
+      [
+        "AÇÚCAR CRISTAL",
+        "OLHO D'ÁGUA"
+      ]
+    ],
+    "designou": [
+      [
+        "ravante",
+        "CONTRATADA"
+      ],
+      [
+        "CLÁUSULA SEGUNDA",
+        "objeto"
+      ],
+      [
+        "Fiscal",
+        "objeto"
+      ],
+      [
+        "CLÁUSULA DÉCIMA PRIMEIRA – FISCALIZAÇÃO",
+        "representante par"
+      ],
+      [
+        "CLÁUSULA DÉCIMA PRIMEIRA",
+        "representante"
+      ]
+    ],
+    "exonerou": [
+      [
+        "recebimento provisório",
+        "responsabilidade da contratada"
+      ],
+      [
+        "FISCALIZAÇÃO",
+        "responsabilidade da Contratada"
+      ],
+      [
+        "pagamento",
+        "Contratada de responsabilidade"
+      ],
+      [
+        "contrato",
+        "dados pessoais"
+      ]
+    ],
+    "autorizou": [
+      [
+        "fiscal do contrato",
+        "PAGAMENTO"
+      ],
+      [
+        "Fiscal",
+        "Nota Fiscal"
+      ],
+      [
+        "Lei n. 13.709/2018",
+        "tratamento de dados pessoais"
+      ],
+      [
+        "Pregão Eletrônico n. 01/2025",
+        "contratação"
+      ]
+    ],
+    "solicitou": [
+      [
+        "contratante",
+        "documentos"
+      ],
+      [
+        "CONTRATADA",
+        "negociar a adoção de preço"
+      ],
+      [
+        "Administração",
+        "responsabilizada"
+      ]
+    ],
+    "assinou": [
+      [
+        "Contratada",
+        "compromissos"
+      ],
+      [
+        "contratada",
+        "contrato"
+      ],
+      [
+        "Administração",
+        "objeto do contrato"
+      ],
+      [
+        "Contratante",
+        "Contrato"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "apontamentos",
+        "autoridade competente"
+      ],
+      [
+        "MULTA",
+        "órgão contratante"
+      ],
+      [
+        "agente",
+        "DECLARAÇÃO DE INIDONEIDADE"
+      ],
+      [
+        "informações",
+        "outras empresas ou pessoas"
+      ],
+      [
+        "solicitações de informação",
+        "CONTRATANTE"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:43:36.436240+00:00"
+}

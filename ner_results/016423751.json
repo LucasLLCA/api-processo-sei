@@ -1,0 +1,79 @@
+{
+  "documento_numero": "016423751",
+  "protocolo": "00201.000103_2025-70",
+  "source_file": "18297177.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "SEMPI-PI"
+      },
+      {
+        "text": "SUPERINTENDÊNCIA DE GESTÃO DE PESSOAS"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "SECRETARIA"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.sead.pi.gov.br/"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "Despacho",
+        "Gabinete Geral do Secretário da SEAD-PI"
+      ]
+    ],
+    "solicitou": [
+      [
+        "SEMPI-PI",
+        "Contratação de Profissionais"
+      ]
+    ],
+    "contratou": [
+      [
+        "SEMPI-PI",
+        "Contratação de Profissionais"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:18:01.606336+00:00"
+}

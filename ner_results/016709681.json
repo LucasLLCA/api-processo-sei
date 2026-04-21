@@ -1,0 +1,428 @@
+{
+  "documento_numero": "016709681",
+  "protocolo": "00240.000047_2025-15",
+  "source_file": "18611541.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "licitante"
+      },
+      {
+        "text": "adjudicatário"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "fornecedor"
+      },
+      {
+        "text": "Microempresa"
+      },
+      {
+        "text": "microempresas"
+      },
+      {
+        "text": "empresa licitante"
+      },
+      {
+        "text": "empresa contratada"
+      },
+      {
+        "text": "empresas de pequeno porte"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SADA"
+      },
+      {
+        "text": "CADUF"
+      },
+      {
+        "text": "SADA-PI"
+      },
+      {
+        "text": "consulados"
+      },
+      {
+        "text": "Receita Federal"
+      },
+      {
+        "text": "Administração Pública"
+      },
+      {
+        "text": "comissão de contratação"
+      },
+      {
+        "text": "Tribunal de Contas da União"
+      },
+      {
+        "text": "Controladoria-Geral da União"
+      },
+      {
+        "text": "Setor Público Federal – Cadin"
+      },
+      {
+        "text": "Pregoeiro/Agente de Contratação/Comissão"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "gerente"
+      },
+      {
+        "text": "dirigente"
+      },
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "controlador"
+      },
+      {
+        "text": "funcionário"
+      },
+      {
+        "text": "responsável"
+      },
+      {
+        "text": "agente público"
+      },
+      {
+        "text": "representante de empres"
+      },
+      {
+        "text": "Pregoeiro/Agente de Contratação/Comissão"
+      }
+    ],
+    "data": [
+      {
+        "text": "29 de janeiro de 2016"
+      }
+    ],
+    "decreto": [
+      {
+        "text": "Decreto nº 8.660"
+      }
+    ],
+    "objeto_licitacao": [
+      {
+        "text": "regularidade fiscal"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "licitacao"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "Secretaria de Estado",
+        "LICITAÇÃO"
+      ],
+      [
+        "regime de tributação",
+        "Microempresa"
+      ],
+      [
+        "regoeiro/Agente de Contratação/Comissão",
+        "reinício da disputa"
+      ],
+      [
+        "Administração",
+        "produtividade"
+      ]
+    ],
+    "solicitou": [
+      [
+        "licitante",
+        "LICITAÇÃO"
+      ],
+      [
+        "licitantes",
+        "PROPOSTA"
+      ],
+      [
+        "rativa",
+        "tratamento favorecido"
+      ],
+      [
+        "licitante",
+        "alteração"
+      ],
+      [
+        "licitantes",
+        "substituição"
+      ],
+      [
+        "licitante",
+        "sindicatos"
+      ],
+      [
+        "licitantes",
+        "lances intermediários"
+      ],
+      [
+        "licitantes",
+        "lances"
+      ],
+      [
+        "Pregoeiro/Agente",
+        "licitante"
+      ],
+      [
+        "licitante",
+        "prazo"
+      ],
+      [
+        "licitante",
+        "manifestação"
+      ],
+      [
+        "Administração",
+        "exequibilidade"
+      ],
+      [
+        "licitante",
+        "Planilha"
+      ],
+      [
+        "licitante",
+        "comprovação de exequibilidade"
+      ],
+      [
+        "licitante",
+        "declaração"
+      ],
+      [
+        "apuração de responsabilidade",
+        "instauração de processo de responsabilização"
+      ],
+      [
+        "pessoa",
+        "pedido"
+      ]
+    ],
+    "contratou": [
+      [
+        "licitante",
+        "veículos automotores"
+      ],
+      [
+        "titulares",
+        "contratante do serviço"
+      ],
+      [
+        "licitante",
+        "PROPOSTA"
+      ],
+      [
+        "licitantes",
+        "preços máximos"
+      ],
+      [
+        "Pregoeiro/Agente de Contratação/Comissão",
+        "habilitação"
+      ],
+      [
+        "licitantes",
+        "documentos de habilitação"
+      ],
+      [
+        "licitante",
+        "contrato"
+      ],
+      [
+        "licitantes",
+        "contrato"
+      ]
+    ],
+    "nomeou": [
+      [
+        "Secretaria de Estado",
+        "Rua João Cabral"
+      ],
+      [
+        "licitante",
+        "sindicatos"
+      ],
+      [
+        "sistema",
+        "lances"
+      ],
+      [
+        "Administração",
+        "produtividade"
+      ],
+      [
+        "Administração",
+        "termo de contrato"
+      ]
+    ],
+    "designou": [
+      [
+        "Secretaria de Estado",
+        "Rua João Cabral"
+      ],
+      [
+        "licitante",
+        "sindicatos"
+      ],
+      [
+        "sistema",
+        "lances"
+      ],
+      [
+        "sistema",
+        "propostas"
+      ],
+      [
+        "Administração",
+        "produtividade"
+      ],
+      [
+        "Administração",
+        "TERMO DE CONTRATO"
+      ]
+    ],
+    "assinou": [
+      [
+        "licitante",
+        "propostas"
+      ],
+      [
+        "proponente",
+        "compromisso"
+      ],
+      [
+        "consequências",
+        "prazo"
+      ],
+      [
+        "licitantes",
+        "lances"
+      ],
+      [
+        "licitante vencedor",
+        "contrato"
+      ],
+      [
+        "adjudicatário",
+        "TERMO DE CONTRATO"
+      ],
+      [
+        "adjudicatário",
+        "contrato"
+      ]
+    ],
+    "exonerou": [
+      [
+        "falsidade da declaração",
+        "licitante"
+      ],
+      [
+        "acontecimento",
+        "sigilo"
+      ],
+      [
+        "pagamento",
+        "percentuais"
+      ],
+      [
+        "licitantes",
+        "último lance"
+      ],
+      [
+        "desconexão",
+        "Pregoeiro/Agente de Contratação/Comissão"
+      ],
+      [
+        "Comissão",
+        "licitante"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "licitantes",
+        "LANCES"
+      ],
+      [
+        "sistema",
+        "lances"
+      ],
+      [
+        "sistema",
+        "aviso de fechamento"
+      ],
+      [
+        "licitantes",
+        "lances intermediários"
+      ],
+      [
+        "licitante",
+        "manifestação"
+      ],
+      [
+        "sindicato(s)",
+        "licitantes"
+      ],
+      [
+        "licitantes",
+        "documentos de habilitação"
+      ],
+      [
+        "Administração",
+        "assinatura"
+      ],
+      [
+        "recursos",
+        "autoridade superior"
+      ],
+      [
+        "documentação",
+        "certame"
+      ],
+      [
+        "comissão",
+        "licitante"
+      ],
+      [
+        "autoridade",
+        "recurso"
+      ],
+      [
+        "notificações",
+        "endereços de e-mail"
+      ],
+      [
+        "Anexo I",
+        "Edital"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:19:41.641621+00:00"
+}

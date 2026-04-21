@@ -1,0 +1,68 @@
+{
+  "documento_numero": "016147384",
+  "protocolo": "00240.000063_2025-08",
+  "source_file": "17989162.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "GABINETE GERAL"
+      },
+      {
+        "text": "DIRETORIA ADMINISTRATIVA E FINANCEIRA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "CHEFIA DE GABINETE"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "encaminhamento",
+        "DIRETORIA ADMINISTRATIVA E FINANCEIRA - SADA/PI"
+      ]
+    ],
+    "exonerou": [
+      [
+        "Fábio",
+        "Costa"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:31:39.715457+00:00"
+}

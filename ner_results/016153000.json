@@ -1,0 +1,65 @@
+{
+  "documento_numero": "016153000",
+  "protocolo": "00095.000323_2025-58",
+  "source_file": "17995469.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "SUZANA MARIA REBELO SAMPAIO MARREIROS"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEJUS"
+      },
+      {
+        "text": "SEJUS-PI"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "COORDENAÇÃO DE ASSISTÊNCIA SOCIAL"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretaria"
+      }
+    ],
+    "endereco": [
+      {
+        "text": "Av. Pedro Freitas"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T06:14:16.756044+00:00"
+}

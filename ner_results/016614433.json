@@ -1,0 +1,79 @@
+{
+  "documento_numero": "016614433",
+  "protocolo": "00153.000008_2025-99",
+  "source_file": "18507558.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "JOAQUIM DE OLIVEIRA JUNIOR"
+      },
+      {
+        "text": "Wagner Jardel Pontes Gomes"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "SEADPREV"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "Diretor Administrativo e Financeiro"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "designou": [
+      [
+        "entidade fazendária",
+        "processo de licitação"
+      ]
+    ],
+    "autorizou": [
+      [
+        "Secretário da SEADPREV",
+        "Termo Aditivo"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:51:38.626172+00:00"
+}

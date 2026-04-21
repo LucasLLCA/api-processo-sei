@@ -1,0 +1,80 @@
+{
+  "documento_numero": "017013756",
+  "protocolo": "00227.000072_2025-69",
+  "source_file": "18944774.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Carlos Castelo Branco"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "J FREITAS DE SAMPAIO LTDA"
+      },
+      {
+        "text": "FUNDAÇÃO PIAUÍ PREVIDÊNCIA"
+      },
+      {
+        "text": "MICROTECNICA INFORMATICA LTDA"
+      },
+      {
+        "text": "GLOBAL SMART SOLUCOES INTELIGENTES LTDA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "DIAF/PIAUIPREV"
+      },
+      {
+        "text": "Diretoria de Contratos"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "Tribunal de Contas da União"
+      },
+      {
+        "text": "Conselho Nacional de Justiça"
+      },
+      {
+        "text": "DIRETORIA ADMINISTRATIVA E FINANCEIRA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "ata"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T09:03:57.657125+00:00"
+}

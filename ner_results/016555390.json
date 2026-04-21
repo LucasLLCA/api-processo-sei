@@ -1,0 +1,180 @@
+{
+  "documento_numero": "016555390",
+  "protocolo": "00227.000095_2025-73",
+  "source_file": "18442674.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Flávio Chaib"
+      },
+      {
+        "text": "Glauber Mazza Morais"
+      },
+      {
+        "text": "Alexandre Magno Bandeira da Silva Costa"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "SEINFRA"
+      },
+      {
+        "text": "PIAUIPREV"
+      },
+      {
+        "text": "ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "Fundação Piauí Previdência"
+      },
+      {
+        "text": "Agiliza Engenharia e Serviços Imobiliários LTDA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEINFRA"
+      },
+      {
+        "text": "PIAUIPREV"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "Fundação Piauí Previdência"
+      },
+      {
+        "text": "corpo técnico de engenharia"
+      },
+      {
+        "text": "Secretaria de Infraestrutura"
+      },
+      {
+        "text": "Superintendência do Patrimônio da"
+      },
+      {
+        "text": "DIRETORIA ADMINISTRATIVA E FINANCEIRA"
+      },
+      {
+        "text": "Secretaria da Infraestrutura - SEINFRA/PI"
+      },
+      {
+        "text": "Diretoria da Unidade de Modernização Administrativa"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Presidente"
+      },
+      {
+        "text": "Secretaria"
+      },
+      {
+        "text": "Engenheiro Civil"
+      },
+      {
+        "text": "analistas previdenciários"
+      }
+    ],
+    "data": [
+      {
+        "text": "21 de agosto de 2023"
+      }
+    ],
+    "assunto": [
+      {
+        "text": "Projeto Executivo"
+      }
+    ],
+    "objeto_licitacao": [
+      {
+        "text": "Projeto Executivo"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "requerimento"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "SEINFRA",
+        "elaboração de um Projeto Executivo"
+      ],
+      [
+        "Presidente desta PIAUIPREV",
+        "elaboração do Projeto Executivo"
+      ],
+      [
+        "Presidente desta PIAUIPREV",
+        "autorização"
+      ]
+    ],
+    "assinou": [
+      [
+        "Fundação Piauí Previdência",
+        "Contrato"
+      ]
+    ],
+    "solicitou": [
+      [
+        "Equipe Técnica da SEINFRA",
+        "Relatórios de Sondagem do Solo"
+      ],
+      [
+        "SEINFRA",
+        "elaboração de um Projeto Executivo"
+      ],
+      [
+        "Fundação",
+        "autorização da Superintendência do Patrimônio da"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "SEINFRA",
+        "elaboração de um Projeto Executivo"
+      ]
+    ],
+    "contratou": [
+      [
+        "decisão",
+        "empresa especializada"
+      ],
+      [
+        "Fundação Piauí Previdência",
+        "empresa especializada"
+      ],
+      [
+        "Fundação Piauí Previdência",
+        "CONTRATO DE CESSÃO DE USO GRATUITO"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:42:23.377128+00:00"
+}

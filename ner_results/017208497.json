@@ -1,0 +1,58 @@
+{
+  "documento_numero": "017208497",
+  "protocolo": "00227.000439_2025-44",
+  "source_file": "19157054.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa_juridica": [
+      {
+        "text": "Fundação PIAUIPREV"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.sead.pi.gov.br/"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "Despacho",
+        "Despacho Governo do Estado do Piauí"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:05:03.943826+00:00"
+}

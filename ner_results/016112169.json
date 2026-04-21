@@ -1,0 +1,64 @@
+{
+  "documento_numero": "016112169",
+  "protocolo": "00227.000054_2025-87",
+  "source_file": "17949864.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "Despacho SECRETARIA DE FAZENDA DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      }
+    ],
+    "url": [
+      {
+        "text": "https://portal.sefaz.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "SEFAZ-PI/GASEC/SUPAFT",
+        "UNAFIN De acordo"
+      ]
+    ],
+    "solicitou": [
+      [
+        "UNAFIN De acordo",
+        "móveis"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:57:43.861179+00:00"
+}

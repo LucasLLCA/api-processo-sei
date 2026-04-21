@@ -1,0 +1,88 @@
+{
+  "documento_numero": "016402645",
+  "protocolo": "00095.000323_2025-58",
+  "source_file": "18273671.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Silva Borges"
+      },
+      {
+        "text": "Amanda Leite"
+      },
+      {
+        "text": "MARIA REBELO SAMPAIO MARREIROS"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEJUS"
+      },
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "COMISSÃO ESPECIAL DE ENQUADRAMENTO"
+      },
+      {
+        "text": "SUPERINTENDÊNCIA DE GESTÃO DE PESSOAS"
+      },
+      {
+        "text": "Conselho Estadual de Gestão de Pessoas"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "Presidente"
+      },
+      {
+        "text": "ASSISTENTE SOCIAL"
+      },
+      {
+        "text": "Governador do Estado"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "Conselho Estadual de Gestão de Pessoas",
+        "Governador do Estado"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:14:31.391250+00:00"
+}

@@ -1,0 +1,78 @@
+{
+  "documento_numero": "016271260",
+  "protocolo": "00227.000277_2025-44",
+  "source_file": "18128024.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "MICHEL STEVIE DE CASTRO OLIVEIRA"
+      },
+      {
+        "text": "Regina Maria Soares de Araújo Vieira"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "FUNDAÇÃO PIAUÍ PREVIDÊNCIA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Gerente de Benefícios Previdenciários"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "V.Sa",
+        "Portaria de Aposentadoria"
+      ]
+    ],
+    "solicitou": [
+      [
+        "Senhor(a) Coordenador(a)",
+        "V.Sa"
+      ]
+    ],
+    "designou": [
+      [
+        "V.Sa",
+        "Portaria de Aposentadoria"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:57:02.068463+00:00"
+}

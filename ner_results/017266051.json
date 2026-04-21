@@ -1,0 +1,75 @@
+{
+  "documento_numero": "017266051",
+  "protocolo": "00226.000016_2025-34",
+  "source_file": "19219796.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "GILSON DIAS DE MACEDO FILHO"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "GOV-PI"
+      },
+      {
+        "text": "SEDUC-PI"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Professor SE-II"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "GILSON DIAS DE MACEDO FILHO",
+        "Decreto de GILSON DIAS DE MACEDO FILHO"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "Decreto",
+        "Instituto de Saneamento Básico do Piauí – ISBPI"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:29:45.189626+00:00"
+}

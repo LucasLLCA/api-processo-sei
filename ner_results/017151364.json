@@ -1,0 +1,52 @@
+{
+  "documento_numero": "017151364",
+  "protocolo": "00226.000016_2025-34",
+  "source_file": "19094766.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Rafael Tajra"
+      },
+      {
+        "text": "GILSON DIAS DE MACEDO FILHO"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Professor SE-II"
+      },
+      {
+        "text": "GOVERNADOR DO ESTADO DO PIAUÍ"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "parecer_juridico"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T08:29:36.577929+00:00"
+}

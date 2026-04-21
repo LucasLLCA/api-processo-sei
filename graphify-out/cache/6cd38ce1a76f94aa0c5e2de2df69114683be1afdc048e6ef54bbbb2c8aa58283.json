@@ -1,0 +1,1 @@
+{"nodes": [{"id": "script:load_gliner_to_neo4j", "label": "load_gliner_to_neo4j script (GLiNER\u2192Neo4j ETL)", "file_type": "python", "source_file": "scripts/load_gliner_to_neo4j.py", "source_location": "script", "source_url": null, "captured_at": null, "author": "EXTRACTED", "contributor": "confidence:0.9"}], "edges": [], "hyperedges": []}

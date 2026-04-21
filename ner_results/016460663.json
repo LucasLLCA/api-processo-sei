@@ -1,0 +1,53 @@
+{
+  "documento_numero": "016460663",
+  "protocolo": "00240.000243_2025-81",
+  "source_file": "18338282.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "Assistência Técnica e Defesa Agropecuária"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "declaracao"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "SECRETARIA DA ASSISTÊNCIA TÉCNICA E DEFESA AGROPECUÁRIA",
+        "DECLARAÇÃO DE COTAÇÃO DE PREÇOS"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T11:28:32.788443+00:00"
+}

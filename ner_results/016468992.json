@@ -1,0 +1,82 @@
+{
+  "documento_numero": "016468992",
+  "protocolo": "00153.000049_2025-85",
+  "source_file": "18347580.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "José Antônio Monteiro"
+      },
+      {
+        "text": "Jacylene Coelho Bezerra Fortes"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD"
+      },
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "DIRETORIA DE LICITAÇÕES E CONTRATOS ADMINISTRATIVOS"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "Secretário de Estado do Turismo"
+      },
+      {
+        "text": "Superintendente de Licitações e Contratos"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "Secretário da SEAD",
+        "Autorização do Secretário da SEAD"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "encaminhamento",
+        "Autorização do Secretário da SEAD"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:06:17.054021+00:00"
+}

@@ -1,0 +1,63 @@
+{
+  "documento_numero": "016151136",
+  "protocolo": "00118.000116_2025-98",
+  "source_file": "17993388.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa_juridica": [
+      {
+        "text": "AGÊNCIA DE DESENVOLVIMENTO HABITACIONAL DO PIAUÍ"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "Diretoria Geral"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "DIRETOR"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.adh.pi.gov.br/"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "Despacho",
+        "Diretoria Geral"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:21:48.392981+00:00"
+}

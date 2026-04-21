@@ -1,0 +1,80 @@
+{
+  "documento_numero": "016902761",
+  "protocolo": "00240.000029_2025-25",
+  "source_file": "18823116.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "EVANDRO BORGES DA SILVA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "SADA-PI"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "COORDENAÇÃO DE RECURSOS HUMANOS"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretaria"
+      },
+      {
+        "text": "Extensionista Rural II"
+      }
+    ],
+    "assunto": [
+      {
+        "text": "Ficha de Cessão/ Disposição"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.sead.pi.gov.br/"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "sr. EVANDRO BORGES DA SILVA",
+        "Ficha de Cessão/ Disposição"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:07:31.415617+00:00"
+}

@@ -1,0 +1,76 @@
+{
+  "documento_numero": "017717584",
+  "protocolo": "00153.000061_2025-90",
+  "source_file": "19714813.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "ERICK DIEGO FURTADO ROCHA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "CGFR"
+      },
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "Diretoria Administrativa e Financeira"
+      },
+      {
+        "text": "COMISSÃO DE GESTÃO FINANCEIRA POR RESULTADOS"
+      },
+      {
+        "text": "Comissão de Gestão Financeira e Gestão por Resultados"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "CGFR",
+        "sociações, cooperativas e artesãos"
+      ]
+    ],
+    "assinou": [
+      [
+        "ERICK DIEGO FURTADO ROCHA",
+        "Assinatura Eletrônica"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:26:30.375342+00:00"
+}

@@ -1,0 +1,59 @@
+{
+  "documento_numero": "017087696",
+  "protocolo": "00089.002616_2025-59",
+  "source_file": "19025369.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "FUESPI-PI"
+      }
+    ],
+    "url": [
+      {
+        "text": "https://www.uespi.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "portaria"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "Apoio da Reitoria",
+        "emissão de portaria"
+      ]
+    ],
+    "solicitou": [
+      [
+        "Apoio da Reitoria",
+        "emissão de portaria"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:13:29.318985+00:00"
+}

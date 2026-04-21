@@ -1,0 +1,77 @@
+{
+  "documento_numero": "016112203",
+  "protocolo": "00240.000044_2025-73",
+  "source_file": "17949903.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa_juridica": [
+      {
+        "text": "PAS"
+      },
+      {
+        "text": "PAA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SADA"
+      },
+      {
+        "text": "V. Sa"
+      },
+      {
+        "text": "SADA-PI"
+      },
+      {
+        "text": "COORDENAÇÃO DE ASSISTÊNCIA TÉCNICA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretor"
+      },
+      {
+        "text": "SECRETARIA"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "implementação do Projeto",
+        "recursos financeiros"
+      ],
+      [
+        "V. Sa",
+        "analise do Projeto"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:08:19.038143+00:00"
+}

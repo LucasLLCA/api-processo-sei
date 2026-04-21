@@ -1,0 +1,101 @@
+{
+  "documento_numero": "016108078",
+  "protocolo": "00227.000076_2025-47",
+  "source_file": "17945226.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Flávio Chaib"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "Fundação Piauí Previdência"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "ARP"
+      },
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "DIRETORIA ADMINISTRATIVA E FINANCEIRA"
+      },
+      {
+        "text": "SECRETARIA DE ADMINISTRAÇÃO DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Presidente"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "ata"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "FUNDAÇÃO PIAUÍ PREVIDÊNCIA",
+        "Contrato"
+      ]
+    ],
+    "solicitou": [
+      [
+        "Fundação Piauí Previdência",
+        "REQUERIMENTO INTERESSADO"
+      ],
+      [
+        "Fundação Piauí Previdência",
+        "autorização"
+      ]
+    ],
+    "contratou": [
+      [
+        "FUNDAÇÃO PIAUÍ PREVIDÊNCIA",
+        "empresa Localiza Veículos Especiais S.A"
+      ],
+      [
+        "Fundação Piauí Previdência",
+        "Empresa de Locação de Veículos"
+      ]
+    ],
+    "autorizou": [
+      [
+        "Exmo. Senhor Presidente",
+        "autorização"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:06:35.412342+00:00"
+}

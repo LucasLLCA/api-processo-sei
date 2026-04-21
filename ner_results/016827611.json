@@ -1,0 +1,100 @@
+{
+  "documento_numero": "016827611",
+  "protocolo": "00153.000073_2025-14",
+  "source_file": "18740673.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Marina Coelho Sousa"
+      },
+      {
+        "text": "José Antônio Monteiro Neto"
+      },
+      {
+        "text": "CLARICE DE SENA MONTEIRO QUEIROZ"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "Núcleo de Controle Interno"
+      },
+      {
+        "text": "CONTROLADORIA-GERAL DO ESTADO"
+      },
+      {
+        "text": "Superintendência de Controladoria Geral do Estado"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário de Estado do Turismo"
+      },
+      {
+        "text": "Coordenador Membro do Núcleo de Controle Interno"
+      },
+      {
+        "text": "GERENTE Coordenador do Núcleo de Controle Interno"
+      }
+    ],
+    "matricula": [
+      {
+        "text": "3714624"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "parecer_juridico"
+  },
+  "relations": {
+    "nomeou": [
+      [
+        "portaria específica",
+        "fiscal do contrato"
+      ]
+    ],
+    "designou": [
+      [
+        "portaria específica",
+        "fiscal do contrato"
+      ],
+      [
+        "portaria específica",
+        "fiscal"
+      ]
+    ],
+    "assinou": [
+      [
+        "gestor",
+        "Nota de Empenho"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:42:07.393918+00:00"
+}

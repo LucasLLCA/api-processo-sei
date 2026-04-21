@@ -1,0 +1,97 @@
+{
+  "documento_numero": "016104468",
+  "protocolo": "00227.000076_2025-47",
+  "source_file": "17941126.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "PAULO ROBERTO TEIXEIRA"
+      },
+      {
+        "text": "Carla Adriana da Silva Peres"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "CS BRASIL FROTAS S.A"
+      },
+      {
+        "text": "C S BRASIL FROTAS S.A ."
+      },
+      {
+        "text": "Fundação Piauí Previdência"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "PIAUIPREV-PI"
+      },
+      {
+        "text": "GERÊNCIA DE PATRIMÔNIO"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "FUNDAÇÃO PIAUÍ PREVIDÊNCIA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Gerente de Patrimônio"
+      },
+      {
+        "text": "Diretora Administrativa e Financeira"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "contratou": [
+      [
+        "FUNDAÇÃO PIAUÍ PREVIDÊNCIA",
+        "empresa especializada"
+      ],
+      [
+        "empresa C S BRASIL",
+        "objeto abaixo"
+      ]
+    ],
+    "solicitou": [
+      [
+        "empresa C S BRASIL",
+        "manifestação de interesse"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:06:20.414733+00:00"
+}

@@ -1,0 +1,110 @@
+{
+  "documento_numero": "016668588",
+  "protocolo": "00153.000075_2025-11",
+  "source_file": "18566723.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Gil Carlos"
+      },
+      {
+        "text": "Dr. Gil Carlos"
+      },
+      {
+        "text": "Bárbara do Firmino"
+      },
+      {
+        "text": "JOAQUIM DE OLIVEIRA JUNIOR"
+      },
+      {
+        "text": "WAGNER JARDEL PONTES GOMES"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "Secretaria de Planejamento"
+      },
+      {
+        "text": "Controladoria-Geral do Estado"
+      },
+      {
+        "text": "DIRETORIA ADMINISTRATIVA E FINANCEIRA"
+      },
+      {
+        "text": "Coordenadoria de Comunicação do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "presidente"
+      },
+      {
+        "text": "secretaria"
+      },
+      {
+        "text": "Chefe do Poder Executivo Estadual"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "designou": [
+      [
+        "entidade fazendária",
+        "processo de licitação"
+      ]
+    ],
+    "autorizou": [
+      [
+        "Presidente do Poder Legislativo",
+        "liberação das emendas parlamentares"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "ofícios",
+        "secretaria"
+      ],
+      [
+        "emenda",
+        "secretaria"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:49:19.630760+00:00"
+}

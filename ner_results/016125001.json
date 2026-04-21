@@ -1,0 +1,102 @@
+{
+  "documento_numero": "016125001",
+  "protocolo": "00240.000044_2025-73",
+  "source_file": "17964133.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "José Wellington Barroso de Araújo"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "PAS"
+      },
+      {
+        "text": "PAA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SADA-PI"
+      },
+      {
+        "text": "GABINETE GERAL"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "Ministro de Estado"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "implementação do Projeto",
+        "recursos financeiros"
+      ]
+    ],
+    "contratou": [
+      [
+        "Projeto",
+        "equipamentos"
+      ]
+    ],
+    "assinou": [
+      [
+        "FÁBIO",
+        "COSTA"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "FÁBIO",
+        "COSTA"
+      ]
+    ],
+    "nomeou": [
+      [
+        "FÁBIO",
+        "COSTA"
+      ]
+    ],
+    "designou": [
+      [
+        "FÁBIO",
+        "COSTA"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:08:49.541377+00:00"
+}

@@ -1,0 +1,107 @@
+{
+  "documento_numero": "017012757",
+  "protocolo": "00227.000024_2025-71",
+  "source_file": "18943696.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "RUBENS SARAIVA"
+      },
+      {
+        "text": "BENEDITO RUBENS SARAIVA"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "SEDUC"
+      },
+      {
+        "text": "PIAUÍPREV"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "GMP"
+      },
+      {
+        "text": "GAP"
+      },
+      {
+        "text": "SGI"
+      },
+      {
+        "text": "GSE"
+      },
+      {
+        "text": "CFP"
+      },
+      {
+        "text": "Secretaria de Educação"
+      },
+      {
+        "text": "Procuradoria Geral do Estado"
+      },
+      {
+        "text": "Superintendência de Gestão Interna"
+      },
+      {
+        "text": "Despacho SECRETARIA DE ESTADO DA EDUCAÇÃO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      }
+    ],
+    "data": [
+      {
+        "text": "janeiro/2025"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.seduc.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "Ações Trabalhistas",
+        "FGTS"
+      ],
+      [
+        "servidor da mudança",
+        "Regime Geral de Previdência Social"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:55:55.752481+00:00"
+}

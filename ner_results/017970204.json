@@ -1,0 +1,66 @@
+{
+  "documento_numero": "017970204",
+  "protocolo": "00201.000103_2025-70",
+  "source_file": "19992343.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "SAMUEL PONTES DO NASCIMENTO"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "Superintendência de Gestão de Pessoas"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "advogado"
+      },
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "psicólogas"
+      },
+      {
+        "text": "motoristas"
+      },
+      {
+        "text": "assistentes sociais"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T08:18:07.418656+00:00"
+}

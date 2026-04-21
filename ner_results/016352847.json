@@ -1,0 +1,87 @@
+{
+  "documento_numero": "016352847",
+  "protocolo": "00240.000116_2025-82",
+  "source_file": "18218535.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa_juridica": [
+      {
+        "text": "POTY"
+      },
+      {
+        "text": "ZAELE"
+      },
+      {
+        "text": "BETÂNIA"
+      },
+      {
+        "text": "PALMEIRA"
+      },
+      {
+        "text": "PANTANAL"
+      },
+      {
+        "text": "CONCÓRDIA"
+      },
+      {
+        "text": "RIO MARIA"
+      },
+      {
+        "text": "BOM SABOR"
+      },
+      {
+        "text": "BRASILEIRO"
+      },
+      {
+        "text": "OLHO D'ÁGUA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SADA-PI"
+      },
+      {
+        "text": "DIRETORIA FINANCEIRA"
+      },
+      {
+        "text": "SECRETARIA DA ASSISTÊNCIA TÉCNICA E DEFESA AGROPECUÁRIA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "DIRETORIA FINANCEIRA"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T10:36:35.767428+00:00"
+}

@@ -1,0 +1,77 @@
+{
+  "documento_numero": "016283653",
+  "protocolo": "00201.000067_2025-44",
+  "source_file": "18141802.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Zenaide Batista Lustosa Neta"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "ELAS VIVAS LAB"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEMPI-PI"
+      },
+      {
+        "text": "Secretaria das Mulheres"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretária"
+      },
+      {
+        "text": "Secretário da Fazenda"
+      }
+    ],
+    "data": [
+      {
+        "text": "02 de agosto de 2022"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "designou": [
+      [
+        "Secretária",
+        "atribuições"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:13:48.003846+00:00"
+}

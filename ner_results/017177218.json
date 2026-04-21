@@ -1,0 +1,107 @@
+{
+  "documento_numero": "017177218",
+  "protocolo": "00089.002616_2025-59",
+  "source_file": "19123043.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa_juridica": [
+      {
+        "text": "FUNDAÇÃO UNIVERSIDADE ESTADUAL DO PIAUÍ"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "FUESPI-PI"
+      },
+      {
+        "text": "Auditoria Interna"
+      },
+      {
+        "text": "Assessoria de Comunicação"
+      },
+      {
+        "text": "Diretoria de Gestão de Pessoas"
+      },
+      {
+        "text": "Comissão Permanente de Pessoal Técnico Administrativo em Educação"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Magnífico Reitor"
+      }
+    ],
+    "portaria": [
+      {
+        "text": "PORTARIA GR nº 265"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "Magnífico Reitor",
+        "Diretoria de Gestão de Pessoas"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "Diretoria de Gestão de Pessoas",
+        "providências cabíveis"
+      ],
+      [
+        "Auditoria Interna",
+        "providências cabíveis"
+      ],
+      [
+        "Assessoria de Comunicação",
+        "providências cabíveis"
+      ]
+    ],
+    "solicitou": [
+      [
+        "Diretoria de Gestão de Pessoas",
+        "providências cabíveis"
+      ]
+    ],
+    "nomeou": [
+      [
+        "Magnífico Reitor",
+        "Diretoria de Gestão de Pessoas"
+      ]
+    ],
+    "designou": [
+      [
+        "Magnífico Reitor",
+        "Diretoria de Gestão de Pessoas"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:13:54.062689+00:00"
+}

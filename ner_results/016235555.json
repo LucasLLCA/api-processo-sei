@@ -1,0 +1,70 @@
+{
+  "documento_numero": "016235555",
+  "protocolo": "00226.000028_2025-69",
+  "source_file": "18087723.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Jacylenne Coêlho"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "ASSESSORIA LICITAÇÃO"
+      },
+      {
+        "text": "Gabinete do Diretor Geral"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Superintendente de Licitações e Contratos"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "nomeou": [
+      [
+        "Jacylenne Coêlho",
+        "Superintendente de Licitações e Contratos"
+      ]
+    ],
+    "designou": [
+      [
+        "Jacylenne Coêlho",
+        "Superintendente de Licitações e Contratos"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:42:44.345328+00:00"
+}

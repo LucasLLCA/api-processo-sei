@@ -1,0 +1,181 @@
+{
+  "documento_numero": "016750692",
+  "protocolo": "00226.000017_2025-89",
+  "source_file": "18656263.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Pires Alves Filho"
+      },
+      {
+        "text": "Paula Cristiana da Silva Cardoso"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "Astec"
+      },
+      {
+        "text": "Administração"
+      },
+      {
+        "text": "REALJET COMERCIO E SERVICOS LTDA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "ISBPI"
+      },
+      {
+        "text": "Administração"
+      },
+      {
+        "text": "Estado do Piauí"
+      },
+      {
+        "text": "Assessoria Técnica-Astec"
+      },
+      {
+        "text": "Procuradoria Geral do Estado – PGE"
+      },
+      {
+        "text": "Controladoria Geral do Estado – CGE"
+      },
+      {
+        "text": "Instituto de Águas e Esgotos do Piauí"
+      },
+      {
+        "text": "Diretoria Administrativo-Financeira - Diaf"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Gerente"
+      },
+      {
+        "text": "Diretor Geral"
+      }
+    ],
+    "email": [
+      {
+        "text": "otavio@realjetteresina.com.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "contrato"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "autoridade competente",
+        "prorrogação de prazo"
+      ],
+      [
+        "Administração",
+        "vantagem econômica"
+      ],
+      [
+        "Paula Cristiana da Silva Cardoso",
+        "prorrogação contratual"
+      ]
+    ],
+    "assinou": [
+      [
+        "REALJET COMERCIO E SERVICOS LTDA",
+        "Contrato nº 02/2024"
+      ],
+      [
+        "Diretoria Administrativo-Financeira - Diaf",
+        "Nota de Reserva"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "DESPACHO",
+        "Assessoria Técnica-Astec"
+      ]
+    ],
+    "contratou": [
+      [
+        "REALJET COMERCIO E SERVICOS LTDA",
+        "Contrato nº 02/2024"
+      ],
+      [
+        "Estado do Piauí",
+        "REALJET COMERCIO E SERVICOS LTDA"
+      ],
+      [
+        "Instituto de Águas e Esgotos do Piauí",
+        "serviços técnicos"
+      ],
+      [
+        "Instituto de Águas e Esgotos do Piauí",
+        "serviços técnicos administrativos"
+      ],
+      [
+        "Administração",
+        "contratos"
+      ]
+    ],
+    "solicitou": [
+      [
+        "sociedade",
+        "melhor prestação de serviços"
+      ],
+      [
+        "órgão",
+        "manutenção do preço"
+      ],
+      [
+        "Contratada",
+        "prorrogação do contrato"
+      ]
+    ],
+    "nomeou": [
+      [
+        "Estado do Piauí",
+        "Máquinas Fotocopiadoras"
+      ],
+      [
+        "Lei 5.641/2007",
+        "Instituto de Águas e Esgotos do Piauí"
+      ]
+    ],
+    "designou": [
+      [
+        "Estado do Piauí",
+        "Máquinas Fotocopiadoras"
+      ],
+      [
+        "Lei 5.641/2007",
+        "Instituto de Águas e Esgotos do Piauí"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:36:51.247992+00:00"
+}

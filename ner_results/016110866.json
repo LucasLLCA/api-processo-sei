@@ -1,0 +1,65 @@
+{
+  "documento_numero": "016110866",
+  "protocolo": "00226.000015_2025-90",
+  "source_file": "17948399.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "SERGIO DA SILVA CONRADO"
+      },
+      {
+        "text": "LUZIA ISABELA DE OLIVEIRA MELO"
+      },
+      {
+        "text": "NICHOLAS NASCIMENTO E CAVALCANTE"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "INSTITUTO DE SANEAMENTO BÁSICO DO PIAUÍ"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "GERÊNCIA DE GESTÃO DE PESSOAS"
+      },
+      {
+        "text": "Superintendência de Gestão de Pessoas"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Presidente"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T08:27:10.582246+00:00"
+}

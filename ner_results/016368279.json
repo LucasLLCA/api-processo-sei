@@ -1,0 +1,93 @@
+{
+  "documento_numero": "016368279",
+  "protocolo": "00201.000103_2025-70",
+  "source_file": "18235393.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "SAMUEL PONTES DO NASCIMENTO"
+      },
+      {
+        "text": "Zenaide Batista Lustosa Neta"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "ELAS VIVAS LAB"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEMPI-PI"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "DIRETORIA ADMINISTRATIVO-FINANCEIRA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "técnicos"
+      },
+      {
+        "text": "advogado"
+      },
+      {
+        "text": "psicólogas"
+      },
+      {
+        "text": "motoristas"
+      },
+      {
+        "text": "contadores"
+      },
+      {
+        "text": "assistentes sociais"
+      },
+      {
+        "text": "Secretária das Mulheres"
+      },
+      {
+        "text": "Secretário de Administração"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "Secretária das Mulheres",
+        "contratação temporária"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:17:54.202157+00:00"
+}

@@ -16,13 +16,16 @@ import os
 
 import httpx
 
-# Adiciona a raiz do projeto ao path
+# Adiciona a raiz do projeto ao path (for api.*)
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 
 from api.database import engine, Base, AsyncSessionLocal
 from api.models.tipo_documento import TipoDocumento
 from api.config import settings
+from pipeline.logging_setup import configure_logging
 from sqlalchemy import text
+
+log = configure_logging(__name__)
 
 SEI_BASE_URL = settings.SEI_BASE_URL
 
@@ -250,11 +253,21 @@ async def populate(usuario: str, senha: str, orgao: str, dry_run: bool = False):
 
 def main():
     parser = argparse.ArgumentParser(description="Popula tipos_documento a partir do SEI")
-    parser.add_argument("--usuario", default="gabriel.coelho@sead.pi.gov.br", help="Usuário SEI (e-mail)")
-    parser.add_argument("--senha",   default="fenek3161@SEAD",               help="Senha SEI")
-    parser.add_argument("--orgao",   default="SEAD-PI",                       help="Órgão SEI (ex: SEAD-PI)")
-    parser.add_argument("--dry-run", action="store_true",                     help="Apenas lista, não salva")
+    parser.add_argument("--usuario", default=os.getenv("SEI_USUARIO"),
+                        help="Usuário SEI (e-mail). Falls back to env SEI_USUARIO.")
+    parser.add_argument("--senha", default=os.getenv("SEI_SENHA"),
+                        help="Senha SEI. Falls back to env SEI_SENHA.")
+    parser.add_argument("--orgao", default=os.getenv("SEI_ORGAO", "SEAD-PI"),
+                        help="Órgão SEI (ex: SEAD-PI). Falls back to env SEI_ORGAO.")
+    parser.add_argument("--dry-run", action="store_true", help="Apenas lista, não salva")
     args = parser.parse_args()
+
+    if not args.usuario or not args.senha:
+        log.error(
+            "Credenciais SEI ausentes. Forneça --usuario/--senha ou defina "
+            "SEI_USUARIO e SEI_SENHA no ambiente."
+        )
+        sys.exit(2)
 
     asyncio.run(populate(args.usuario, args.senha, args.orgao, dry_run=args.dry_run))
 

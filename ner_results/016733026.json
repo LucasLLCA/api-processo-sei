@@ -1,0 +1,115 @@
+{
+  "documento_numero": "016733026",
+  "protocolo": "00227.000076_2025-47",
+  "source_file": "18636981.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "SAMUEL PONTES DO NASCIMENTO"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "empresa vencedora"
+      },
+      {
+        "text": "FUNDAÇÃO PIAUÍ PREVIDÊNCIA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "CGFR"
+      },
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "SLC/SEAD"
+      },
+      {
+        "text": "Diretoria de Licitações"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "SECRETÁRIO DE ADMINISTRAÇÃO"
+      },
+      {
+        "text": "Secretário (a) da Administração"
+      },
+      {
+        "text": "Superintendente de Licitações e Contratos"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "ata"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "AUTORIZAÇÃO",
+        "itens"
+      ],
+      [
+        "órgão requerente",
+        "realizar contrato"
+      ]
+    ],
+    "assinou": [
+      [
+        "SAMUEL PONTES DO NASCIMENTO",
+        "ASSINATURA ELETRÔNICA"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "documentação",
+        "Diretoria de Licitações"
+      ]
+    ],
+    "solicitou": [
+      [
+        "FUNDAÇÃO PIAUÍ PREVIDÊNCIA",
+        "itens"
+      ]
+    ],
+    "contratou": [
+      [
+        "órgão contratante",
+        "itens/objetos"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:27:42.105701+00:00"
+}

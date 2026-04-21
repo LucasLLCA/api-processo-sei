@@ -1,0 +1,212 @@
+{
+  "documento_numero": "016527874",
+  "protocolo": "00153.000073_2025-14",
+  "source_file": "18412575.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "patrocinado"
+      },
+      {
+        "text": "Patrocinador"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "Caju produções e eventos ltda"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "CCOM"
+      },
+      {
+        "text": "CCOM-PI"
+      },
+      {
+        "text": "SECULT-PI"
+      },
+      {
+        "text": "Governo do Piauí"
+      },
+      {
+        "text": "Diretoria de Marketing"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "SECRETARIA DE ESTADO DO TURISMO DO PIAUÍ"
+      },
+      {
+        "text": "Coordenadoria de Comunicação Social do Estado"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Governador"
+      },
+      {
+        "text": "Secretaria"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "parecer_juridico"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "Governo do Estado",
+        "patrocínios"
+      ],
+      [
+        "Governador",
+        "patrocínio"
+      ],
+      [
+        "recurso",
+        "iniciativa a ser patrocinada"
+      ],
+      [
+        "órgão",
+        "cotas patrocínios"
+      ],
+      [
+        "Diretoria de Marketing",
+        "dispensa do prazo inicial"
+      ]
+    ],
+    "contratou": [
+      [
+        "Caju produções e eventos ltda",
+        "CARNAVAL EUPHORIA"
+      ],
+      [
+        "patrocínio",
+        "contrato de patrocínio"
+      ],
+      [
+        "Fiscal",
+        "SECULT-PI"
+      ],
+      [
+        "Governo do Piauí",
+        "projeto CARNAVAL EUPHORIA 2025"
+      ]
+    ],
+    "solicitou": [
+      [
+        "proposta",
+        "apoio"
+      ],
+      [
+        "entidade interessada",
+        "requerimento"
+      ],
+      [
+        "governo do Piauí",
+        "projeto CARNAVAL EUPHORIA 2025"
+      ],
+      [
+        "CCOM",
+        "mais informações"
+      ]
+    ],
+    "exonerou": [
+      [
+        "Lei nº 7.948",
+        "Lei nº 7.884"
+      ],
+      [
+        "Diretoria de Marketing",
+        "prazo inicial"
+      ],
+      [
+        "observações",
+        "dever de apresent"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "projetos de patrocínios",
+        "apreciação da área técnica desta CCOM"
+      ],
+      [
+        "projeto",
+        "planejamento estratégico"
+      ],
+      [
+        "balizador",
+        "patrocinador"
+      ],
+      [
+        "Projeto",
+        "órgão solicitante"
+      ],
+      [
+        "mesmo",
+        "CCOM"
+      ]
+    ],
+    "nomeou": [
+      [
+        "nº 22.822/2024",
+        "patrocínio"
+      ],
+      [
+        "órgão solicitante e pagador",
+        "fiscal"
+      ]
+    ],
+    "designou": [
+      [
+        "nº 22.822/2024",
+        "patrocínio"
+      ],
+      [
+        "manual de aplicação de marca do Governo",
+        "titulo de contrapartidas"
+      ],
+      [
+        "órgão solicitante e pagador",
+        "fiscal"
+      ]
+    ],
+    "assinou": [
+      [
+        "Governo do Estado",
+        "marca do patrocinador"
+      ],
+      [
+        "patrocinador",
+        "blimps"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:35:40.260018+00:00"
+}

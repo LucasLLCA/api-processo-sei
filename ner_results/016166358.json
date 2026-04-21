@@ -1,0 +1,72 @@
+{
+  "documento_numero": "016166358",
+  "protocolo": "00227.000056_2025-76",
+  "source_file": "18010391.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "SAMUEL PONTES DO NASCIMENTO"
+      },
+      {
+        "text": "Marcos Steiner Rodrigues Mesquita"
+      },
+      {
+        "text": "Rozeli David Machado Castelo Branco"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "Fundação Piauí Previdência"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "GABINETE GERAL DA PRESIDÊNCIA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Presidente"
+      },
+      {
+        "text": "Secretário de Estado"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "Requerimento",
+        "análise de erro"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:58:38.119093+00:00"
+}

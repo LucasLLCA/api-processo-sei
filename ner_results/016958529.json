@@ -1,0 +1,63 @@
+{
+  "documento_numero": "016958529",
+  "protocolo": "00153.000001_2025-77",
+  "source_file": "18884458.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa_juridica": [
+      {
+        "text": "SERVFAZ"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "Procuradoria-Geral do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Gerente de Contratos"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.turismo.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "declaracao"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "SERVFAZ",
+        "Declaração Processo"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:42:15.271225+00:00"
+}

@@ -1,0 +1,120 @@
+{
+  "documento_numero": "016773841",
+  "protocolo": "00153.000073_2025-14",
+  "source_file": "18681519.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "patrocinado"
+      },
+      {
+        "text": "MUSSOLINE GUEDES"
+      },
+      {
+        "text": "VASCONCELOS PACHECO"
+      },
+      {
+        "text": "JOSÉ ANTÔNIO MONTEIRO NETO"
+      },
+      {
+        "text": "SARA SAMANTA FERREIRA LIMA"
+      },
+      {
+        "text": "RENÉE MARIE WILHELM FONTENELE"
+      },
+      {
+        "text": "CLARICE DE SENA MONTEIRO QUEIROZ"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "Fazenda Nacional"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "PGE"
+      },
+      {
+        "text": "Núcleo de Controle Interno"
+      },
+      {
+        "text": "CONTROLADORIA-GERAL DO ESTADO"
+      },
+      {
+        "text": "Coordenadoria de Comunicação Social - CCOM"
+      },
+      {
+        "text": "Coordenadoria de Comunicação do Estado do Piauí"
+      },
+      {
+        "text": "Superintendência de Controladoria Geral do Estado"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIO"
+      },
+      {
+        "text": "coordenador Membro do Núcleo de Controle Interno"
+      },
+      {
+        "text": "GERENTE Coordenador do Núcleo de Controle Interno"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "parecer_juridico"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "RENÉE MARIE WILHELM FONTENELE",
+        "PARECER 58/2025"
+      ]
+    ],
+    "solicitou": [
+      [
+        "particular",
+        "requerimento"
+      ]
+    ],
+    "contratou": [
+      [
+        "patrocinador",
+        "contrapartida"
+      ]
+    ],
+    "autorizou": [
+      [
+        "autoridade competente do órgão patrocinador",
+        "Projeto de Patrocínio"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:40:43.147607+00:00"
+}

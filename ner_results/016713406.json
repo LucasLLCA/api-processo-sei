@@ -1,0 +1,93 @@
+{
+  "documento_numero": "016713406",
+  "protocolo": "00240.000227_2025-99",
+  "source_file": "18615629.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "AMANDA LEITE"
+      },
+      {
+        "text": "SILVA BORGES"
+      },
+      {
+        "text": "Renato Lelis Viana"
+      },
+      {
+        "text": "Edna Maria Martins"
+      },
+      {
+        "text": "Maria Gomes Pinheiro"
+      },
+      {
+        "text": "Raimundo Bispo Pereira"
+      },
+      {
+        "text": "Daniel Magalhães Chaves"
+      },
+      {
+        "text": "Ednaldo Bezerra dos Santos"
+      },
+      {
+        "text": "Marciano Antônio de Oliveira Nunes"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "COMISSÃO ESPECIAL DE ENQUADRAMENTO"
+      },
+      {
+        "text": "Conselho Estadual de Gestão de Pessoas"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "PRESIDENTE"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.sead.pi.gov.br/"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "Despacho",
+        "Diretoria de Desenvolvimento de Pessoas"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T11:25:43.954413+00:00"
+}

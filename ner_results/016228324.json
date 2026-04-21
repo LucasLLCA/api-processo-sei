@@ -1,0 +1,61 @@
+{
+  "documento_numero": "016228324",
+  "protocolo": "00224.000048_2025-50",
+  "source_file": "18079600.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Daniel Ialle de Carvalho Sousa"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "PIAUI"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "ASSESSORIA DO GABINETE"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Presidente"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.etipi.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T08:19:20.666156+00:00"
+}

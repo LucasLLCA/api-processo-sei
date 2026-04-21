@@ -1,0 +1,98 @@
+{
+  "documento_numero": "016380344",
+  "protocolo": "00153.000089_2025-27",
+  "source_file": "18248908.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa_juridica": [
+      {
+        "text": "GLOBAL INDUSTRIA E COMERCIO LTDA"
+      },
+      {
+        "text": "VIVOMED DISTRIBUIDORA HOSPITALAR LTDA"
+      },
+      {
+        "text": "LEANDRO COMÉRCIO E SERVIÇOS ESPORTIVOS LTDA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Governador do Estado do Piauí"
+      }
+    ],
+    "email": [
+      {
+        "text": "adm@vivomed.com.br"
+      },
+      {
+        "text": "comprasgrupoviana@outlook.com"
+      },
+      {
+        "text": "financeiro@cestasglobal.com.br"
+      }
+    ],
+    "cnpj": [
+      {
+        "text": "CNPJ 36.140.831/0001-06"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "ata"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "Exmo. Senhor Governador do Estado do Piauí",
+        "decreto 22.656"
+      ]
+    ],
+    "assinou": [
+      [
+        "Exmo. Senhor Governador do Estado do Piauí",
+        "decreto 22.656"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "ATA DE REGISTRO DE PREÇOS",
+        "contração de empresa"
+      ]
+    ],
+    "solicitou": [
+      [
+        "SECRETARIA DE ESTADO DO TURISMO",
+        "contração de empresa"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:08:33.297126+00:00"
+}

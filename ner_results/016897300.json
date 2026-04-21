@@ -1,0 +1,85 @@
+{
+  "documento_numero": "016897300",
+  "protocolo": "00240.000116_2025-82",
+  "source_file": "18817155.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa_juridica": [
+      {
+        "text": "FÁBIO ABREU COSTA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "SECRETARIA DA ASSISTÊNCIA TÉCNICA E DEFESA AGROPECUÁRIA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretaria"
+      },
+      {
+        "text": "Agente de contratação/pregoeira"
+      },
+      {
+        "text": "Secretário de Assistência Técnica e Defesa Agropecuária"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "licitacao"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "GOVERNO DO ESTADO DO PIAUÍ",
+        "Aviso de Licitação"
+      ]
+    ],
+    "contratou": [
+      [
+        "CÂNDICE MOREIRA BEZERRA",
+        "Agente de contratação/pregoeira"
+      ]
+    ],
+    "nomeou": [
+      [
+        "CÂNDICE MOREIRA BEZERRA",
+        "Agente de contratação/pregoeira"
+      ]
+    ],
+    "designou": [
+      [
+        "CÂNDICE MOREIRA BEZERRA",
+        "Agente de contratação/pregoeira"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:59:07.355633+00:00"
+}

@@ -1,0 +1,74 @@
+{
+  "documento_numero": "016179844",
+  "protocolo": "00227.000196_2025-44",
+  "source_file": "18025414.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Luiz Felipe Silva Nepomuceno"
+      },
+      {
+        "text": "Lucas Fernandes Coelho de Miranda"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "FUNDAÇÃO PIAUÍ PREVIDÊNCIA"
+      },
+      {
+        "text": "ASSOCIAÇÃO DE ENSINO SUPERIOR DO PIAUÍ"
+      },
+      {
+        "text": "FUNDAÇÃO UNIVERSIDADE ESTADUAL DO PIAUÍ"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "GERÊNCIA DE GESTÃO DE PESSOAS"
+      },
+      {
+        "text": "DIRETORIA ADMINISTRAÇÃO E FINANCEIRO"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Senhora Diretora"
+      },
+      {
+        "text": "SUPERIOR DO PIAUÍ"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "termo_referencia"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T09:50:23.893500+00:00"
+}

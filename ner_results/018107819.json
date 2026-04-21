@@ -1,0 +1,90 @@
+{
+  "documento_numero": "018107819",
+  "protocolo": "00153.000061_2025-90",
+  "source_file": "20142812.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "ERICK DIEGO FURTADO ROCHA"
+      },
+      {
+        "text": "Jacylenne Coêlho Bezerra Fortes"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "RAFFA Estruturas e Eventos Ltda"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "ASSESSORIA LICITAÇÃO"
+      },
+      {
+        "text": "Diretoria Administrativa e Financeira"
+      },
+      {
+        "text": "COORDENAÇÃO ADMINISTRATIVA - SETUR-PI"
+      },
+      {
+        "text": "Secretaria de Administração do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "Secretaria"
+      },
+      {
+        "text": "Superintendente de Licitações e Contratos"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "nomeou": [
+      [
+        "Jacylenne Coêlho",
+        "Superintendente de Licitações e Contratos"
+      ]
+    ],
+    "designou": [
+      [
+        "Jacylenne Coêlho",
+        "Superintendente de Licitações e Contratos"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:30:28.272019+00:00"
+}

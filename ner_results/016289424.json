@@ -1,0 +1,105 @@
+{
+  "documento_numero": "016289424",
+  "protocolo": "00227.000076_2025-47",
+  "source_file": "18148213.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Flávio Chaib"
+      },
+      {
+        "text": "Leidiane da Silva Sousa"
+      },
+      {
+        "text": "AILDO DE SOUSA MARTINS JÚNIOR"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "FUNDAÇÃO PIAUÍ PREVIDÊNCIA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "DIRETORIA DE CONTRATOS"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "servidor da FUNDAÇÃO PIAUÍ PREVIDÊNCIA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "PRESIDENTE"
+      },
+      {
+        "text": "Suplente do Fiscal"
+      },
+      {
+        "text": "Gerente de Contratos"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "portaria"
+  },
+  "relations": {
+    "nomeou": [
+      [
+        "Leidiane da Silva Sousa",
+        "Fiscal do Contrato Administrativo nº 01/2025"
+      ],
+      [
+        "Art. 1",
+        "servidor da FUNDAÇÃO PIAUÍ PREVIDÊNCIA - PIAUIPREV"
+      ]
+    ],
+    "designou": [
+      [
+        "Leidiane da Silva Sousa",
+        "Fiscal do Contrato Administrativo nº 01/2025"
+      ],
+      [
+        "Art. 1",
+        "servidor da FUNDAÇÃO PIAUÍ PREVIDÊNCIA - PIAUIPREV"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "atos preparatórios",
+        "procedimentos administrativos"
+      ],
+      [
+        "relatório",
+        "superior hierárquico"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:15:23.955519+00:00"
+}

@@ -1,0 +1,95 @@
+{
+  "documento_numero": "016701858",
+  "protocolo": "00227.000072_2025-69",
+  "source_file": "18602946.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "ROBERTO MARCIO NARDES"
+      },
+      {
+        "text": "ALEXANDRE ASSUMPÇÃO MARTIN"
+      },
+      {
+        "text": "LUIZ AUGUSTO DA COSTA BICHARA"
+      },
+      {
+        "text": "CLAUDIO JOSE FREITAS DE SAMPAIO"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "MICROTÉCNICA INFORMÁTICA LTDA"
+      },
+      {
+        "text": "GLOBAL SMART SOLUÇÕES INTELIGENTES LTDA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "Gerência de Logística – PIAUIPREV"
+      },
+      {
+        "text": "SECRETARIA DA ADMINISTRAÇÃO DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "email": [
+      {
+        "text": "financeiro@globalsmart.com.br"
+      }
+    ],
+    "cnpj": [
+      {
+        "text": "05.635.293/0001-05"
+      }
+    ],
+    "matricula": [
+      {
+        "text": "371433-X"
+      }
+    ],
+    "valor_monetario": [
+      {
+        "text": "R$ 711,90"
+      },
+      {
+        "text": "R$ 355,95"
+      },
+      {
+        "text": "R$ 2.935,00"
+      },
+      {
+        "text": "R$ 10.263,06"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "licitacao"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T08:59:44.041403+00:00"
+}

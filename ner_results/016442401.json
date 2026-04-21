@@ -1,0 +1,88 @@
+{
+  "documento_numero": "016442401",
+  "protocolo": "00226.000016_2025-34",
+  "source_file": "18317947.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "KÉRCIA KARENINA"
+      },
+      {
+        "text": "GILSON DIAS DE MACEDO FILHO"
+      },
+      {
+        "text": "Samuel Pontes do Nascimento"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "ISBPI-PI"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "Conselho Estadual de Gestão de Pessoas"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretora de Atos"
+      },
+      {
+        "text": "Secretário Estadual de Administração"
+      },
+      {
+        "text": "Presidente do Conselho Estadual de Gestão de Pessoas"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "OFÍCIO SEDUC-PI/GSE",
+        "pedido de CESSÃO/DISPOSIÇÃO do servidor"
+      ]
+    ],
+    "nomeou": [
+      [
+        "KÉRCIA KARENINA",
+        "BATISTA RODRIGUES"
+      ]
+    ],
+    "designou": [
+      [
+        "KÉRCIA KARENINA",
+        "BATISTA RODRIGUES"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:29:21.294687+00:00"
+}

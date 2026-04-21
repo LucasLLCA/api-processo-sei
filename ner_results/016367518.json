@@ -1,0 +1,179 @@
+{
+  "documento_numero": "016367518",
+  "protocolo": "00153.000075_2025-11",
+  "source_file": "18234566.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "patrocinador"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "PRONOME PRODUÇÕES ME"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "CCOM"
+      },
+      {
+        "text": "CCOM-PI"
+      },
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "Governo do Piauí"
+      },
+      {
+        "text": "Diretoria de Marketing"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "SECRETARIA ESTADUAL DE TURISMO"
+      },
+      {
+        "text": "diretoria de Diretoria de Marketing"
+      },
+      {
+        "text": "Coordenadoria de Comunicação Social do Estado"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretaria"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "parecer_juridico"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "Governo do Estado",
+        "patrocínios"
+      ],
+      [
+        "Governador",
+        "patrocínio"
+      ],
+      [
+        "recurso",
+        "iniciativa"
+      ],
+      [
+        "órgão",
+        "cotas patrocínios"
+      ],
+      [
+        "Diretoria de Marketing",
+        "dispensa do prazo inicial"
+      ]
+    ],
+    "solicitou": [
+      [
+        "SECRETARIA ESTADUAL DE TURISMO",
+        "SECRETARIA ESTADUAL DE TURISMO -SETUR"
+      ],
+      [
+        "proposta",
+        "apoio"
+      ],
+      [
+        "entidade interessada",
+        "requerimento"
+      ],
+      [
+        "órgão",
+        "concessão do patrocínio"
+      ],
+      [
+        "proponente",
+        "solicitação de apoio"
+      ],
+      [
+        "CCOM",
+        "mais informações"
+      ]
+    ],
+    "assinou": [
+      [
+        "patrocínio",
+        "marca do patrocinador"
+      ],
+      [
+        "Secretaria",
+        "marca do patrocinador"
+      ]
+    ],
+    "contratou": [
+      [
+        "recurso",
+        "contratos de patrocínio"
+      ]
+    ],
+    "designou": [
+      [
+        "art. 17, §4º",
+        "limitações de valor"
+      ],
+      [
+        "Matriz",
+        "patrocinador"
+      ],
+      [
+        "órgão solicitante e pagador",
+        "fiscal"
+      ]
+    ],
+    "exonerou": [
+      [
+        "Poder Executivo Estadual",
+        "custeio do mesmo evento"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "Matriz",
+        "patrocinador"
+      ],
+      [
+        "Projeto",
+        "órgão solicitante"
+      ],
+      [
+        "evento",
+        "CCOM"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:46:11.514459+00:00"
+}

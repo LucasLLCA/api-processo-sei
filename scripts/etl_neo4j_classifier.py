@@ -173,11 +173,7 @@ def extract_reference_id(text: str | None) -> str | None:
     return None
 
 
-def extract_orgao(unidade: str | None) -> str:
-    """Extract orgao from unidade: 'SEAD-PI/GAB/SGACG' → 'SEAD-PI'."""
-    if not unidade:
-        return "DESCONHECIDO"
-    return unidade.split("/")[0]
+# extract_orgao was moved to pipeline.classification.extract_orgao.
 
 
 def get_all_tipo_acao_records() -> list[dict]:

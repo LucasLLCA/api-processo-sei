@@ -1,0 +1,82 @@
+{
+  "documento_numero": "016424928",
+  "protocolo": "00226.000020_2025-01",
+  "source_file": "18298503.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "ISBPI"
+      },
+      {
+        "text": "DOE-PI"
+      },
+      {
+        "text": "PGE-PI"
+      },
+      {
+        "text": "SEADPREV"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "Analista do Tesouro do Estado"
+      }
+    ],
+    "url": [
+      {
+        "text": "https://portal.sefaz.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "contrato"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "autoridade competente",
+        "Nota de Reserva"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "Anuência do fornecedor",
+        "setor solicitante"
+      ]
+    ],
+    "solicitou": [
+      [
+        "ISBPI",
+        "inclusão dos documentos"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:41:48.079381+00:00"
+}

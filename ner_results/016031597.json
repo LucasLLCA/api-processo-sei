@@ -1,0 +1,491 @@
+{
+  "documento_numero": "016031597",
+  "protocolo": "00227.000008_2025-88",
+  "source_file": "17859820.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "A DA SILVA"
+      },
+      {
+        "text": "MARIA DO CA."
+      },
+      {
+        "text": "ALVES PEREIRA"
+      },
+      {
+        "text": "ARAUJO ARAGAO"
+      },
+      {
+        "text": "REGINA MARIA FE."
+      },
+      {
+        "text": "JOSE PEREIRA NETO"
+      },
+      {
+        "text": "JOSE DA LUZ MOURA"
+      },
+      {
+        "text": "MARIA HELENA CRUZ"
+      },
+      {
+        "text": "DARCY LIMA MARTINS"
+      },
+      {
+        "text": "LUIZ MELO LIMA NETO"
+      },
+      {
+        "text": "MARIA NETA DA SILVA"
+      },
+      {
+        "text": "MARIA DE FATIMA LIMA"
+      },
+      {
+        "text": "JOAQUIM PEDRO DA LUZ"
+      },
+      {
+        "text": "LISANDRO CRUZ MENDES"
+      },
+      {
+        "text": "RONALDO SOUSA SANTOS"
+      },
+      {
+        "text": "JOSE MACHADO DE BRITO"
+      },
+      {
+        "text": "ELISETE RAMOS E SILVA"
+      },
+      {
+        "text": "MARIA RITA SILVA LEAL"
+      },
+      {
+        "text": "ANA MARIA DE OLIVEIRA"
+      },
+      {
+        "text": "ANA ROSA REIS E SILVA"
+      },
+      {
+        "text": "ROSANA CARVALHO GOMES"
+      },
+      {
+        "text": "VALMIR PEREIRA BARBOSA"
+      },
+      {
+        "text": "ADELINO MACHADO VIEIRA"
+      },
+      {
+        "text": "FILOMENA ALVES PEREIRA"
+      },
+      {
+        "text": "TOMAZ DOS SANTOS LOPES"
+      },
+      {
+        "text": "RAIMUNDA BORGES VIEIRA"
+      },
+      {
+        "text": "CLARO JOSÉ DE CARVALHO"
+      },
+      {
+        "text": "OTACILIA SIQUEIRA CRUZ"
+      },
+      {
+        "text": "LINDOMAR LIMA FERNANDES"
+      },
+      {
+        "text": "CARLOS ALBERTO DA SILVA"
+      },
+      {
+        "text": "ELINEIDE LOPES DA SILVA"
+      },
+      {
+        "text": "FRANCISCO JOSE DA COSTA"
+      },
+      {
+        "text": "CLEONICE BATISTA CARDOSO"
+      },
+      {
+        "text": "CARLOS HENRIQUE DA SILVA"
+      },
+      {
+        "text": "ROBERTO GOMES DE ANDRADE"
+      },
+      {
+        "text": "ANTONIO GABRIEL DE SOUSA"
+      },
+      {
+        "text": "JOSE MARIA DA ROCHA PITA"
+      },
+      {
+        "text": "MARIANA RODRIGUES PARENTE"
+      },
+      {
+        "text": "ANA MARIA ALVES DE ARAUJO"
+      },
+      {
+        "text": "RAUFLIM DE SOUSA COUTINHO"
+      },
+      {
+        "text": "ANTONIO SENHOR DOS SANTOS"
+      },
+      {
+        "text": "SILVANA MARIA VÉRAS NEVES"
+      },
+      {
+        "text": "ANTONIO JOSÉ DIAS PRAEIRO"
+      },
+      {
+        "text": "TERESINHA DE JESUS BRANDÃO"
+      },
+      {
+        "text": "ANTONIO WIUSTON MARTINS F."
+      },
+      {
+        "text": "MARILENE MEDEIROS DA SILVA"
+      },
+      {
+        "text": "MARIA DA GLORIA SOUSA LINO"
+      },
+      {
+        "text": "VALDENIA BATISTA DE ARAUJO"
+      },
+      {
+        "text": "RAIMUNDO NUNES DE OLIVEIRA"
+      },
+      {
+        "text": "NERIVALDO PEREIRA DA SILVA"
+      },
+      {
+        "text": "SUELY DE FATIMA SOUSA LIMA"
+      },
+      {
+        "text": "ANTONIO RODRIGUES DA SILVA"
+      },
+      {
+        "text": "EUTÍMA MARIA SILVA MASULLO"
+      },
+      {
+        "text": "IVANILDE FERREIRA DA CUNHA"
+      },
+      {
+        "text": "GILVAN CARNEIRO DE ANDRADE"
+      },
+      {
+        "text": "ANA NERY FERREIRA DA SILVA"
+      },
+      {
+        "text": "FRANCISCA TERESA SILVA REGO"
+      },
+      {
+        "text": "ARAPORÃ CORDEIRO DE ALMEIDA"
+      },
+      {
+        "text": "CRISTINA ALVES PEREIRA MELO"
+      },
+      {
+        "text": "MARCO ANTONIO DUARTE CARNIB"
+      },
+      {
+        "text": "MARIA LUCIA CARDOSO MENESES"
+      },
+      {
+        "text": "JOSÉ DE RIBAMAR SALES COSTA"
+      },
+      {
+        "text": "NEIDE MARIA DA SILVA CASTRO"
+      },
+      {
+        "text": "Sônia Maria Alves Rodrigues"
+      },
+      {
+        "text": "CYNTHIA PONTES LINS PEREIRA"
+      },
+      {
+        "text": "AURORA MARIA DA SILVA VIEIRA"
+      },
+      {
+        "text": "FRANCISCA SOUSA DA PAZ COSTA"
+      },
+      {
+        "text": "JOSE CASIMIRO MARTINS SANTOS"
+      },
+      {
+        "text": "IRENE DE SOUSA ROCHA MARTINS"
+      },
+      {
+        "text": "MARIA NOEL PROFINO RODRIGUES"
+      },
+      {
+        "text": "JUAREZ FERNANDES DE OLIVEIRA"
+      },
+      {
+        "text": "MARCIA REJANE MELO DAMASCENO"
+      },
+      {
+        "text": "MARIA DO CARMO LEAL PINHEIRO"
+      },
+      {
+        "text": "LÊDA MARIA PIMENTEL DA SILVA"
+      },
+      {
+        "text": "MARIA ALFREDO DA SILVA ALVES"
+      },
+      {
+        "text": "MARIA DO ROSÁRIO FURTADO MAIA"
+      },
+      {
+        "text": "MARCOS AURELIO GOMES DA SILVA"
+      },
+      {
+        "text": "PAULO HENRIQUE IRENE DA SILVA"
+      },
+      {
+        "text": "MARIA DA CONCEIÇÃO DOS SANTOS"
+      },
+      {
+        "text": "ODILO ALVES DE OLIVEIRA FILHO"
+      },
+      {
+        "text": "RAIMUNDO FRANCISCO NASCIMENTO"
+      },
+      {
+        "text": "ROSANA FERRAZ MORERIA SARAIVA"
+      },
+      {
+        "text": "ALCIDES VALERIANO DE OLIVEIRA"
+      },
+      {
+        "text": "JOÃO BATISTA DE ALMEIDA TOMAZ"
+      },
+      {
+        "text": "MARIA DE DEUS LUSTOSA CARVALHO"
+      },
+      {
+        "text": "ANTONIO WIUSTON MARTINS FORTES"
+      },
+      {
+        "text": "FRANCISCA DAS CHAGAS MAHALHÃES"
+      },
+      {
+        "text": "MARIA DO CARMO DA SILVA SANTOS"
+      },
+      {
+        "text": "MARIA DAS MERCÊS COSTA SANTANA"
+      },
+      {
+        "text": "ANTONIO HORACIO FERNANDES LOPES"
+      },
+      {
+        "text": "MARIA DO SOCORRO NEVES OLIVEIRA"
+      },
+      {
+        "text": "SUZANA MARIA GARCIA DE CARVALHO"
+      },
+      {
+        "text": "MARIA DO ROSÁRIO RODRIGUES LIMA"
+      },
+      {
+        "text": "AURELINA REGIA ALVES CAVALCANTE"
+      },
+      {
+        "text": "MARIA GORETTI RODRIGUES BARBOSA"
+      },
+      {
+        "text": "FRANCISCO JOSÉ DE SOUSA RIBEIRO"
+      },
+      {
+        "text": "JOSÉ UBIRAMAR MENESES DE AGUIAR"
+      },
+      {
+        "text": "JOÃO EVANGELISTA LOPES DA COSTA"
+      },
+      {
+        "text": "MARIA DO SOCORRO MARTINS SOARES"
+      },
+      {
+        "text": "FRANCISCO EDVALDO CASTRO MOREIRA"
+      },
+      {
+        "text": "MARIA APARECIDA OLIVEIRA MARTINS"
+      },
+      {
+        "text": "ALESSANDRA MARIA LUSTOSA DE MELO"
+      },
+      {
+        "text": "RITA DE CÁSSIA DE CARVALHO NUNES"
+      },
+      {
+        "text": "MARIA DAS GRAÇAS BROXADO SANTANA"
+      },
+      {
+        "text": "HELENICE DE CASTRO ARAUJO ARAGAO"
+      },
+      {
+        "text": "ANA MARTA BESERRA PEREIRA SOARES"
+      },
+      {
+        "text": "FRANCISCO DAS CHAGAS SILVA COSTA"
+      },
+      {
+        "text": "AURILENE SOARES DE SOUZA LINHARES"
+      },
+      {
+        "text": "ANTONIA LUIZA DA CONCEIÇÃO ARAUJO"
+      },
+      {
+        "text": "BENEDITA MARIA LIMA MOURA BRANDÃO"
+      },
+      {
+        "text": "ELISMAREA DE SOUSA BATISTA CAMPOS"
+      },
+      {
+        "text": "MARIA DA CONCEIÇÃO DA COSTA SILVA"
+      },
+      {
+        "text": "EDJANDIA DE MOURA ROCHA RODRIGUES"
+      },
+      {
+        "text": "FRANCISCA MARIA NOGUEIRA DE SOUSA"
+      },
+      {
+        "text": "JUCILEIDE DA COSTA E SILVA SANTOS"
+      },
+      {
+        "text": "MINERVINA MARIA DE CASTRO FERREIRA"
+      },
+      {
+        "text": "ELSA MARIA MACEDO CAMPELO TEIXEIRA"
+      },
+      {
+        "text": "ELIZABEL NOGUEIRA RODRIGUES CAMPOS"
+      },
+      {
+        "text": "MARIA DA CONCEIÇÃO DAMASCENO SOUSA"
+      },
+      {
+        "text": "REGINA MARIA FEITOSA DO NASCIMENTO"
+      },
+      {
+        "text": "MARTINHO MENDES DE CARVALHO JUNIOR"
+      },
+      {
+        "text": "ROSYMAR LUSTOSA LOUZEIRO RODRIGUES"
+      },
+      {
+        "text": "LILIAM REISENILDE PIRES DOS SANTOS"
+      },
+      {
+        "text": "REYNALDO MENDES DE CARVALHO JÚNIOR"
+      },
+      {
+        "text": "CONSTÂNCIA ZULEICA LEAL DE ALMONDES"
+      },
+      {
+        "text": "MARIA DO SOCOROO MONTEIRO RODRIGUES"
+      },
+      {
+        "text": "FRANCISCO DE PAULA ALMEIDA OLIVEIRA"
+      },
+      {
+        "text": "FRANCISCO DE ASSIS OLIVEIRA DE SOUSA"
+      },
+      {
+        "text": "CLARA MARIA DA CONCEIÇÃO NEVES COSTA"
+      },
+      {
+        "text": "MARIA HELENA ALVES NASCIMENTO ARRUDA"
+      },
+      {
+        "text": "MARIA ODALEA BARROS TRINDADE RODRIGUES"
+      },
+      {
+        "text": "FRANCISCA DAS CHAGAS OLIVEIRA DE BRITO"
+      },
+      {
+        "text": "FRANCISCA SOARES DA ROCHA NETA E SOUSA"
+      },
+      {
+        "text": "MARIA DE FATIMA WANDERLEY RABELO ARNAUD"
+      },
+      {
+        "text": "ANISVALDO FRANCISCO EVANGELISTA HOLANDA"
+      },
+      {
+        "text": "CLAUDIA REGINA DE OLIVEIRA LIMA MARINHO"
+      },
+      {
+        "text": "LINDINALVA FRANCISCA DE SOUSA RODRIGUES"
+      },
+      {
+        "text": "LUIZA ALBETONIA RIBEIRO NERES DOS SANTOS"
+      },
+      {
+        "text": "RAIMUNDA NONATA DE SOUSA NASCIMENTO LIMA"
+      },
+      {
+        "text": "HYLZIANY MARIA VIANA SANTOS CAVALCANTE DA ROCHA"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "FUNDAÇÃO PIAUÍ PREVIDÊNCIA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SDE"
+      },
+      {
+        "text": "SEAD"
+      },
+      {
+        "text": "SEJUS"
+      },
+      {
+        "text": "IASPI"
+      },
+      {
+        "text": "SESAPI"
+      },
+      {
+        "text": "SEAD-PI"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Coordenador (a)"
+      },
+      {
+        "text": "Coordenadora de Inativos"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T08:52:10.289709+00:00"
+}

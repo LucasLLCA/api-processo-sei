@@ -1,0 +1,87 @@
+{
+  "documento_numero": "016399285",
+  "protocolo": "00152.000065_2025-88",
+  "source_file": "18269936.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Janainna Pinto Marques Tavares"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "ABNT"
+      },
+      {
+        "text": "DIPALIMP"
+      },
+      {
+        "text": "DISTRIBUIDORA DE PRODUTOS ALIMENTICIOS E LIMPEZA LTDA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SDE-PI"
+      },
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "GABINETE GERAL"
+      },
+      {
+        "text": "Secretaria do Desenvolvimento Econômico de Estado do Piauí"
+      },
+      {
+        "text": "SECRETARIA DO DESENVOLVIMENTO ECONÔMICO DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Superintendente de Licitações e Contratos"
+      },
+      {
+        "text": "Secretária de Estado do Desenvolvimento Econômico"
+      }
+    ],
+    "email": [
+      {
+        "text": "dipallimpdistribuidora@hotmail.com"
+      }
+    ],
+    "cnpj": [
+      {
+        "text": "CNPJ 17.897.450/0001-21"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T06:30:20.701853+00:00"
+}

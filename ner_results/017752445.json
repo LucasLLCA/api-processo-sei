@@ -1,0 +1,60 @@
+{
+  "documento_numero": "017752445",
+  "protocolo": "00226.000029_2025-11",
+  "source_file": "19753172.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Paula Cristiana da Silva Cardoso"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "ISBPI-PI"
+      },
+      {
+        "text": "CGRF/SEFAZ"
+      },
+      {
+        "text": "Gabinete do Diretor Geral"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Presidente"
+      },
+      {
+        "text": "Gerente/ASTEC"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T08:46:27.492035+00:00"
+}

@@ -1,0 +1,74 @@
+{
+  "documento_numero": "016038831",
+  "protocolo": "00227.000014_2025-35",
+  "source_file": "17867884.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "MARIA DE FÁTIMA"
+      },
+      {
+        "text": "MARIA DIAS NETA DOS SANTOS"
+      },
+      {
+        "text": "RAIMUNDO ANGELO DE OLIVEIRA"
+      },
+      {
+        "text": "Sônia Maria Alves Rodrigues"
+      },
+      {
+        "text": "MARIA DE DEUS CAMPELO DA SILVA"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "FUNDAÇÃO PIAUÍ PREVIDÊNCIA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SESAPI"
+      },
+      {
+        "text": "SEAD-PI"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Coordenador (a)"
+      },
+      {
+        "text": "Coordenadora de Inativos"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T08:53:02.838231+00:00"
+}

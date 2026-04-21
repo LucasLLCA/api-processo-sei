@@ -1,0 +1,87 @@
+{
+  "documento_numero": "016091650",
+  "protocolo": "00115.000030_2025-95",
+  "source_file": "17926799.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "FRANCISCO LUCAS COSTA VELOSO"
+      },
+      {
+        "text": "Marcella Castelo Branco Carvalho Campelo"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "TJPI"
+      },
+      {
+        "text": "GOV-PI"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "Tribunal de Justiça do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretora de Atos"
+      },
+      {
+        "text": "Escrivã da Polícia Civil"
+      },
+      {
+        "text": "Secretário da Segurança Pública"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "FRANCISCO LUCAS COSTA VELOSO",
+        "Cessão de servidor"
+      ]
+    ],
+    "solicitou": [
+      [
+        "Tribunal de Justiça do Estado do Piauí",
+        "Cessão de servidor"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:18:06.389614+00:00"
+}

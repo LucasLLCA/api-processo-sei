@@ -1,0 +1,65 @@
+{
+  "documento_numero": "016760348",
+  "protocolo": "00240.000227_2025-99",
+  "source_file": "18666814.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "Superintendência de Gestão de Pessoas"
+      },
+      {
+        "text": "Conselho Estadual de Gestão de Pessoas"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.sead.pi.gov.br/"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "SEAD-PI",
+        "Superintendência de Gestão de Pessoas"
+      ]
+    ],
+    "solicitou": [
+      [
+        "Comissão Especial De Enquadramento",
+        "envio do processo"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T11:25:50.335881+00:00"
+}

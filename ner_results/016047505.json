@@ -1,0 +1,79 @@
+{
+  "documento_numero": "016047505",
+  "protocolo": "00118.000027_2025-41",
+  "source_file": "17877641.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "JACYLENNE COELHO"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "AGÊNCIA DE DESENVOLVIMENTO HABITACIONAL DO PIAUÍ"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Superintendente de Licitações e Contratos"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "AGÊNCIA DE DESENVOLVIMENTO HABITACIONAL DO PIAUÍ",
+        "contratação de empresa especializada"
+      ],
+      [
+        "SEAD",
+        "informações de possíveis atas"
+      ]
+    ],
+    "assinou": [
+      [
+        "V.sa.",
+        "aparelhos de ar condicionados"
+      ]
+    ],
+    "contratou": [
+      [
+        "V.sa.",
+        "aparelhos de ar condicionados"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:20:12.105886+00:00"
+}

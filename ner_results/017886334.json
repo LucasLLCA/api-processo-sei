@@ -1,0 +1,87 @@
+{
+  "documento_numero": "017886334",
+  "protocolo": "00153.000081_2025-61",
+  "source_file": "19900065.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa_juridica": [
+      {
+        "text": "ALENCAR LTDA"
+      },
+      {
+        "text": "NOGUEIRA & ALENCAR LTDA"
+      },
+      {
+        "text": "UNDs. NOGUEIRA & ALENCAR LTDA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "Assessoria de Licitação"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "Decreto nº 7.746/2012",
+        "CRITÉRIOS DE SUSTENTABILDADE"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "Bloco de papel",
+        "rascunho auto adesivo"
+      ]
+    ],
+    "solicitou": [
+      [
+        "ITEM",
+        "CRITÉRIOS DE SUSTENTABILDADE"
+      ],
+      [
+        "órgão requerente",
+        "demanda"
+      ]
+    ],
+    "contratou": [
+      [
+        "COTA PRINCIPAL",
+        "Pasta sanfonada"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:02:45.247089+00:00"
+}

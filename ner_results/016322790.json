@@ -1,0 +1,65 @@
+{
+  "documento_numero": "016322790",
+  "protocolo": "00153.000008_2025-99",
+  "source_file": "18185311.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "WAGNER JARDEL PONTES GOMES"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "CGE-PI"
+      },
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "Despacho Governo do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Senhor Diretor"
+      },
+      {
+        "text": "Diretor Administrativo e Financeiro SETUR-PI"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.turismo.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T06:48:47.300669+00:00"
+}

@@ -1,0 +1,82 @@
+{
+  "documento_numero": "017335340",
+  "protocolo": "00153.000001_2025-77",
+  "source_file": "19295783.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "DOE-PI"
+      },
+      {
+        "text": "SEADPREV"
+      },
+      {
+        "text": "Controladoria-Geral do Estado"
+      },
+      {
+        "text": "Despacho SECRETARIA DE FAZENDA DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "Analista do Tesouro do Estado"
+      }
+    ],
+    "url": [
+      {
+        "text": "https://portal.sefaz.pi.gov.br"
+      },
+      {
+        "text": "http://www.diariooficial.pi.gov.br/diario.php?dia="
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "contrato"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "despacho",
+        "documentos"
+      ]
+    ],
+    "contratou": [
+      [
+        "órgãos",
+        "processos"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:44:43.761090+00:00"
+}

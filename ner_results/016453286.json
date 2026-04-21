@@ -1,0 +1,65 @@
+{
+  "documento_numero": "016453286",
+  "protocolo": "00152.000049_2025-95",
+  "source_file": "18330119.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "BÁRBARA DANTAS DE SOUSA"
+      },
+      {
+        "text": "MORGANHA PEREIRA DA SILVA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "ASSESSORIA TÉCNICA JURÍDICA"
+      },
+      {
+        "text": "Diretoria de Gestão de Patrimônio Imobiliário"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretora de Gestão de Patrimônio Imobiliário"
+      }
+    ],
+    "email": [
+      {
+        "text": "morganhacart@gmail.com"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T06:27:44.524380+00:00"
+}

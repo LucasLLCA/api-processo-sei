@@ -1,0 +1,71 @@
+{
+  "documento_numero": "016438229",
+  "protocolo": "00226.000016_2025-34",
+  "source_file": "18313296.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "Assessoria Técnica"
+      },
+      {
+        "text": "Conselho Estadual de Gestão de Pessoas"
+      },
+      {
+        "text": "Diretoria de Controle de Atos Oficiais"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETÁRIO DE ESTADO"
+      },
+      {
+        "text": "CHEFE DO GABINETE DO GOVERNADOR"
+      },
+      {
+        "text": "Chefia do Gabinete do Governador"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "nomeou": [
+      [
+        "Governo do Estado do Piauí",
+        "GOV-PI"
+      ]
+    ],
+    "designou": [
+      [
+        "Governo do Estado do Piauí",
+        "GOV-PI"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:29:05.598114+00:00"
+}

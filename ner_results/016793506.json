@@ -1,0 +1,62 @@
+{
+  "documento_numero": "016793506",
+  "protocolo": "00226.000017_2025-89",
+  "source_file": "18703165.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "SEFAZ/CGFR"
+      },
+      {
+        "text": "Gabinete do diretor-geral - iaepi"
+      },
+      {
+        "text": "DIRETORIA ADMINISTRATIVA E FINANCEIRA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Presidente"
+      },
+      {
+        "text": "Senhor Diretor-Geral"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "requerimento"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "solicitação de suplementação orçamentária",
+        "SEFAZ/CGFR"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:37:17.251923+00:00"
+}

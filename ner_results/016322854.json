@@ -1,0 +1,59 @@
+{
+  "documento_numero": "016322854",
+  "protocolo": "00201.000082_2025-92",
+  "source_file": "18185378.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Raul Lopes"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEPLAN-PI"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETÁRIO"
+      },
+      {
+        "text": "Senhor Gerente"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.seplan.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T08:16:06.521018+00:00"
+}

@@ -1,0 +1,111 @@
+{
+  "documento_numero": "017383562",
+  "protocolo": "00227.000196_2025-44",
+  "source_file": "19348610.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "NERES DA SILVA"
+      },
+      {
+        "text": "LUIZ FELIPE S. NEPOMUCENO"
+      },
+      {
+        "text": "ALAN DAVIS DE SOUSA ALMEIDA"
+      },
+      {
+        "text": "LUIZ FELIPE SILVA NEPOMUCENO"
+      },
+      {
+        "text": "LUCAS FERNANDES C. DE MIRANDA"
+      },
+      {
+        "text": "LUCAS FERNANDES COELHO DE MIRANDA"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "FUNDAÇÃO PIAUIPREV"
+      },
+      {
+        "text": "FUNDAÇÃO PIAUÍ PREVIDÊNCIA"
+      },
+      {
+        "text": "CURSO SUPERIOR DE CIÊNCIAS DA COMPUTAÇÃO"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "CONTROLADORIA-GERAL DO ESTADO"
+      },
+      {
+        "text": "Superintendência de Controladoria Geral do Estado"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Agente Técnico de Serviço"
+      },
+      {
+        "text": "COORDENADOR DE INFORMÁTICA"
+      }
+    ],
+    "data": [
+      {
+        "text": "28 DE JANEIRO DE 2022"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "parecer_juridico"
+  },
+  "relations": {
+    "contratou": [
+      [
+        "GOVERNO DO ESTADO DO PIAUÍ",
+        "Estagiários"
+      ],
+      [
+        "CURSO SUPERIOR DE CIÊNCIAS DA COMPUTAÇÃO",
+        "LUCAS FERNANDES COELHO DE MIRANDA"
+      ]
+    ],
+    "assinou": [
+      [
+        "partes",
+        "Termo de Compromisso"
+      ]
+    ],
+    "autorizou": [
+      [
+        "gestor",
+        "autorização"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:52:54.233107+00:00"
+}

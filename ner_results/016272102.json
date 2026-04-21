@@ -1,0 +1,75 @@
+{
+  "documento_numero": "016272102",
+  "protocolo": "00227.000266_2025-64",
+  "source_file": "18128980.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Nayana Cavalcante"
+      },
+      {
+        "text": "Francisco Normandes Alves do Nascimento"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "Fundação Piauí Previdência"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "Gabinete da Presidência"
+      },
+      {
+        "text": "Gabinete Geral da Presidência"
+      },
+      {
+        "text": "DIRETORIA DE GESTÃO DE BENEFÍCIOS"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "2° sargento"
+      },
+      {
+        "text": "Diretora de Gestão de Benefícios"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "Francisco Normandes Alves do Nascimento",
+        "restituição de descontos indevidos"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:53:57.596728+00:00"
+}

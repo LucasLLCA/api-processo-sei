@@ -1,0 +1,78 @@
+{
+  "documento_numero": "016199633",
+  "protocolo": "00118.000027_2025-41",
+  "source_file": "18047640.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Jacylenne Coêlho"
+      },
+      {
+        "text": "Leonardo Nogueira Pereira"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "Agência de Desenvolvimento Habitacional do Piauí"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "ASSESSORIA LICITAÇÃO"
+      },
+      {
+        "text": "Secretaria de Administração do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretaria"
+      },
+      {
+        "text": "Diretor Geral"
+      },
+      {
+        "text": "Superintendente de Licitações e Contratos"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "SEAD-PI",
+        "LIBERAÇÃO"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:21:34.364861+00:00"
+}

@@ -50,10 +50,8 @@ Usage:
 
 import argparse
 import csv
-import logging
 import os
-import random
-import time
+import sys
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime
@@ -61,43 +59,34 @@ from zoneinfo import ZoneInfo
 
 import psycopg2
 import psycopg2.extras
-from neo4j import GraphDatabase
-from neo4j.exceptions import TransientError
 
 from etl_neo4j_classifier import (
     classify_descricao,
     extract_document_info,
-    extract_orgao,
     extract_reference_id,
     extract_source_unidade,
     get_all_grupo_records,
     get_all_tipo_acao_records,
     get_grupo,
 )
+from pipeline.classification import extract_orgao
+from pipeline.cli import add_standard_args, resolve_settings
+from pipeline.config import ConfigError, Settings
+from pipeline.hierarchy import all_ancestor_unidades, parent_unidade
+from pipeline.logging_setup import configure_logging
+from pipeline.neo4j_driver import build_driver
+from pipeline.postgres import make_pg_conn
+from pipeline.readers import GraphReader, JsonFileReader, Neo4jReader
+from pipeline.writers import DirectNeo4jWriter, GraphWriter, JsonFileWriter
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S",
-)
-log = logging.getLogger(__name__)
+log = configure_logging(__name__)
 
-# ---------------------------------------------------------------------------
-# Configuration
-# ---------------------------------------------------------------------------
-PG_HOST = "db-sead-intsei-prod.cpqw468qwjp2.sa-east-1.rds.amazonaws.com"
-PG_PORT = 5432
-PG_USER = "gabriel_coelho"
-PG_PASSWORD = "123456"
-PG_DATABASE = "sead"
-
-NEO4J_URI = "bolt://localhost:7687"
-NEO4J_USER = "neo4j"
-NEO4J_PASSWORD = "password123"
+# Module-level settings handle, populated by main() so worker-scoped helpers
+# (process_chunk → _make_pg_conn) can reach Postgres credentials without
+# threading them through every function signature.
+_SETTINGS: Settings | None = None
 
 TZ = ZoneInfo("America/Fortaleza")
-
-MAX_RETRIES = 20
 
 # ---------------------------------------------------------------------------
 # SQL
@@ -146,51 +135,19 @@ SETUP_CONSTRAINTS = [
 ]
 
 # ---------------------------------------------------------------------------
-# Cypher - Phase A: Pre-create shared dimension nodes (single-threaded)
+# Cypher - Phase A: composite templates (MERGE + chained MATCH/MERGE).
+#
+# Pure node and pure edge writes in Phase A go through writer.write_nodes /
+# writer.write_edges, which generate their own MERGE Cypher from structured
+# row dicts. Only the composite templates (MERGE + downstream MATCH + MERGE
+# in a single statement) are kept as explicit constants here.
 # ---------------------------------------------------------------------------
-SEED_GRUPOS_CYPHER = """
-UNWIND $groups AS g
-MERGE (ga:GrupoAtividade {chave: g.chave})
-SET ga.label = g.label, ga.horas = g.horas
-"""
-
 SEED_TIPOS_CYPHER = """
 UNWIND $types AS t
 MERGE (ta:TipoAcao {chave: t.chave})
 WITH ta, t
 MATCH (ga:GrupoAtividade {chave: t.grupo})
 MERGE (ta)-[:PERTENCE_AO_GRUPO]->(ga)
-"""
-
-PRECREATE_ORGAOS_CYPHER = """
-UNWIND $orgaos AS o
-MERGE (:Orgao {sigla: o})
-"""
-
-PRECREATE_UNIDADES_CYPHER = """
-UNWIND $units AS u
-MERGE (n:Unidade {sigla: u.sigla})
-SET n.id_unidade = u.id_unidade,
-    n.descricao = u.descricao
-"""
-
-LINK_UNIDADE_ORGAO_CYPHER = """
-UNWIND $links AS l
-MATCH (u:Unidade {sigla: l.unidade})
-MATCH (o:Orgao {sigla: l.orgao})
-MERGE (u)-[:PERTENCE_AO_ORGAO]->(o)
-"""
-
-LINK_SUBUNIDADE_CYPHER = """
-UNWIND $links AS l
-MATCH (child:Unidade {sigla: l.child})
-MATCH (parent:Unidade {sigla: l.parent})
-MERGE (child)-[:SUBUNIDADE_DE]->(parent)
-"""
-
-PRECREATE_TIPO_PROCEDIMENTOS_CYPHER = """
-UNWIND $tipos AS t
-MERGE (:TipoProcedimento {nome: t})
 """
 
 PRECREATE_PROCESSOS_CYPHER = """
@@ -203,20 +160,6 @@ MERGE (tp:TipoProcedimento {nome: r.tipo_procedimento})
 MERGE (p)-[:TEM_TIPO]->(tp)
 """
 
-PRECREATE_PROCESSO_UNIDADE_CYPHER = """
-UNWIND $rows AS r
-MATCH (p:Processo {protocolo_formatado: r.protocolo_formatado})
-MATCH (u:Unidade {sigla: r.unidade})
-MERGE (p)-[:CRIADO_NA_UNIDADE]->(u)
-"""
-
-PRECREATE_PROCESSO_ORGAO_CYPHER = """
-UNWIND $rows AS r
-MATCH (p:Processo {protocolo_formatado: r.protocolo_formatado})
-MATCH (o:Orgao {sigla: r.orgao})
-MERGE (p)-[:CRIADO_NO_ORGAO]->(o)
-"""
-
 PRECREATE_USUARIOS_CYPHER = """
 UNWIND $users AS u
 MERGE (usr:Usuario {nome: u.nome})
@@ -226,7 +169,7 @@ MERGE (usr)-[:PERTENCE_AO_ORGAO]->(o)
 """
 
 # ---------------------------------------------------------------------------
-# Cypher - Phase B: Load atividades (parallel, no shared-node MERGE)
+# Cypher - Phase B: composite load statements
 # ---------------------------------------------------------------------------
 LOAD_ATIVIDADES_CYPHER = """
 UNWIND $rows AS row
@@ -251,12 +194,8 @@ MERGE (atv)-[:TIPO_ACAO]->(ta)
 MERGE (atv)-[:EXECUTADO_PELO_USUARIO]->(usr)
 """
 
-LOAD_TRAMITACAO_CYPHER = """
-UNWIND $rows AS row
-MATCH (atv:Atividade {source_id: row.source_id})
-MATCH (src:Unidade {sigla: row.source_unidade})
-MERGE (atv)-[:REMETIDO_PELA_UNIDADE]->(src)
-"""
+# REMETIDO_PELA_UNIDADE is a clean MATCH+MATCH+MERGE edge — handled by
+# writer.write_edges in load_atividades_batch, no constant needed here.
 
 LOAD_DOCUMENTO_CYPHER = """
 UNWIND $rows AS row
@@ -299,50 +238,11 @@ SET rel.duracao_total_horas = r.duracao_total_horas,
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
-def _neo4j_run_with_retry(driver, cypher, **kwargs):
-    """Run a Cypher statement with exponential backoff + jitter on deadlock."""
-    for attempt in range(1, MAX_RETRIES + 1):
-        try:
-            with driver.session() as session:
-                session.run(cypher, **kwargs)
-            return
-        except TransientError:
-            if attempt == MAX_RETRIES:
-                raise
-            wait = min(0.1 * (2 ** attempt) + random.uniform(0, 1.0), 10)
-            log.debug("Deadlock (attempt %d/%d), retrying in %.1fs", attempt, MAX_RETRIES, wait)
-            time.sleep(wait)
-
-
 def _make_pg_conn():
-    """Create a new PostgreSQL connection."""
-    conn = psycopg2.connect(
-        host=PG_HOST, port=PG_PORT, user=PG_USER,
-        password=PG_PASSWORD, database=PG_DATABASE,
-    )
-    conn.autocommit = False
-    return conn
-
-
-def _parent_unidade(sigla: str) -> str | None:
-    """Get parent unidade: 'SEAD-PI/GAB/NTGD' -> 'SEAD-PI/GAB'."""
-    parts = sigla.split("/")
-    if len(parts) <= 1:
-        return None
-    return "/".join(parts[:-1])
-
-
-def _all_ancestor_unidades(sigla: str) -> list[str]:
-    """Get all ancestors: 'A/B/C' -> ['A/B', 'A']."""
-    ancestors = []
-    current = sigla
-    while True:
-        parent = _parent_unidade(current)
-        if parent is None:
-            break
-        ancestors.append(parent)
-        current = parent
-    return ancestors
+    """Open a Postgres connection using the module-level pipeline settings."""
+    if _SETTINGS is None:
+        raise RuntimeError("pipeline settings not initialized; main() must run first")
+    return make_pg_conn(_SETTINGS)
 
 
 def transform_row(row: dict, seq: int) -> dict:
@@ -381,23 +281,26 @@ def transform_row(row: dict, seq: int) -> dict:
 # ---------------------------------------------------------------------------
 # Phase A: Pre-create shared nodes (single-threaded, no deadlocks)
 # ---------------------------------------------------------------------------
-def precreate_shared_nodes(driver, processos, all_unidades: set[str],
+def precreate_shared_nodes(writer: GraphWriter, processos, all_unidades: set[str],
                            user_orgao: dict[str, str]):
     """Create all dimension nodes before parallel atividade loading."""
     log.info("Phase A: Pre-creating shared dimension nodes...")
+    writer.open_phase("A")
 
-    # Grupos + TipoAcao
+    # Grupos (clean MERGE) + TipoAcao (composite: MERGE + MATCH GrupoAtividade + MERGE edge)
     grupos = get_all_grupo_records()
     tipos = get_all_tipo_acao_records()
-    with driver.session() as session:
-        session.run(SEED_GRUPOS_CYPHER, groups=grupos)
-        session.run(SEED_TIPOS_CYPHER, types=tipos)
+    writer.write_nodes("GrupoAtividade", ["chave"], grupos, phase="A", props=["label", "horas"])
+    writer.execute_template("seed_tipos", SEED_TIPOS_CYPHER, {"types": tipos}, phase="A")
     log.info("  Seeded %d groups and %d action types", len(grupos), len(tipos))
 
     # Orgaos (extracted from unidade siglas)
-    all_orgaos = list({extract_orgao(u) for u in all_unidades})
-    with driver.session() as session:
-        session.run(PRECREATE_ORGAOS_CYPHER, orgaos=all_orgaos)
+    all_orgaos = sorted({extract_orgao(u) for u in all_unidades})
+    writer.write_nodes(
+        "Orgao", ["sigla"],
+        [{"sigla": o} for o in all_orgaos],
+        phase="A",
+    )
     log.info("  Pre-created %d orgaos", len(all_orgaos))
 
     # Load CSV lookup for unidade enrichment
@@ -416,7 +319,7 @@ def precreate_shared_nodes(driver, processos, all_unidades: set[str],
     except FileNotFoundError:
         log.warning("  CSV file not found at %s – id_unidade/descricao will be None", _csv_path)
 
-    # Unidades (batched)
+    # Unidades — writer handles UNWIND batching internally
     unit_list = [
         {
             "sigla": u,
@@ -425,33 +328,39 @@ def precreate_shared_nodes(driver, processos, all_unidades: set[str],
         }
         for u in all_unidades
     ]
-    for i in range(0, len(unit_list), 1000):
-        batch = unit_list[i:i + 1000]
-        with driver.session() as session:
-            session.run(PRECREATE_UNIDADES_CYPHER, units=batch)
+    writer.write_nodes(
+        "Unidade", ["sigla"], unit_list,
+        phase="A", props=["id_unidade", "descricao"],
+    )
     log.info("  Pre-created %d unidades", len(unit_list))
 
-    # Link Unidade -[:PERTENCE_AO_ORGAO]-> Orgao
+    # Unidade -[:PERTENCE_AO_ORGAO]-> Orgao
     unidade_orgao_links = [{"unidade": u, "orgao": extract_orgao(u)} for u in all_unidades]
-    for i in range(0, len(unidade_orgao_links), 1000):
-        batch = unidade_orgao_links[i:i + 1000]
-        with driver.session() as session:
-            session.run(LINK_UNIDADE_ORGAO_CYPHER, links=batch)
+    writer.write_edges(
+        "PERTENCE_AO_ORGAO",
+        "Unidade", {"unidade": "sigla"},
+        "Orgao", {"orgao": "sigla"},
+        unidade_orgao_links,
+        phase="A",
+    )
     log.info("  Linked unidades to orgaos")
 
-    # Link Unidade -[:SUBUNIDADE_DE]-> Unidade (hierarchy)
+    # Unidade -[:SUBUNIDADE_DE]-> Unidade (hierarchy; same label on both ends)
     subunidade_links = []
     for u in all_unidades:
-        parent = _parent_unidade(u)
+        parent = parent_unidade(u)
         if parent and parent in all_unidades:
             subunidade_links.append({"child": u, "parent": parent})
-    for i in range(0, len(subunidade_links), 1000):
-        batch = subunidade_links[i:i + 1000]
-        with driver.session() as session:
-            session.run(LINK_SUBUNIDADE_CYPHER, links=batch)
+    writer.write_edges(
+        "SUBUNIDADE_DE",
+        "Unidade", {"child": "sigla"},
+        "Unidade", {"parent": "sigla"},
+        subunidade_links,
+        phase="A",
+    )
     log.info("  Linked %d subunidade relationships", len(subunidade_links))
 
-    # Processos + TipoProcedimento (batched)
+    # Processos + TipoProcedimento (composite: MERGE Processo + conditional MERGE TipoProcedimento + MERGE edge)
     proc_rows = []
     for row in processos:
         data_criacao_str = None
@@ -465,8 +374,7 @@ def precreate_shared_nodes(driver, processos, all_unidades: set[str],
         })
     for i in range(0, len(proc_rows), 1000):
         batch = proc_rows[i:i + 1000]
-        with driver.session() as session:
-            session.run(PRECREATE_PROCESSOS_CYPHER, rows=batch)
+        writer.execute_template("precreate_processos", PRECREATE_PROCESSOS_CYPHER, {"rows": batch}, phase="A")
     log.info("  Pre-created %d processos (with data_criacao)", len(proc_rows))
 
     # Processo -[:CRIADO_NA_UNIDADE]-> Unidade
@@ -478,10 +386,13 @@ def precreate_shared_nodes(driver, processos, all_unidades: set[str],
         for row in processos
         if row["unidade"]
     ]
-    for i in range(0, len(creation_rows), 1000):
-        batch = creation_rows[i:i + 1000]
-        with driver.session() as session:
-            session.run(PRECREATE_PROCESSO_UNIDADE_CYPHER, rows=batch)
+    writer.write_edges(
+        "CRIADO_NA_UNIDADE",
+        "Processo", {"protocolo_formatado": "protocolo_formatado"},
+        "Unidade", {"unidade": "sigla"},
+        creation_rows,
+        phase="A",
+    )
     log.info("  Linked processos to creation unidades")
 
     # Processo -[:CRIADO_NO_ORGAO]-> Orgao
@@ -493,29 +404,34 @@ def precreate_shared_nodes(driver, processos, all_unidades: set[str],
         for row in processos
         if row["unidade"]
     ]
-    for i in range(0, len(orgao_rows), 1000):
-        batch = orgao_rows[i:i + 1000]
-        with driver.session() as session:
-            session.run(PRECREATE_PROCESSO_ORGAO_CYPHER, rows=batch)
+    writer.write_edges(
+        "CRIADO_NO_ORGAO",
+        "Processo", {"protocolo_formatado": "protocolo_formatado"},
+        "Orgao", {"orgao": "sigla"},
+        orgao_rows,
+        phase="A",
+    )
     log.info("  Linked processos to creation orgaos")
 
-    # Usuarios -[:PERTENCE_AO_ORGAO]-> Orgao
+    # Usuarios (composite: MERGE Usuario + MATCH Orgao + MERGE edge)
     user_rows = [{"nome": u, "orgao": o} for u, o in user_orgao.items()]
     for i in range(0, len(user_rows), 1000):
         batch = user_rows[i:i + 1000]
-        with driver.session() as session:
-            session.run(PRECREATE_USUARIOS_CYPHER, users=batch)
+        writer.execute_template("precreate_usuarios", PRECREATE_USUARIOS_CYPHER, {"users": batch}, phase="A")
     log.info("  Pre-created %d usuarios (linked to orgaos)", len(user_rows))
 
+    writer.close_phase("A")
     log.info("Phase A complete")
 
 
 # ---------------------------------------------------------------------------
 # Phase B: Load atividades (parallel, shared nodes already exist)
 # ---------------------------------------------------------------------------
-def load_atividades_batch(driver, transformed: list[dict]):
+def load_atividades_batch(writer: GraphWriter, transformed: list[dict]):
     """Load a batch of atividades using MATCH for shared nodes."""
-    _neo4j_run_with_retry(driver, LOAD_ATIVIDADES_CYPHER, rows=transformed)
+    # Composite: 4× MATCH + MERGE Atividade + 4× MERGE edge in one statement.
+    writer.execute_template("load_atividades", LOAD_ATIVIDADES_CYPHER,
+                             {"rows": transformed}, phase="B")
 
     tramitacao_rows = [
         {"source_id": t["source_id"], "source_unidade": t["source_unidade"]}
@@ -523,7 +439,13 @@ def load_atividades_batch(driver, transformed: list[dict]):
         if t["source_unidade"]
     ]
     if tramitacao_rows:
-        _neo4j_run_with_retry(driver, LOAD_TRAMITACAO_CYPHER, rows=tramitacao_rows)
+        writer.write_edges(
+            "REMETIDO_PELA_UNIDADE",
+            "Atividade", {"source_id": "source_id"},
+            "Unidade", {"source_unidade": "sigla"},
+            tramitacao_rows,
+            phase="B",
+        )
 
     documento_rows = [
         {
@@ -536,10 +458,13 @@ def load_atividades_batch(driver, transformed: list[dict]):
         if t["doc_info"]
     ]
     if documento_rows:
-        _neo4j_run_with_retry(driver, LOAD_DOCUMENTO_CYPHER, rows=documento_rows)
+        # Composite: MATCH Atividade + MERGE Documento + MERGE edge + MATCH
+        # Processo via edge + MERGE edge. Stays as a template.
+        writer.execute_template("load_documento", LOAD_DOCUMENTO_CYPHER,
+                                 {"rows": documento_rows}, phase="B")
 
 
-def process_chunk(protocolo_ids: list[str], neo4j_driver, dry_run: bool, batch_size: int) -> tuple[int, Counter, list[str], set[str]]:
+def process_chunk(protocolo_ids: list[str], writer: GraphWriter | None, dry_run: bool, batch_size: int) -> tuple[int, Counter, list[str], set[str]]:
     """Worker: fetch andamentos for a chunk, classify, load atividades."""
     pg_conn = _make_pg_conn()
     total_rows = 0
@@ -581,13 +506,13 @@ def process_chunk(protocolo_ids: list[str], neo4j_driver, dry_run: bool, batch_s
             if len(batch) >= batch_size:
                 total_rows += len(batch)
                 if not dry_run:
-                    load_atividades_batch(neo4j_driver, batch)
+                    load_atividades_batch(writer, batch)
                 batch = []
 
         if batch:
             total_rows += len(batch)
             if not dry_run:
-                load_atividades_batch(neo4j_driver, batch)
+                load_atividades_batch(writer, batch)
 
         cursor.close()
     finally:
@@ -614,20 +539,8 @@ SET r2.mesma_unidade = e.mesma_unidade,
     r2.intervalo_dias = e.intervalo_dias
 """
 
-LOAD_INICIO_CYPHER = """
-UNWIND $rows AS r
-MATCH (p:Processo {protocolo_formatado: r.protocolo_formatado})
-MATCH (a:Atividade {source_id: r.first_id})
-MERGE (p)-[:INICIOU_PROCESSO]->(a)
-"""
-
-LOAD_INDEPENDENT_TIMELINE_CYPHER = """
-UNWIND $edges AS e
-MATCH (a1:Atividade {source_id: e.from_id})
-MATCH (a2:Atividade {source_id: e.to_id})
-MERGE (a1)-[r:SEGUIDO_INDEPENDENTEMENTE_POR]->(a2)
-SET r.ref_id = e.ref_id
-"""
+# INICIOU_PROCESSO and SEGUIDO_INDEPENDENTEMENTE_POR are clean
+# MATCH+MATCH+MERGE edges — handled by writer.write_edges in build_timeline.
 
 
 CONCLUSION_TYPES = {
@@ -871,7 +784,7 @@ def _build_edges_for_processo(activities: list[dict]) -> tuple[list[dict], list[
     return flow_edges, independent_edges
 
 
-def build_timeline(driver):
+def build_timeline(reader: GraphReader, writer: GraphWriter):
     """Build SEGUIDA_POR/PRECEDIDA_POR DAG + INICIOU_PROCESSO.
 
     Uses unidade-context tracking instead of naive timestamp grouping.
@@ -880,83 +793,69 @@ def build_timeline(driver):
     """
     log.info("Phase C: Building timeline DAG (unidade-context)...")
 
-    with driver.session() as session:
-        result = session.run("MATCH (p:Processo) RETURN count(p) AS cnt")
-        total = result.single()["cnt"]
-
+    total = reader.count_processos()
     log.info("  Processing %d processos...", total)
 
-    skip = 0
     batch_size = 500
     total_edges = 0
     total_inicio = 0
+    processed = 0
 
-    while skip < total:
-        with driver.session() as session:
-            result = session.run("""
-                MATCH (p:Processo)
-                WITH p ORDER BY p.protocolo_formatado SKIP $skip LIMIT $limit
-                MATCH (a:Atividade)-[:DO_PROCESSO]->(p)
-                MATCH (a)-[:EXECUTADO_PELA_UNIDADE]->(u:Unidade)
-                OPTIONAL MATCH (a)-[:REMETIDO_PELA_UNIDADE]->(src:Unidade)
-                WITH p.protocolo_formatado AS pf,
-                     a.source_id AS source_id,
-                     a.data_hora AS data_hora,
-                     a.tipo_acao AS tipo_acao,
-                     a.ref_id AS ref_id,
-                     u.sigla AS unidade,
-                     src.sigla AS source_unidade
-                ORDER BY pf, data_hora, source_id
-                RETURN pf, collect({
-                    source_id: source_id,
-                    data_hora: toString(data_hora),
-                    tipo_acao: tipo_acao,
-                    ref_id: ref_id,
-                    unidade: unidade,
-                    source_unidade: source_unidade
-                }) AS activities
-            """, skip=skip, limit=batch_size)
+    for batch in reader.iter_processo_batches(batch_size=batch_size):
+        all_flow_edges = []
+        all_independent_edges = []
+        inicio_rows = []
+        for processo in batch:
+            pf = processo.protocolo_formatado
+            activities = processo.activities
+            if not activities:
+                continue
 
-            all_flow_edges = []
-            all_independent_edges = []
-            inicio_rows = []
-            for record in result:
-                pf = record["pf"]
-                activities = record["activities"]
-                if not activities:
-                    continue
+            flow_edges, independent_edges = _build_edges_for_processo(activities)
+            all_flow_edges.extend(flow_edges)
+            all_independent_edges.extend(independent_edges)
 
-                flow_edges, independent_edges = _build_edges_for_processo(activities)
-                all_flow_edges.extend(flow_edges)
-                all_independent_edges.extend(independent_edges)
+            inicio_rows.append({
+                "protocolo_formatado": pf,
+                "first_id": activities[0]["source_id"],
+            })
 
-                inicio_rows.append({
-                    "protocolo_formatado": pf,
-                    "first_id": activities[0]["source_id"],
-                })
-
+        # LOAD_TIMELINE is composite (MERGE SEGUIDA_POR + MERGE PRECEDIDA_POR in one
+        # statement) — stays as execute_template.
         if all_flow_edges:
             for i in range(0, len(all_flow_edges), 500):
                 sub = all_flow_edges[i:i + 500]
-                _neo4j_run_with_retry(driver, LOAD_TIMELINE_CYPHER, edges=sub)
+                writer.execute_template("load_timeline", LOAD_TIMELINE_CYPHER,
+                                        {"edges": sub}, phase="C")
             total_edges += len(all_flow_edges)
 
+        # SEGUIDO_INDEPENDENTEMENTE_POR is a clean edge with one property.
         if all_independent_edges:
-            for i in range(0, len(all_independent_edges), 500):
-                sub = all_independent_edges[i:i + 500]
-                _neo4j_run_with_retry(driver, LOAD_INDEPENDENT_TIMELINE_CYPHER, edges=sub)
+            writer.write_edges(
+                "SEGUIDO_INDEPENDENTEMENTE_POR",
+                "Atividade", {"from_id": "source_id"},
+                "Atividade", {"to_id": "source_id"},
+                all_independent_edges,
+                phase="C",
+                props=["ref_id"],
+            )
             total_edges += len(all_independent_edges)
 
+        # INICIOU_PROCESSO is a clean edge with no properties.
         if inicio_rows:
-            for i in range(0, len(inicio_rows), 500):
-                sub = inicio_rows[i:i + 500]
-                _neo4j_run_with_retry(driver, LOAD_INICIO_CYPHER, rows=sub)
+            writer.write_edges(
+                "INICIOU_PROCESSO",
+                "Processo", {"protocolo_formatado": "protocolo_formatado"},
+                "Atividade", {"first_id": "source_id"},
+                inicio_rows,
+                phase="C",
+            )
             total_inicio += len(inicio_rows)
 
-        skip += batch_size
-        if skip % 5000 == 0 or skip >= total:
+        processed += len(batch)
+        if processed % 5000 == 0 or processed >= total:
             log.info("  Progress: %d/%d processos, %d edges, %d inicio",
-                     min(skip, total), total, total_edges, total_inicio)
+                     min(processed, total), total, total_edges, total_inicio)
 
     log.info("Phase C complete: %d edges (SEGUIDA_POR + SEGUIDO_INDEPENDENTEMENTE_POR) + %d INICIOU_PROCESSO",
              total_edges, total_inicio)
@@ -964,7 +863,7 @@ def build_timeline(driver):
 # ---------------------------------------------------------------------------
 # Phase D: Compute permanencia (PASSOU_PELA_UNIDADE + PASSOU_PELO_ORGAO)
 # ---------------------------------------------------------------------------
-def compute_permanencia(driver):
+def compute_permanencia(reader: GraphReader, writer: GraphWriter):
     """Compute time each processo spent per unidade and per orgao.
 
     Uses stint-based grouping: consecutive activities at the same unidade
@@ -973,139 +872,193 @@ def compute_permanencia(driver):
     """
     log.info("Phase D: Computing permanencia (PASSOU_PELA_UNIDADE + PASSOU_PELO_ORGAO)...")
 
-    with driver.session() as session:
-        result = session.run("MATCH (p:Processo) RETURN count(p) AS cnt")
-        total = result.single()["cnt"]
-
+    total = reader.count_processos()
     log.info("  Computing for %d processos...", total)
 
-    skip = 0
     batch_size = 1000
     total_unidade_links = 0
     total_orgao_links = 0
+    processed = 0
 
-    while skip < total:
-        with driver.session() as session:
-            result = session.run("""
-                MATCH (p:Processo)
-                WITH p ORDER BY p.protocolo_formatado SKIP $skip LIMIT $limit
-                MATCH (a:Atividade)-[:DO_PROCESSO]->(p)
-                MATCH (a)-[:EXECUTADO_PELA_UNIDADE]->(u:Unidade)
-                WITH p.protocolo_formatado AS pf, a.data_hora AS dt, u.sigla AS unidade, a.source_id AS sid
-                ORDER BY pf, dt, sid
-                RETURN pf, collect({data_hora: toString(dt), unidade: unidade}) AS timeline
-            """, skip=skip, limit=batch_size)
+    for batch in reader.iter_processo_batches(batch_size=batch_size):
+        unidade_rows = []
+        orgao_rows = []
+        for processo in batch:
+            pf = processo.protocolo_formatado
+            # Phase D only needs (data_hora, unidade) from each activity;
+            # `activities` already carries that (plus extra unused fields).
+            timeline = processo.activities
 
-            unidade_rows = []
-            orgao_rows = []
-            for record in result:
-                pf = record["pf"]
-                timeline = record["timeline"]
+            if not timeline:
+                continue
 
-                if not timeline:
-                    continue
+            # Compute stints: group consecutive same-unidade entries
+            stints = []
+            cur_u = timeline[0]["unidade"]
+            cur_start = timeline[0]["data_hora"]
+            cur_end = cur_start
 
-                # Compute stints: group consecutive same-unidade entries
-                stints = []
-                cur_u = timeline[0]["unidade"]
-                cur_start = timeline[0]["data_hora"]
-                cur_end = cur_start
+            for entry in timeline[1:]:
+                if entry["unidade"] == cur_u:
+                    cur_end = entry["data_hora"]
+                else:
+                    stints.append({"unidade": cur_u, "entrada": cur_start, "saida": cur_end})
+                    cur_u = entry["unidade"]
+                    cur_start = entry["data_hora"]
+                    cur_end = cur_start
+            stints.append({"unidade": cur_u, "entrada": cur_start, "saida": cur_end})
 
-                for entry in timeline[1:]:
-                    if entry["unidade"] == cur_u:
-                        cur_end = entry["data_hora"]
-                    else:
-                        stints.append({"unidade": cur_u, "entrada": cur_start, "saida": cur_end})
-                        cur_u = entry["unidade"]
-                        cur_start = entry["data_hora"]
-                        cur_end = cur_start
-                stints.append({"unidade": cur_u, "entrada": cur_start, "saida": cur_end})
+            # Aggregate stints by unidade
+            agg_unidade: dict[str, dict] = {}
+            for stint in stints:
+                u = stint["unidade"]
+                start_dt = datetime.fromisoformat(stint["entrada"])
+                end_dt = datetime.fromisoformat(stint["saida"])
+                dur_h = (end_dt - start_dt).total_seconds() / 3600
 
-                # Aggregate stints by unidade
-                agg_unidade: dict[str, dict] = {}
-                for stint in stints:
-                    u = stint["unidade"]
-                    start_dt = datetime.fromisoformat(stint["entrada"])
-                    end_dt = datetime.fromisoformat(stint["saida"])
-                    dur_h = (end_dt - start_dt).total_seconds() / 3600
+                if u not in agg_unidade:
+                    agg_unidade[u] = {
+                        "duracao_total_horas": 0.0,
+                        "visitas": 0,
+                        "primeira_entrada": stint["entrada"],
+                        "ultima_saida": stint["saida"],
+                    }
+                agg_unidade[u]["duracao_total_horas"] += dur_h
+                agg_unidade[u]["visitas"] += 1
+                agg_unidade[u]["ultima_saida"] = stint["saida"]
 
-                    if u not in agg_unidade:
-                        agg_unidade[u] = {
-                            "duracao_total_horas": 0.0,
-                            "visitas": 0,
-                            "primeira_entrada": stint["entrada"],
-                            "ultima_saida": stint["saida"],
-                        }
-                    agg_unidade[u]["duracao_total_horas"] += dur_h
-                    agg_unidade[u]["visitas"] += 1
-                    agg_unidade[u]["ultima_saida"] = stint["saida"]
+            for u, stats in agg_unidade.items():
+                unidade_rows.append({
+                    "protocolo_formatado": pf,
+                    "unidade": u,
+                    "duracao_total_horas": round(stats["duracao_total_horas"], 2),
+                    "visitas": stats["visitas"],
+                    "primeira_entrada": stats["primeira_entrada"],
+                    "ultima_saida": stats["ultima_saida"],
+                })
 
-                for u, stats in agg_unidade.items():
-                    unidade_rows.append({
-                        "protocolo_formatado": pf,
-                        "unidade": u,
-                        "duracao_total_horas": round(stats["duracao_total_horas"], 2),
-                        "visitas": stats["visitas"],
-                        "primeira_entrada": stats["primeira_entrada"],
-                        "ultima_saida": stats["ultima_saida"],
-                    })
+            # Aggregate stints by orgao
+            agg_orgao: dict[str, dict] = {}
+            for stint in stints:
+                orgao = extract_orgao(stint["unidade"])
+                start_dt = datetime.fromisoformat(stint["entrada"])
+                end_dt = datetime.fromisoformat(stint["saida"])
+                dur_h = (end_dt - start_dt).total_seconds() / 3600
 
-                # Aggregate stints by orgao
-                agg_orgao: dict[str, dict] = {}
-                for stint in stints:
-                    orgao = extract_orgao(stint["unidade"])
-                    start_dt = datetime.fromisoformat(stint["entrada"])
-                    end_dt = datetime.fromisoformat(stint["saida"])
-                    dur_h = (end_dt - start_dt).total_seconds() / 3600
+                if orgao not in agg_orgao:
+                    agg_orgao[orgao] = {
+                        "duracao_total_horas": 0.0,
+                        "visitas": 0,
+                        "primeira_entrada": stint["entrada"],
+                        "ultima_saida": stint["saida"],
+                    }
+                agg_orgao[orgao]["duracao_total_horas"] += dur_h
+                agg_orgao[orgao]["visitas"] += 1
+                agg_orgao[orgao]["ultima_saida"] = stint["saida"]
 
-                    if orgao not in agg_orgao:
-                        agg_orgao[orgao] = {
-                            "duracao_total_horas": 0.0,
-                            "visitas": 0,
-                            "primeira_entrada": stint["entrada"],
-                            "ultima_saida": stint["saida"],
-                        }
-                    agg_orgao[orgao]["duracao_total_horas"] += dur_h
-                    agg_orgao[orgao]["visitas"] += 1
-                    agg_orgao[orgao]["ultima_saida"] = stint["saida"]
+            for o, stats in agg_orgao.items():
+                orgao_rows.append({
+                    "protocolo_formatado": pf,
+                    "orgao": o,
+                    "duracao_total_horas": round(stats["duracao_total_horas"], 2),
+                    "visitas": stats["visitas"],
+                    "primeira_entrada": stats["primeira_entrada"],
+                    "ultima_saida": stats["ultima_saida"],
+                })
 
-                for o, stats in agg_orgao.items():
-                    orgao_rows.append({
-                        "protocolo_formatado": pf,
-                        "orgao": o,
-                        "duracao_total_horas": round(stats["duracao_total_horas"], 2),
-                        "visitas": stats["visitas"],
-                        "primeira_entrada": stats["primeira_entrada"],
-                        "ultima_saida": stats["ultima_saida"],
-                    })
-
-        # Write PASSOU_PELA_UNIDADE
+        # PASSOU_PELA_UNIDADE/ORGAO carry datetime() function calls in their SET
+        # clauses, so they stay as execute_template.
         if unidade_rows:
             for i in range(0, len(unidade_rows), 500):
                 sub = unidade_rows[i:i + 500]
-                _neo4j_run_with_retry(driver, LOAD_PERMANENCIA_UNIDADE_CYPHER, rows=sub)
+                writer.execute_template("load_permanencia_unidade", LOAD_PERMANENCIA_UNIDADE_CYPHER,
+                                        {"rows": sub}, phase="D")
             total_unidade_links += len(unidade_rows)
 
-        # Write PASSOU_PELO_ORGAO
         if orgao_rows:
             for i in range(0, len(orgao_rows), 500):
                 sub = orgao_rows[i:i + 500]
-                _neo4j_run_with_retry(driver, LOAD_PERMANENCIA_ORGAO_CYPHER, rows=sub)
+                writer.execute_template("load_permanencia_orgao", LOAD_PERMANENCIA_ORGAO_CYPHER,
+                                        {"rows": sub}, phase="D")
             total_orgao_links += len(orgao_rows)
 
-        skip += batch_size
-        if skip % 5000 == 0 or skip >= total:
+        processed += len(batch)
+        if processed % 5000 == 0 or processed >= total:
             log.info("  Progress: %d/%d processos, %d PASSOU_PELA_UNIDADE, %d PASSOU_PELO_ORGAO",
-                     min(skip, total), total, total_unidade_links, total_orgao_links)
+                     min(processed, total), total, total_unidade_links, total_orgao_links)
 
     log.info("Phase D complete: %d PASSOU_PELA_UNIDADE + %d PASSOU_PELO_ORGAO",
              total_unidade_links, total_orgao_links)
 
 
 # ---------------------------------------------------------------------------
+# --read-json short path
+# ---------------------------------------------------------------------------
+def _run_read_json_only(args) -> None:
+    """Handle the `--read-json DIR` mode: skip Postgres-sourced phases,
+    load activities from an emit directory, and run Phase C / Phase D.
+
+    The write destination is:
+      - `JsonFileWriter(args.emit_json_dir)` if `--emit-json` was also given
+      - `DirectNeo4jWriter(...)` otherwise (requires Neo4j credentials)
+    """
+    read_dir = _SETTINGS.read_json_dir
+    log.info("Reading graph from %s (JSON mode)", read_dir)
+
+    try:
+        reader: GraphReader = JsonFileReader(read_dir)
+    except Exception as e:
+        log.error("%s", e)
+        sys.exit(2)
+
+    neo4j_driver = None
+    writer: GraphWriter | None = None
+    try:
+        if _SETTINGS.emit_json_dir is not None:
+            log.info("Emitting Phase C/D output to %s", _SETTINGS.emit_json_dir)
+            writer = JsonFileWriter(_SETTINGS.emit_json_dir)
+        else:
+            log.info("Connecting to Neo4j for writes: %s", _SETTINGS.neo4j_uri)
+            try:
+                neo4j_driver = build_driver(_SETTINGS)
+            except ConfigError as e:
+                log.error(
+                    "%s — --read-json needs either --emit-json DIR or Neo4j "
+                    "credentials for the write side.", e,
+                )
+                sys.exit(2)
+            log.info("Neo4j connected")
+            writer = DirectNeo4jWriter(neo4j_driver, batch_size=args.batch_size)
+
+        if not args.skip_timeline:
+            writer.open_phase("C")
+            build_timeline(reader, writer)
+            writer.close_phase("C")
+        else:
+            log.info("Phase C skipped (--skip-timeline)")
+
+        if not args.skip_permanencia:
+            writer.open_phase("D")
+            compute_permanencia(reader, writer)
+            writer.close_phase("D")
+        else:
+            log.info("Phase D skipped (--skip-permanencia)")
+
+        log.info("Read-json pipeline complete.")
+    finally:
+        if reader is not None:
+            reader.close()
+        if writer is not None:
+            writer.close()
+        if neo4j_driver is not None:
+            neo4j_driver.close()
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 def main():
+    global _SETTINGS
     parser = argparse.ArgumentParser(description="ETL: sei_atividades -> Neo4j")
     parser.add_argument("--from", dest="from_date", type=str, help="Filter from date (YYYY-MM-DD)")
     parser.add_argument("--to", dest="to_date", type=str, help="Filter to date (YYYY-MM-DD)")
@@ -1115,7 +1068,25 @@ def main():
     parser.add_argument("--chunk-size", type=int, default=200, help="Processos per worker chunk (default: 200)")
     parser.add_argument("--skip-timeline", action="store_true", help="Skip building SEGUIDA_POR DAG")
     parser.add_argument("--skip-permanencia", action="store_true", help="Skip computing permanencia")
+    # ETL keeps its own --batch-size / --workers defaults (500 / 8); pipeline
+    # supplies the remaining standard flags.
+    add_standard_args(parser, skip={"--batch-size", "--workers"})
     args = parser.parse_args()
+
+    _SETTINGS = resolve_settings(args)
+    configure_logging(__name__, _SETTINGS.log_level)
+
+    # --read-json: short-circuit path — skip Phase A/B (which require Postgres)
+    # and run only Phase C/D against a JsonFileReader loaded from the emit dir.
+    if _SETTINGS.read_json_dir is not None:
+        _run_read_json_only(args)
+        return
+
+    try:
+        _SETTINGS.require_postgres()
+    except ConfigError as e:
+        log.error("%s", e)
+        sys.exit(2)
 
     # -- Phase 1: Find processos --
     log.info("Phase 1: Finding processos (creation events)...")
@@ -1186,7 +1157,7 @@ def main():
     # Add ancestor unidades for SUBUNIDADE_DE hierarchy
     ancestors: set[str] = set()
     for u in list(all_unidades):
-        for anc in _all_ancestor_unidades(u):
+        for anc in all_ancestor_unidades(u):
             ancestors.add(anc)
     all_unidades |= ancestors
     if ancestors:
@@ -1205,20 +1176,69 @@ def main():
     pg_conn.close()
     log.info("Found %d unique usuarios", len(user_orgao))
 
-    # -- Neo4j setup --
+    # -- Writer / Neo4j setup --
+    #
+    # Three modes:
+    #   1. --dry-run             : no writer, no driver. Phase B skips writes;
+    #                              Phase C/D skipped entirely (always have been).
+    #   2. --emit-json DIR       : writer = JsonFileWriter(DIR). Driver is built
+    #                              only if Phase C/D are still enabled, since
+    #                              those phases currently READ from Neo4j.
+    #                              JsonFileReader lands in a later step.
+    #   3. default (live Neo4j)  : writer = DirectNeo4jWriter, driver built.
     neo4j_driver = None
-    if not args.dry_run:
-        log.info("Connecting to Neo4j: %s", NEO4J_URI)
-        neo4j_driver = GraphDatabase.driver(NEO4J_URI, auth=(NEO4J_USER, NEO4J_PASSWORD))
-        neo4j_driver.verify_connectivity()
+    writer: GraphWriter | None = None
+
+    if args.dry_run:
+        log.info("Dry run: classify only, no writes")
+
+    elif _SETTINGS.emit_json_dir is not None:
+        emit_dir = _SETTINGS.emit_json_dir
+        log.info("Emitting graph to NDJSON under %s", emit_dir)
+        writer = JsonFileWriter(emit_dir)
+
+        need_reads = not args.skip_timeline or not args.skip_permanencia
+        if need_reads:
+            log.info("Phase C/D still need to READ from Neo4j (see plan step 10); "
+                     "attempting to connect: %s", _SETTINGS.neo4j_uri)
+            try:
+                neo4j_driver = build_driver(_SETTINGS)
+                log.info("Neo4j connected (read-only during emit)")
+            except ConfigError as e:
+                log.warning(
+                    "%s — Phase C and Phase D will be skipped. "
+                    "Pass --skip-timeline --skip-permanencia to silence this.",
+                    e,
+                )
+                args.skip_timeline = True
+                args.skip_permanencia = True
+
+        writer.open_phase("schema")
+        for cypher in SETUP_CONSTRAINTS:
+            writer.execute_template("schema_constraint", cypher, {}, phase="schema")
+        writer.close_phase("schema")
+        log.info("Schema: %d constraints/indexes emitted", len(SETUP_CONSTRAINTS))
+
+        precreate_shared_nodes(writer, processos, all_unidades, user_orgao)
+
+    else:
+        log.info("Connecting to Neo4j: %s", _SETTINGS.neo4j_uri)
+        try:
+            neo4j_driver = build_driver(_SETTINGS)
+        except ConfigError as e:
+            log.error("%s", e)
+            sys.exit(2)
         log.info("Neo4j connected")
 
-        with neo4j_driver.session() as session:
-            for cypher in SETUP_CONSTRAINTS:
-                session.run(cypher)
+        writer = DirectNeo4jWriter(neo4j_driver, batch_size=args.batch_size)
+
+        writer.open_phase("schema")
+        for cypher in SETUP_CONSTRAINTS:
+            writer.execute_template("schema_constraint", cypher, {}, phase="schema")
+        writer.close_phase("schema")
         log.info("Schema: %d constraints/indexes", len(SETUP_CONSTRAINTS))
 
-        precreate_shared_nodes(neo4j_driver, processos, all_unidades, user_orgao)
+        precreate_shared_nodes(writer, processos, all_unidades, user_orgao)
 
     # -- Phase B: Load atividades in parallel --
     chunk_size = args.chunk_size
@@ -1234,7 +1254,7 @@ def main():
 
     with ThreadPoolExecutor(max_workers=args.workers) as pool:
         futures = {
-            pool.submit(process_chunk, chunk, neo4j_driver, args.dry_run, args.batch_size): i
+            pool.submit(process_chunk, chunk, writer, args.dry_run, args.batch_size): i
             for i, chunk in enumerate(chunks)
         }
         for future in as_completed(futures):
@@ -1255,13 +1275,20 @@ def main():
 
     log.info("Phase B complete: %d atividades loaded", grand_total)
 
+    # -- Reader for Phase C / D (still live Neo4j until step 10) --
+    reader: GraphReader | None = Neo4jReader(neo4j_driver) if neo4j_driver is not None else None
+
     # -- Phase C: Build timeline --
-    if neo4j_driver and not args.dry_run and not args.skip_timeline:
-        build_timeline(neo4j_driver)
+    if reader and writer and not args.dry_run and not args.skip_timeline:
+        writer.open_phase("C")
+        build_timeline(reader, writer)
+        writer.close_phase("C")
 
     # -- Phase D: Compute permanencia --
-    if neo4j_driver and not args.dry_run and not args.skip_permanencia:
-        compute_permanencia(neo4j_driver)
+    if reader and writer and not args.dry_run and not args.skip_permanencia:
+        writer.open_phase("D")
+        compute_permanencia(reader, writer)
+        writer.close_phase("D")
 
     # -- Stats --
     log.info("ETL complete. Total: %d atividades across %d processos", grand_total, len(protocolo_ids))
@@ -1276,7 +1303,11 @@ def main():
     if failed_chunks:
         log.error("Failed chunks: %d / %d", failed_chunks, len(chunks))
 
-    if neo4j_driver:
+    if reader is not None:
+        reader.close()
+    if writer is not None:
+        writer.close()
+    if neo4j_driver is not None:
         neo4j_driver.close()
 
 

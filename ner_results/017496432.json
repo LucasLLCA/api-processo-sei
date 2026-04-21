@@ -1,0 +1,67 @@
+{
+  "documento_numero": "017496432",
+  "protocolo": "00227.000410_2025-62",
+  "source_file": "19472937.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Annderson Felipe Bandeira Silva"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "DIRETORIA DE LOGÍSTICA E ABASTECIMENTO"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "GERÊNCIA DE GESTÃO DE PESSOAS"
+      },
+      {
+        "text": "ASSESSORIA TÉCNICA DO GABINETE"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "ASSESSORIA TÉCNICA DO GABINETE",
+        "Coordenação de Telefonia"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:04:09.499881+00:00"
+}

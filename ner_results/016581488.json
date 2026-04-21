@@ -1,0 +1,96 @@
+{
+  "documento_numero": "016581488",
+  "protocolo": "00227.000095_2025-73",
+  "source_file": "18471406.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Flávio Chaib"
+      },
+      {
+        "text": "Carlos Castelo Branco"
+      },
+      {
+        "text": "AÍLDO DE SOUSA MARTINS JÚNIOR"
+      },
+      {
+        "text": "MARA LILINNE LEAL DE SOUSA LIMA"
+      },
+      {
+        "text": "ALEXANDRE MAGNO BANDEIRA DA SILVA COSTA"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "Fundação Piauí Previdência"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "Secretaria de Estado da Administração"
+      },
+      {
+        "text": "Comissão de Planejamento da Contratação"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "PRESIDENTE"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "portaria"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "Flávio Chaib",
+        "Eletronicamente"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "grupo",
+        "diligências e esclarecimentos"
+      ]
+    ],
+    "solicitou": [
+      [
+        "grupo",
+        "diligências e esclarecimentos"
+      ]
+    ],
+    "designou": [
+      [
+        "Art. 2º",
+        "serviços"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:42:41.142101+00:00"
+}

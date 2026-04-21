@@ -1,0 +1,66 @@
+{
+  "documento_numero": "016152310",
+  "protocolo": "00226.000020_2025-01",
+  "source_file": "17994692.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa_juridica": [
+      {
+        "text": "MERCADOMOVEIS LTDA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "Assessoria de Licitação"
+      },
+      {
+        "text": "GABINETE DO DIRETOR GERAL"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "órgão requerente",
+        "Autorização para Contratação"
+      ],
+      [
+        "órgão requerente",
+        "verificação da viabilidade econômica"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:39:58.146820+00:00"
+}

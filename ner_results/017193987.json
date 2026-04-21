@@ -1,0 +1,98 @@
+{
+  "documento_numero": "017193987",
+  "protocolo": "00224.000078_2025-66",
+  "source_file": "19141338.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "James Lane Ramos de Sousa"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "GTFR"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "CGFR"
+      },
+      {
+        "text": "SEFIR"
+      },
+      {
+        "text": "SEFIR-PI"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "Coordenador"
+      }
+    ],
+    "numero_processo": [
+      {
+        "text": "00224.000078/2025-66"
+      }
+    ],
+    "url": [
+      {
+        "text": "https://portal.sefaz.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "ata"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "CGFR",
+        "Autorização de Reserva orçamentaria – RO"
+      ],
+      [
+        "CGFR",
+        "contratações"
+      ]
+    ],
+    "solicitou": [
+      [
+        "SEFIR",
+        "materiais"
+      ]
+    ],
+    "nomeou": [
+      [
+        "CGFR",
+        "James Lane Ramos de Sousa"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:25:04.627384+00:00"
+}

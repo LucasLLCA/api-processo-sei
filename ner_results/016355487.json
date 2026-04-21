@@ -1,0 +1,72 @@
+{
+  "documento_numero": "016355487",
+  "protocolo": "00227.000410_2025-62",
+  "source_file": "18221442.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Nayana Cavalcante Costa"
+      },
+      {
+        "text": "Sônia Maria Alves Rodrigues"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "FUNDAÇÃO PIAUÍ PREVIDÊNCIA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "DIRETORIA DE GESTÃO DE BENEFÍCIOS"
+      },
+      {
+        "text": "Diretoria Administrativa e Financeira"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretora"
+      },
+      {
+        "text": "servidora"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "requerimento"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "PIAUIPREV-PI/GAB/DIBEN",
+        "00227.000410/2025-62"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:03:23.956216+00:00"
+}

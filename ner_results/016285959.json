@@ -1,0 +1,73 @@
+{
+  "documento_numero": "016285959",
+  "protocolo": "00201.000073_2025-00",
+  "source_file": "18144358.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Samuel Pontes do Nascimento"
+      },
+      {
+        "text": "Zenaide Batista Lustosa Neta"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEMPI"
+      },
+      {
+        "text": "SEMPI-PI"
+      },
+      {
+        "text": "Secretaria das Mulheres"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário de Administração"
+      },
+      {
+        "text": "Secretária das Mulheres de Estado/SEMPI"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "V.Sa..",
+        "Servidor /técnico"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:14:45.729125+00:00"
+}

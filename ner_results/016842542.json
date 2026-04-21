@@ -1,0 +1,90 @@
+{
+  "documento_numero": "016842542",
+  "protocolo": "00153.000056_2025-87",
+  "source_file": "18757117.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "José Antônio Monteiro"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "SEADPREV"
+      },
+      {
+        "text": "SEADPREV/PI"
+      },
+      {
+        "text": "Secretaria de Estado do Turismo"
+      },
+      {
+        "text": "DIRETORIA ADMINISTRATIVA E FINANCEIRA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário de Estado do Turismo do Piauí"
+      },
+      {
+        "text": "Superintendente de Licitações e Contratos"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.turismo.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "autoridade competente",
+        "celebração de contrato"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "setor solicitante",
+        "Anuência do fornecedor"
+      ]
+    ],
+    "assinou": [
+      [
+        "José Antônio Monteiro",
+        "eletronicamente"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:19:38.172117+00:00"
+}

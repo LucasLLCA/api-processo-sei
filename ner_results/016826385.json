@@ -1,0 +1,93 @@
+{
+  "documento_numero": "016826385",
+  "protocolo": "00227.000072_2025-69",
+  "source_file": "18739342.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Flávio Chaib"
+      },
+      {
+        "text": "ALEXANDRE ASSUMPÇÃO MARTIN"
+      },
+      {
+        "text": "Carla Adriana da Silva Peres"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "Fundação Piauí Previdência"
+      },
+      {
+        "text": "COMÉRCIO DE IMPLEMENTOS AGRÍCOLAS LTDA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "DIAF/PIAUIPREV"
+      },
+      {
+        "text": "Fundação Piauí Previdência"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "DIRETORIA ADMINISTRATIVA E FINANCEIRA"
+      },
+      {
+        "text": "SECRETARIA DA ADMINISTRAÇÃO DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Presidente"
+      },
+      {
+        "text": "Diretora Administrativa e Financeira"
+      }
+    ],
+    "email": [
+      {
+        "text": "vendas@vincitaltda.com.br"
+      }
+    ],
+    "valor_monetario": [
+      {
+        "text": "R$ 2.935,00"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T09:00:17.309777+00:00"
+}

@@ -1,0 +1,62 @@
+{
+  "documento_numero": "016118478",
+  "protocolo": "00002.000175_2025-63",
+  "source_file": "17956873.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa_juridica": [
+      {
+        "text": "G O SANTOS"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "SECRETARIA Da ADMINISTRAÇÃO E DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "cnpj": [
+      {
+        "text": "46.067.730/0001-00"
+      }
+    ],
+    "data": [
+      {
+        "text": "10 de janeiro de 2025"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "certidao"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T06:11:56.474868+00:00"
+}

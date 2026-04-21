@@ -1,0 +1,77 @@
+{
+  "documento_numero": "016456838",
+  "protocolo": "00240.000243_2025-81",
+  "source_file": "18334100.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "Secretaria de Assistência Técnica e Defesa Agropecuária"
+      },
+      {
+        "text": "SECRETARIA DA ASSISTÊNCIA TÉCNICA E DEFESA AGROPECUÁRIA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretaria"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "ata"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "equipe técnica de engenharia",
+        "população rural do Piauí"
+      ]
+    ],
+    "solicitou": [
+      [
+        "população rural do Piauí",
+        "infraestrutura básica"
+      ]
+    ],
+    "nomeou": [
+      [
+        "Lei 7.884/2022",
+        "SECRETARIA DA ASSISTÊNCIA TÉCNICA E DEFESA AGROPECUÁRIA"
+      ]
+    ],
+    "designou": [
+      [
+        "Lei 7.884/2022",
+        "SECRETARIA DA ASSISTÊNCIA TÉCNICA E DEFESA AGROPECUÁRIA"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T11:26:25.048342+00:00"
+}

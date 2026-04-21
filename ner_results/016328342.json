@@ -1,0 +1,67 @@
+{
+  "documento_numero": "016328342",
+  "protocolo": "00240.000029_2025-25",
+  "source_file": "18191450.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "MARCELO NUNES"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "GABINETE GERAL"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "Secretaria"
+      },
+      {
+        "text": "Governador do Estado do Piauí"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "Prefeitura Municipal de Oeiras (PI)",
+        "cessão com ônus"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:06:34.992163+00:00"
+}

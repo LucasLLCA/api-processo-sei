@@ -1,0 +1,94 @@
+{
+  "documento_numero": "016506641",
+  "protocolo": "00153.000049_2025-85",
+  "source_file": "18389204.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "José Antônio Monteiro"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "Diretoria de Infraestrutura Turística"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "Secretário de Estado do Turismo"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.turismo.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "termo_referencia"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "SECRETARIA DE ESTADO DO TURISMO",
+        "TERMO DE REFERÊNCIA"
+      ],
+      [
+        "José Antônio Monteiro",
+        "abertura do procedimento licitatório"
+      ]
+    ],
+    "assinou": [
+      [
+        "José Antônio Monteiro",
+        "presente"
+      ]
+    ],
+    "contratou": [
+      [
+        "TERMO DE REFERÊNCIA",
+        "empresa especializada"
+      ]
+    ],
+    "nomeou": [
+      [
+        "José Antônio Monteiro",
+        "TERMO DE REFERÊNCIA"
+      ]
+    ],
+    "designou": [
+      [
+        "José Antônio Monteiro",
+        "TERMO DE REFERÊNCIA"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:08:48.384126+00:00"
+}

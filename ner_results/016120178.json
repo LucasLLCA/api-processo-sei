@@ -1,0 +1,75 @@
+{
+  "documento_numero": "016120178",
+  "protocolo": "00227.000125_2025-41",
+  "source_file": "17958735.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "JOSE GALVAO AGUIR"
+      },
+      {
+        "text": "Marina Bandeira Alves"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "Fundação Piauí Previdência"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD"
+      },
+      {
+        "text": "Secretaria de Administração"
+      },
+      {
+        "text": "GERÊNCIA DE FOLHA DE BENEFÍCIOS PREVIDENCIÁRIOS"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretora"
+      },
+      {
+        "text": "Gerente da Folha de Benefícios Previdenciários"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "documentação",
+        "pensão do segurado JOSE GALVAO AGUIR"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:44:02.119135+00:00"
+}

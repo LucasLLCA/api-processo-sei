@@ -1,0 +1,91 @@
+{
+  "documento_numero": "016418273",
+  "protocolo": "00095.000323_2025-58",
+  "source_file": "18291019.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "SILVA BORGES"
+      },
+      {
+        "text": "AMANDA LEITE"
+      },
+      {
+        "text": "Renato Lelis Viana"
+      },
+      {
+        "text": "Edna Maria Martins"
+      },
+      {
+        "text": "Maria Gomes Pinheiro"
+      },
+      {
+        "text": "Raimundo Bispo Pereira"
+      },
+      {
+        "text": "Daniel Magalhães Chaves"
+      },
+      {
+        "text": "Ednaldo Bezerra dos Santos"
+      },
+      {
+        "text": "Marciano Antônio de Oliveira Nunes"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "Comissão Especial de Enquadramento"
+      },
+      {
+        "text": "Conselho Estadual de Gestão de Pessoas"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "PRESIDENTE"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "Despacho",
+        "Conselho Estadual de Gestão de Pessoas"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:15:27.230223+00:00"
+}

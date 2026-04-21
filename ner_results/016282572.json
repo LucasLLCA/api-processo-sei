@@ -1,0 +1,119 @@
+{
+  "documento_numero": "016282572",
+  "protocolo": "00153.000061_2025-90",
+  "source_file": "18140626.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "FRANCISCO EDUARDO SOUSA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "CGE-PI"
+      },
+      {
+        "text": "PGE-PI"
+      },
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "Secretaria do Turismo – SETUR"
+      },
+      {
+        "text": "Coordenação de Comunicação – CCOM"
+      },
+      {
+        "text": "Diretoria de Eventos e Patrocínios"
+      },
+      {
+        "text": "Diretoria Administrativa e Financeira"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Diretor de Patrocínios e Eventos"
+      }
+    ],
+    "numero_processo": [
+      {
+        "text": "00153.000061/2025-90"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.turismo.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "SECRETARIA DE ESTADO DO TURISMO",
+        "autorização"
+      ],
+      [
+        "Coordenação de Comunicação – CCOM",
+        "contrapartida de mídia"
+      ]
+    ],
+    "encaminhou_para": [
+      [
+        "Despacho",
+        "Diretoria Administrativa e Financeira"
+      ],
+      [
+        "Diretoria Administrativa e Financeira",
+        "providências"
+      ]
+    ],
+    "solicitou": [
+      [
+        "Proponente",
+        "autorização"
+      ],
+      [
+        "caso",
+        "providências"
+      ]
+    ],
+    "assinou": [
+      [
+        "CGE-PI",
+        "Parecer Referencial nº 11/2021"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:22:08.126831+00:00"
+}

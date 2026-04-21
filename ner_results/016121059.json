@@ -1,0 +1,98 @@
+{
+  "documento_numero": "016121059",
+  "protocolo": "00153.000014_2025-46",
+  "source_file": "17959715.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "WAGNER JARDEL PONTES GOMES"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "Secretaria de Turismo do Piauí"
+      },
+      {
+        "text": "Secretaria de Turismo do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretaria"
+      },
+      {
+        "text": "Diretor Administrativo e Financeiro SETUR-PI"
+      }
+    ],
+    "data": [
+      {
+        "text": "22 de abril de 2024"
+      },
+      {
+        "text": "22 de abril de 2025"
+      }
+    ],
+    "valor_monetario": [
+      {
+        "text": "R$ 598,00"
+      },
+      {
+        "text": "R$ 2.479,00"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "contrato"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "Contrato",
+        "SETUR-PI"
+      ]
+    ],
+    "solicitou": [
+      [
+        "demanda institucional",
+        "ampliação do quantitativo"
+      ]
+    ],
+    "contratou": [
+      [
+        "contratado",
+        "acréscimos"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:53:24.170128+00:00"
+}

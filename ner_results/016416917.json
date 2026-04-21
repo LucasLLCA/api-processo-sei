@@ -1,0 +1,97 @@
+{
+  "documento_numero": "016416917",
+  "protocolo": "00095.000323_2025-58",
+  "source_file": "18289469.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Carlos Yuri"
+      },
+      {
+        "text": "SUZANA MARIA REBELO SAMPAIO MARREIROS"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEJUS"
+      },
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "CEE.SEAD"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "SECRETARIA DA ADMINISTRAÇÃO E DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "ASSISTENTE SOCIAL"
+      },
+      {
+        "text": "AGENTE OCUPACIONAL DE SERVIÇO SUPERIOR"
+      }
+    ],
+    "data": [
+      {
+        "text": "22 de Junho de 2022"
+      }
+    ],
+    "numero_processo": [
+      {
+        "text": "00095.000323/2025-58"
+      },
+      {
+        "text": "00095.001211/2022-71"
+      },
+      {
+        "text": "00095.000534/2024-48"
+      }
+    ],
+    "lei": [
+      {
+        "text": "LEI Nº 6.201"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "requerimento"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "Certificado de Treinamento",
+        "III-E"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:15:19.351131+00:00"
+}

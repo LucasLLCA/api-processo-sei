@@ -1,0 +1,84 @@
+{
+  "documento_numero": "016690712",
+  "protocolo": "00201.000067_2025-44",
+  "source_file": "18590897.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Alan Diniz dos Reis"
+      },
+      {
+        "text": "Ricardo Cardoso Pires"
+      },
+      {
+        "text": "Emílio Joaquim de Oliveira Júnior"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "Secretaria da Fazenda do Estado do Piauí"
+      },
+      {
+        "text": "SECRETARIA DE FAZENDA DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "Secretaria de Administração do Estado do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretaria"
+      },
+      {
+        "text": "Secretário da Fazenda"
+      },
+      {
+        "text": "Diretor da Unidade Administrativo-Financeira"
+      },
+      {
+        "text": "Superintendente de Administração Financeira, Logística e Tecnológica"
+      }
+    ],
+    "url": [
+      {
+        "text": "https://portal.sefaz.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "ata"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "SECRETARIA DE FAZENDA",
+        "Termo de Transferência Patrimonial"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:14:17.485478+00:00"
+}

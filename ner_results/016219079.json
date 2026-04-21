@@ -1,0 +1,64 @@
+{
+  "documento_numero": "016219079",
+  "protocolo": "00153.000001_2025-77",
+  "source_file": "18069348.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "JOANNA MARA ANDRADE SOARES DA COSTA"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "SERVFAZ"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "Despacho Governo do Estado do Piauí"
+      },
+      {
+        "text": "DIRETORIA ADMINISTRATIVA E FINANCEIRA"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "SERVFAZ",
+        "eletronicamente"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:40:00.067480+00:00"
+}

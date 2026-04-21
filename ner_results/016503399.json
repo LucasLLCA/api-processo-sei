@@ -1,0 +1,71 @@
+{
+  "documento_numero": "016503399",
+  "protocolo": "00153.000075_2025-11",
+  "source_file": "18385605.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "James Lane Ramos de Sousa"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SETUR-PI"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "Coordenador"
+      }
+    ],
+    "numero_processo": [
+      {
+        "text": "00153.000075/2025-11"
+      }
+    ],
+    "url": [
+      {
+        "text": "https://portal.sefaz.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "ata"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "SETUR-PI",
+        "Autorização de Reserva orçamentaria – RO"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:46:57.588111+00:00"
+}

@@ -1,0 +1,80 @@
+{
+  "documento_numero": "016269079",
+  "protocolo": "00227.000266_2025-64",
+  "source_file": "18125567.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Francisco Normandes Alves do Nascimento"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "Fundação Piauí Previdência"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "PIAUIPREV"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "Diretoria de Gestão de Benefícios"
+      },
+      {
+        "text": "GERÊNCIA DE FOLHA DE BENEFÍCIOS PREVIDENCIÁRIOS"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "2° sargento"
+      },
+      {
+        "text": "Gerente da Folha de Benefícios"
+      }
+    ],
+    "data": [
+      {
+        "text": "2024"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "Francisco Normandes Alves do Nascimento",
+        "restituição de descontos indevidos"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:53:47.227046+00:00"
+}

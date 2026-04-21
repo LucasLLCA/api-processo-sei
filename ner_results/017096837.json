@@ -1,0 +1,70 @@
+{
+  "documento_numero": "017096837",
+  "protocolo": "00089.002616_2025-59",
+  "source_file": "19035430.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Evandro Alberto de Sousa"
+      },
+      {
+        "text": "Maria Rozângela Pereira de Jesus"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "FUESPI-PI"
+      },
+      {
+        "text": "Conselho Diretor - CONDIR"
+      },
+      {
+        "text": "Conselho de Administração e Planejamento - CONAPLAN"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Reitor"
+      },
+      {
+        "text": "Assistente de Gestão Administrativa Universitária"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "portaria"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "Art. 1º",
+        "Progressão Funcional"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:13:42.948936+00:00"
+}

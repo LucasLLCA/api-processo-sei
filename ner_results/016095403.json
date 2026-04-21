@@ -1,0 +1,75 @@
+{
+  "documento_numero": "016095403",
+  "protocolo": "00153.000008_2025-99",
+  "source_file": "17930927.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "JARDEL PONTES GOMES"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "Regina"
+      },
+      {
+        "text": "TEIXEIRA E LEITE LTDA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SETUR-PI"
+      },
+      {
+        "text": "Secretaria de Turismo do Piauí"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "SECRETARIA"
+      },
+      {
+        "text": "Diretor Administrativo e Financeiro SETUR-PI"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "contrato"
+  },
+  "relations": {
+    "contratou": [
+      [
+        "Contrato",
+        "TEIXEIRA E LEITE LTDA"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T06:48:03.155090+00:00"
+}

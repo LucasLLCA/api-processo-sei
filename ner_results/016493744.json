@@ -1,0 +1,78 @@
+{
+  "documento_numero": "016493744",
+  "protocolo": "00240.000243_2025-81",
+  "source_file": "18374860.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "FABIO ABREU COSTA"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "DREAM"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SADA-PI"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "COMISSÃO PERMANENTE DE LICITAÇÃO"
+      },
+      {
+        "text": "SECRETARIA DA ASSISTÊNCIA TÉCNICA E DEFESA AGROPECUÁRIA"
+      },
+      {
+        "text": "Secretaria de Assistência Técnica e Defesa Agropecuária"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário"
+      },
+      {
+        "text": "Secretaria"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "contratou": [
+      [
+        "Secretaria de Assistência Técnica e Defesa Agropecuária",
+        "empresa de engenharia"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T11:30:39.834415+00:00"
+}

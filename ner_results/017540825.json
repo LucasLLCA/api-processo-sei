@@ -1,0 +1,84 @@
+{
+  "documento_numero": "017540825",
+  "protocolo": "00227.000072_2025-69",
+  "source_file": "19521412.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Carlos Castelo Branco"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "FUNDAÇÃO PIAUÍ PREVIDÊNCIA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "GERÊNCIA DE CONTRATOS"
+      },
+      {
+        "text": "Governo do Estado do Piauí"
+      },
+      {
+        "text": "DIRETORIA ADMINISTRATIVA E FINANCEIRA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "SECRETARIA"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "SECRETARIA DE ADMINISTRAÇÃO DO ESTADO DO PIAUÍ",
+        "contratações de empresas"
+      ]
+    ],
+    "assinou": [
+      [
+        "Telefone",
+        "DESPACHO"
+      ]
+    ],
+    "contratou": [
+      [
+        "empresas",
+        "não contratação"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:05:04.190598+00:00"
+}

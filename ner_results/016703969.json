@@ -1,0 +1,72 @@
+{
+  "documento_numero": "016703969",
+  "protocolo": "00227.000130_2025-54",
+  "source_file": "18605250.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Mawro Klinger"
+      }
+    ],
+    "pessoa_juridica": [
+      {
+        "text": "NTECH TI LTDA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "Núcleo Estratégico e Governo Digital"
+      },
+      {
+        "text": "NÚCLEO ESTRATÉGICO DE TECNOLOGIA E GOVERNO DIGITAL"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Coordenador de Suporte à Distáncia"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "solicitou": [
+      [
+        "Despacho",
+        "avaliação e emissão de parecer técnico"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:44:52.344749+00:00"
+}

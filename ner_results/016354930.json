@@ -1,0 +1,131 @@
+{
+  "documento_numero": "016354930",
+  "protocolo": "00240.000116_2025-82",
+  "source_file": "18220830.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa_juridica": [
+      {
+        "text": "POTY"
+      },
+      {
+        "text": "ZAELE"
+      },
+      {
+        "text": "BETÂNIA"
+      },
+      {
+        "text": "PALMEIRA"
+      },
+      {
+        "text": "PANTANAL"
+      },
+      {
+        "text": "CONCÓRDIA"
+      },
+      {
+        "text": "RIO MARIA"
+      },
+      {
+        "text": "BOM SABOR"
+      },
+      {
+        "text": "DIRETORIA ADMINISTRATIVA E FINANCEIRA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SADA"
+      },
+      {
+        "text": "SEAD"
+      },
+      {
+        "text": "DIRETORIA ADMINISTRAT."
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "Diretoria Administrativo e Financeira da SADA"
+      },
+      {
+        "text": "SECRETARIA DA ASSISTÊNCIA TÉCNICA E DEFESA AGROPECUÁRIA"
+      },
+      {
+        "text": "Secretária de Assistência Técnica e Defesa Agropecuária"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "secretário"
+      },
+      {
+        "text": "Secretária de Estado"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "contrato"
+  },
+  "relations": {
+    "contratou": [
+      [
+        "GOVERNO DO ESTADO DO PIAUÍ",
+        "empresa especializada"
+      ],
+      [
+        "governo",
+        "empresa especializada"
+      ]
+    ],
+    "assinou": [
+      [
+        "Secretária de Estado",
+        "Lei 7.884/2022"
+      ]
+    ],
+    "autorizou": [
+      [
+        "ambos",
+        "pregão eletrônico"
+      ]
+    ],
+    "solicitou": [
+      [
+        "caso",
+        "execução do objeto em tela"
+      ]
+    ],
+    "nomeou": [
+      [
+        "colaboradores",
+        "membro da equipe de planejamento"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T10:37:47.465668+00:00"
+}

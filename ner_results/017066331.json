@@ -1,0 +1,58 @@
+{
+  "documento_numero": "017066331",
+  "protocolo": "00227.000192_2025-66",
+  "source_file": "19002053.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "SEAD-PI"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "GERÊNCIA DE ESTRUTURAÇÃO DA FOLHA DE PAGAMENTO"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.sead.pi.gov.br/"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "despacho"
+  },
+  "relations": {
+    "encaminhou_para": [
+      [
+        "SEAD-PI",
+        "GERÊNCIA DE ESTRUTURAÇÃO DA FOLHA DE PAGAMENTO"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T09:49:49.932915+00:00"
+}

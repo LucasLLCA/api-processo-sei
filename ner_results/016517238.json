@@ -1,0 +1,58 @@
+{
+  "documento_numero": "016517238",
+  "protocolo": "00153.000049_2025-85",
+  "source_file": "18400739.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "José Antônio Monteiro"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretário de Estado do Turismo"
+      }
+    ],
+    "url": [
+      {
+        "text": "http://www.turismo.pi.gov.br"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "parecer_juridico"
+  },
+  "relations": {
+    "assinou": [
+      [
+        "José Antônio Monteiro",
+        "presente"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T07:12:22.812362+00:00"
+}

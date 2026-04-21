@@ -1,0 +1,51 @@
+{
+  "documento_numero": "017089797",
+  "protocolo": "00227.000192_2025-66",
+  "source_file": "19027669.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "RÔMULO DE SOUZA"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SUPERINTENDÊNCIA DE PREVIDÊNCIA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Presidente"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "oficio"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T09:49:56.393720+00:00"
+}

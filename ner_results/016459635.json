@@ -1,0 +1,107 @@
+{
+  "documento_numero": "016459635",
+  "protocolo": "00240.000243_2025-81",
+  "source_file": "18337154.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "pessoa": [
+      {
+        "text": "Carlos Alberto Ferreira da Costa"
+      }
+    ],
+    "orgao": [
+      {
+        "text": "SADA"
+      },
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      },
+      {
+        "text": "DIRETORIA DE INFRAESTRUTURA RURAL"
+      },
+      {
+        "text": "SECRETARIA DA ASSISTÊNCIA TÉCNICA E DEFESA AGROPECUÁRIA"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretaria"
+      },
+      {
+        "text": "secretário"
+      }
+    ],
+    "numero_processo": [
+      {
+        "text": "00240.000243/2025-81"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "contrato"
+  },
+  "relations": {
+    "nomeou": [
+      [
+        "Lei 7.884/23",
+        "SECRETARIA DA ASSISTÊNCIA TÉCNICA E DEFESA AGROPECUÁRIA"
+      ],
+      [
+        "colaboradores",
+        "membro da equipe de planejamento"
+      ]
+    ],
+    "designou": [
+      [
+        "Lei 7.884/23",
+        "SECRETARIA DA ASSISTÊNCIA TÉCNICA E DEFESA AGROPECUÁRIA"
+      ],
+      [
+        "colaboradores",
+        "membro da equipe de planejamento"
+      ]
+    ],
+    "assinou": [
+      [
+        "governo",
+        "Lei 7.884/2022"
+      ]
+    ],
+    "autorizou": [
+      [
+        "secretário",
+        "equipe técnica"
+      ]
+    ],
+    "solicitou": [
+      [
+        "caso",
+        "execução do objeto"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T11:27:23.572540+00:00"
+}

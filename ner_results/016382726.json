@@ -1,0 +1,64 @@
+{
+  "documento_numero": "016382726",
+  "protocolo": "00153.000089_2025-27",
+  "source_file": "18251590.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "GOVERNO DO ESTADO DO PIAUÍ"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Secretaria"
+      }
+    ],
+    "objeto_licitacao": [
+      {
+        "text": "registro de preços"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "ata"
+  },
+  "relations": {
+    "autorizou": [
+      [
+        "Decreto Estadual n. 11.319",
+        "registro de preços"
+      ]
+    ],
+    "solicitou": [
+      [
+        "justificativa",
+        "LIBERAÇÃO DA ATA DE REGISTRO DE PREÇOS"
+      ]
+    ]
+  },
+  "extracted_at": "2026-04-01T08:08:47.639477+00:00"
+}

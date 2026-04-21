@@ -1,0 +1,35 @@
+{
+  "documento_numero": "017409667",
+  "protocolo": "00153.000001_2025-77",
+  "source_file": "19377239.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {},
+  "classification": {
+    "tipo_documento": "termo_referencia"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T06:46:20.470477+00:00"
+}

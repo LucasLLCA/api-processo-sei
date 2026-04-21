@@ -1,0 +1,64 @@
+{
+  "documento_numero": "017068054",
+  "protocolo": "00089.002616_2025-59",
+  "source_file": "19003934.html",
+  "model": "fastino/gliner2-large-v1",
+  "labels": [
+    "pessoa",
+    "pessoa_juridica",
+    "orgao",
+    "cargo",
+    "email",
+    "cpf",
+    "cnpj",
+    "matricula",
+    "data",
+    "valor_monetario",
+    "endereco",
+    "telefone",
+    "numero_processo",
+    "lei",
+    "decreto",
+    "portaria",
+    "contrato_edital",
+    "assunto",
+    "objeto_licitacao",
+    "vigencia",
+    "url"
+  ],
+  "entities": {
+    "orgao": [
+      {
+        "text": "DGP"
+      },
+      {
+        "text": "AUDI"
+      },
+      {
+        "text": "CONAPLAN"
+      },
+      {
+        "text": "FUESPI-PI"
+      },
+      {
+        "text": "Secretaria"
+      },
+      {
+        "text": "Gabinete Geral da Reitoria"
+      }
+    ],
+    "cargo": [
+      {
+        "text": "Presidente"
+      },
+      {
+        "text": "Chefe de Gabinete"
+      }
+    ]
+  },
+  "classification": {
+    "tipo_documento": "portaria"
+  },
+  "relations": {},
+  "extracted_at": "2026-04-01T06:13:23.109416+00:00"
+}
