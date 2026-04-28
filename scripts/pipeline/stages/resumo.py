@@ -17,15 +17,22 @@ Sections:
   13. Processos parados há mais tempo (último andamento mais antigo)
 
 Usage:
-    python scripts/resumo_neo4j.py
-    python scripts/resumo_neo4j.py --orgao "SEAD-PI"
-    python scripts/resumo_neo4j.py --orgao "SEAD-PI" --top 20
-    python scripts/resumo_neo4j.py --neo4j-uri bolt://remote:7687
+    python scripts/pipeline/ops/resumo_neo4j.py
+    python scripts/pipeline/ops/resumo_neo4j.py --orgao "SEAD-PI"
+    python scripts/pipeline/ops/resumo_neo4j.py --orgao "SEAD-PI" --top 20
+    python scripts/pipeline/ops/resumo_neo4j.py --neo4j-uri bolt://remote:7687
 """
 
 import argparse
 import sys
 from datetime import datetime, timedelta
+from pathlib import Path as _Path
+
+_HERE = _Path(__file__).resolve()
+_SCRIPTS = next(p for p in _HERE.parents if p.name == "scripts")
+for _p in (_SCRIPTS, _SCRIPTS.parent):
+    if str(_p) not in sys.path:
+        sys.path.insert(0, str(_p))
 
 from pipeline.cli import add_standard_args, resolve_settings
 from pipeline.config import ConfigError
@@ -479,10 +486,103 @@ def run_summary(driver, orgao: str | None, top: int):
         print(f"\n{'=' * 70}\n")
 
 
+def run_summary_json(emit_dir: _Path, top: int) -> None:
+    """Subset of `run_summary` that operates on a JsonFileWriter emit directory.
+
+    Supported sections: counts per node label, counts per edge type, top-N
+    distribution of common Atividade.tipo_acao. Anything that requires graph
+    traversal (paths, lead time, etc.) raises a clear error pointing the
+    user to ``--mode neo4j``.
+    """
+    from collections import Counter
+    import json
+
+    if not emit_dir.is_dir():
+        log.error("Emit directory not found: %s", emit_dir)
+        sys.exit(1)
+
+    print(f"\n{'=' * 70}")
+    print(f"  RESUMO (JSON snapshot — {emit_dir})")
+    print(f"{'=' * 70}")
+
+    nodes_dir = emit_dir / "nodes"
+    edges_dir = emit_dir / "edges"
+    templates_dir = emit_dir / "templates"
+
+    # ── 1. Node counts per label ──
+    _sec("1. Counts por label (nodes)")
+    if nodes_dir.is_dir():
+        node_counts: dict[str, int] = {}
+        for f in sorted(nodes_dir.glob("*.ndjson")):
+            with f.open("r", encoding="utf-8") as fh:
+                node_counts[f.stem] = sum(1 for _ in fh)
+        if node_counts:
+            mx = max(node_counts.values())
+            for label, n in sorted(node_counts.items(), key=lambda x: -x[1]):
+                print(f"  {label:30s} {n:>8d}  {_bar(n, mx)}")
+        else:
+            print("  (nenhum nó emitido)")
+    else:
+        print("  (diretório nodes/ ausente)")
+
+    # ── 2. Edge counts per relationship ──
+    _sec("2. Counts por relationship (edges)")
+    if edges_dir.is_dir():
+        edge_counts: dict[str, int] = {}
+        for f in sorted(edges_dir.glob("*.ndjson")):
+            with f.open("r", encoding="utf-8") as fh:
+                edge_counts[f.stem] = sum(1 for _ in fh)
+        if edge_counts:
+            mx = max(edge_counts.values())
+            for rel, n in sorted(edge_counts.items(), key=lambda x: -x[1]):
+                print(f"  {rel:30s} {n:>8d}  {_bar(n, mx)}")
+        else:
+            print("  (nenhuma aresta emitida)")
+    else:
+        print("  (diretório edges/ ausente)")
+
+    # ── 3. Top tipos de ação (parses templates/load_atividades.ndjson) ──
+    _sec(f"3. Top {top} tipos de ação (de templates/load_atividades.ndjson)")
+    activities_template = templates_dir / "load_atividades.ndjson"
+    if activities_template.is_file():
+        tipo_counter: Counter = Counter()
+        total = 0
+        with activities_template.open("r", encoding="utf-8") as fh:
+            for line in fh:
+                try:
+                    rec = json.loads(line)
+                except json.JSONDecodeError:
+                    continue
+                rows = rec.get("params", {}).get("rows") or []
+                for row in rows:
+                    tipo = row.get("tipo_acao")
+                    if tipo:
+                        tipo_counter[tipo] += 1
+                        total += 1
+        if total:
+            mx = tipo_counter.most_common(1)[0][1]
+            for tipo, n in tipo_counter.most_common(top):
+                print(f"  {tipo:35s} {n:>8d}  ({_pct(n, total)})  {_bar(n, mx)}")
+        else:
+            print("  (sem atividades no snapshot)")
+    else:
+        print(f"  (arquivo {activities_template} ausente)")
+
+    # ── 4. Sections inviáveis em JSON ──
+    _sec("Não disponível em modo JSON")
+    print("  As seções abaixo exigem traversal do grafo e só rodam em --mode neo4j:")
+    print("    - permanência por unidade/órgão (PASSOU_PELA_UNIDADE / PASSOU_PELO_ORGAO)")
+    print("    - rotas comuns de tramitação")
+    print("    - processos parados há mais tempo")
+    print("    - usuários/unidades mais ativos por contagem agregada")
+    print(f"\n  Use: pipeline run resumo --mode neo4j  (após replay do snapshot)")
+    print(f"\n{'=' * 70}\n")
+
+
 def main():
-    parser = argparse.ArgumentParser(description="Statistical summary of processos in Neo4j")
+    parser = argparse.ArgumentParser(description="Statistical summary of the graph (Neo4j or JSON)")
     parser.add_argument("--orgao", default=None,
-                        help="Filter only processos created in this orgão (e.g. 'SEAD-PI')")
+                        help="Filter only processos created in this orgão (e.g. 'SEAD-PI'). Neo4j mode only.")
     parser.add_argument("--top", type=int, default=15,
                         help="How many items to show in rankings (default: 15)")
     add_standard_args(parser)
@@ -490,6 +590,13 @@ def main():
 
     settings = resolve_settings(args)
     configure_logging(__name__, settings.log_level)
+
+    if settings.emit_json_dir is not None:
+        run_summary_json(_Path(settings.emit_json_dir), args.top)
+        return
+    if settings.read_json_dir is not None:
+        run_summary_json(_Path(settings.read_json_dir), args.top)
+        return
 
     try:
         driver = build_driver(settings)
@@ -508,6 +615,46 @@ def main():
 
     run_summary(driver, args.orgao, args.top)
     driver.close()
+
+
+# ---------------------------------------------------------------------------
+# Stage entry point
+# ---------------------------------------------------------------------------
+from pipeline.registry import stage  # noqa: E402
+from pipeline._stage_base import RunContext, StageMeta  # noqa: E402
+
+
+@stage(StageMeta(
+    name="resumo",
+    description="Sumário estatístico do grafo. Subset disponível em modo JSON.",
+    type="op",
+    depends_on=(),
+    modes=("neo4j", "json-emit", "json-replay"),
+    can_skip_when_done=False,  # always runs when invoked
+    estimated_duration="<30s",
+))
+def run(ctx: RunContext) -> None:
+    top = int(ctx.flags.get("top") or 15)
+    if ctx.mode in ("json-emit", "json-replay"):
+        emit_dir = ctx.flags.get("emit_dir") or ctx.flags.get("read_dir")
+        if not emit_dir:
+            emit_dir = ctx.settings.emit_json_dir or ctx.settings.read_json_dir
+        if not emit_dir:
+            raise RuntimeError(
+                "resumo em modo JSON requer --emit-dir ou --read-dir"
+            )
+        run_summary_json(_Path(emit_dir), top)
+        ctx.cache["resumo_summary"] = {"mode": ctx.mode, "source": str(emit_dir)}
+        return
+
+    driver = ctx.require_driver()
+    orgao = ctx.flags.get("orgao")
+    scope = f" — orgão: {orgao}" if orgao else ""
+    print(f"\n{'=' * 70}")
+    print(f"  RESUMO NEO4J{scope}")
+    print(f"{'=' * 70}")
+    run_summary(driver, orgao, top)
+    ctx.cache["resumo_summary"] = {"mode": ctx.mode, "orgao": orgao, "top": top}
 
 
 if __name__ == "__main__":

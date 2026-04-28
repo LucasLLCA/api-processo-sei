@@ -10,13 +10,20 @@ Checks:
   6. Which unidade created a specific document (if --documento is provided)
 
 Usage:
-    python scripts/debug_processo.py "00002.000175/2025-63"
-    python scripts/debug_processo.py "00002.000175/2025-63" --documento "1234567"
-    python scripts/debug_processo.py "00002.000175/2025-63" --neo4j-uri bolt://remote:7687
+    python scripts/debug/debug_processo.py "00002.000175/2025-63"
+    python scripts/debug/debug_processo.py "00002.000175/2025-63" --documento "1234567"
+    python scripts/debug/debug_processo.py "00002.000175/2025-63" --neo4j-uri bolt://remote:7687
 """
 
 import argparse
 import sys
+from pathlib import Path as _Path
+
+_HERE = _Path(__file__).resolve()
+_SCRIPTS = next(p for p in _HERE.parents if p.name == "scripts")
+for _p in (_SCRIPTS, _SCRIPTS.parent):
+    if str(_p) not in sys.path:
+        sys.path.insert(0, str(_p))
 
 from pipeline.cli import add_standard_args, resolve_settings
 from pipeline.config import ConfigError

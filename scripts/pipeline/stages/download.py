@@ -14,14 +14,14 @@ Authentication (pick one):
   --token TOKEN          Use an existing SEI API token
 
 Usage:
-    python scripts/download_documentos_sead.py --id-pessoa 12345
-    python scripts/download_documentos_sead.py --usuario user --senha pass
-    python scripts/download_documentos_sead.py --token SEI_TOKEN
-    python scripts/download_documentos_sead.py --id-pessoa 12345 --output ./documentos
-    python scripts/download_documentos_sead.py --id-pessoa 12345 --dry-run
-    python scripts/download_documentos_sead.py --id-pessoa 12345 --orgao "SEAD-PI" --workers 5
-    python scripts/download_documentos_sead.py --id-pessoa 12345 --processo "00019.000123/2025-01"
-    python scripts/download_documentos_sead.py --id-pessoa 12345 --processo "00019.000123/2025-01" "00019.000456/2025-02"
+    python scripts/pipeline/stages/download_documentos_sead.py --id-pessoa 12345
+    python scripts/pipeline/stages/download_documentos_sead.py --usuario user --senha pass
+    python scripts/pipeline/stages/download_documentos_sead.py --token SEI_TOKEN
+    python scripts/pipeline/stages/download_documentos_sead.py --id-pessoa 12345 --output ./documentos
+    python scripts/pipeline/stages/download_documentos_sead.py --id-pessoa 12345 --dry-run
+    python scripts/pipeline/stages/download_documentos_sead.py --id-pessoa 12345 --orgao "SEAD-PI" --workers 5
+    python scripts/pipeline/stages/download_documentos_sead.py --id-pessoa 12345 --processo "00019.000123/2025-01"
+    python scripts/pipeline/stages/download_documentos_sead.py --id-pessoa 12345 --processo "00019.000123/2025-01" "00019.000456/2025-02"
 """
 
 import argparse
@@ -33,10 +33,21 @@ from pathlib import Path
 
 import httpx
 
+_HERE = Path(__file__).resolve()
+_SCRIPTS = next(p for p in _HERE.parents if p.name == "scripts")
+for _p in (_SCRIPTS, _SCRIPTS.parent):
+    if str(_p) not in sys.path:
+        sys.path.insert(0, str(_p))
+
 from pipeline.cli import add_standard_args, resolve_settings
 from pipeline.config import ConfigError, Settings
 from pipeline.logging_setup import configure_logging
 from pipeline.neo4j_driver import build_driver, run_with_retry
+from pipeline.postgres import make_pg_conn
+
+# NOTE: httpx clients use `verify=False` because the SEI-PI environment
+# historically presents a non-public CA. Revisit when migrating to a fully
+# trusted cert; track via `Settings.http_verify` in pipeline.config.
 
 # ── Config ──────────────────────────────────────────────────────────────────
 
@@ -286,31 +297,24 @@ def sei_login(usuario: str, senha: str, orgao: str) -> str:
     return token
 
 
-def autologin_from_db(id_pessoa: int) -> str:
-    """Fetch stored credentials from PostgreSQL, decrypt password, and login to SEI."""
-    import psycopg2
+def autologin_from_db(id_pessoa: int, settings: Settings) -> str:
+    """Fetch stored credentials from PostgreSQL, decrypt password, and login to SEI.
+
+    PostgreSQL connection + Fernet key come from `pipeline.config.Settings`
+    (which accepts both PG_* and DATABASE_* env vars). Raises ConfigError
+    via `settings.require_*()` if anything is missing.
+    """
     from cryptography.fernet import Fernet
-    from dotenv import dotenv_values
 
-    # Load config from api-processo-sei/.env (resolve relative to this script)
-    env_path = Path(__file__).resolve().parent.parent / ".env"
-    env = dotenv_values(env_path)
-
-    db_host = env.get("DATABASE_HOST", os.getenv("DATABASE_HOST", "localhost"))
-    db_port = env.get("DATABASE_PORT", os.getenv("DATABASE_PORT", "5432"))
-    db_user = env.get("DATABASE_USER", os.getenv("DATABASE_USER", "postgres"))
-    db_pass = env.get("DATABASE_PASSWORD", os.getenv("DATABASE_PASSWORD", ""))
-    db_name = env.get("DATABASE_NAME", os.getenv("DATABASE_NAME", "postgres"))
-    fernet_key = env.get("FERNET_KEY", os.getenv("FERNET_KEY", ""))
-
-    if not fernet_key:
-        log.error("FERNET_KEY env var is required for auto-login")
+    try:
+        settings.require_postgres()
+        settings.require_fernet()
+    except ConfigError as e:
+        log.error("%s", e)
         sys.exit(1)
 
     log.info("Fetching stored credentials for id_pessoa=%d", id_pessoa)
-    conn = psycopg2.connect(
-        host=db_host, port=int(db_port), user=db_user, password=db_pass, dbname=db_name,
-    )
+    conn = make_pg_conn(settings)
     try:
         with conn.cursor() as cur:
             cur.execute(
@@ -328,7 +332,7 @@ def autologin_from_db(id_pessoa: int) -> str:
         sys.exit(1)
 
     usuario_sei, senha_encrypted, orgao = row
-    f = Fernet(fernet_key.encode())
+    f = Fernet(settings.fernet_key.encode())
     try:
         senha = f.decrypt(senha_encrypted.encode()).decode()
     except Exception as e:
@@ -339,12 +343,12 @@ def autologin_from_db(id_pessoa: int) -> str:
     return sei_login(usuario_sei, senha, orgao)
 
 
-def resolve_token(args) -> str:
+def resolve_token(args, settings: Settings) -> str:
     """Resolve SEI token from CLI args: --token, --id-pessoa, or --usuario/--senha."""
     if args.token:
         return args.token
     if args.id_pessoa:
-        return autologin_from_db(args.id_pessoa)
+        return autologin_from_db(args.id_pessoa, settings)
     if args.usuario and args.senha:
         return sei_login(args.usuario, args.senha, args.orgao)
     log.error("Authentication required: use --token, --id-pessoa, or --usuario/--senha")
@@ -486,33 +490,14 @@ def download_processo_docs(
     return stats
 
 
-def main():
-    parser = argparse.ArgumentParser(description="Download SEAD-PI processo documents from SEI")
+def _execute(args, settings) -> dict:
+    """Run the download with already-parsed args + resolved settings.
 
-    # Authentication (pick one)
-    auth = parser.add_argument_group("authentication (pick one)")
-    auth.add_argument("--token", help="SEI API token")
-    auth.add_argument("--id-pessoa", type=int, help="Auto-login using stored credentials for this id_pessoa")
-    auth.add_argument("--usuario", help="SEI username for direct login")
-    auth.add_argument("--senha", help="SEI password for direct login")
-
-    parser.add_argument("--output", default="./documentos_sead", help="Output directory (default: ./documentos_sead)")
-    parser.add_argument("--orgao", default="SEAD-PI", help="Orgão sigla to filter (default: SEAD-PI)")
-    parser.add_argument("--processo", nargs="+", default=None, help="Specific protocolo(s) to download (overrides --orgao)")
-    parser.add_argument("--dry-run", action="store_true", help="Only list what would be downloaded")
-    parser.add_argument("--workers", type=int, default=3, help="Parallel processo workers (default: 3)")
-    parser.add_argument("--limit", type=int, default=0, help="Limit number of processos (0=all)")
-    # --read-json is not meaningful for this script yet (the Documento
-    # graph lives inside composite templates in the emit dir, not as clean
-    # nodes/edges); --workers is owned by this script.
-    add_standard_args(parser, skip={"--read-json", "--workers"})
-    args = parser.parse_args()
-
-    settings = resolve_settings(args)
-    configure_logging(__name__, settings.log_level)
-
+    Returns the totals dict so callers (stage runner / standalone main) can
+    surface them in summaries.
+    """
     # Resolve SEI token (login if needed)
-    token = resolve_token(args)
+    token = resolve_token(args, settings)
 
     output_dir = Path(args.output)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -535,7 +520,8 @@ def main():
 
     if not processos:
         log.info("Nothing to download.")
-        return
+        return {"total": 0, "downloaded": 0, "failed": 0, "skipped": 0, "cancelled": 0,
+                "processos": 0}
 
     if args.dry_run:
         for p in processos:
@@ -546,7 +532,8 @@ def main():
                 ", ".join(u["sigla"] for u in p["unidades"]),
             )
         log.info("DRY-RUN complete. Use without --dry-run to download.")
-        return
+        return {"total": 0, "downloaded": 0, "failed": 0, "skipped": 0, "cancelled": 0,
+                "processos": len(processos), "dry_run": True}
 
     # Phase 2: Download documents
     # Shared success stats — learns which unidades work best during the run
@@ -584,6 +571,66 @@ def main():
         "DONE. Total: %d docs | Downloaded: %d | Failed: %d | Cancelled: %d | Skipped: %d",
         totals["total"], totals["downloaded"], totals["failed"], totals["cancelled"], totals["skipped"],
     )
+    totals["processos"] = len(processos)
+    return totals
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Download SEAD-PI processo documents from SEI")
+
+    auth = parser.add_argument_group("authentication (pick one)")
+    auth.add_argument("--token", help="SEI API token")
+    auth.add_argument("--id-pessoa", type=int, help="Auto-login using stored credentials for this id_pessoa")
+    auth.add_argument("--usuario", help="SEI username for direct login")
+    auth.add_argument("--senha", help="SEI password for direct login")
+
+    parser.add_argument("--output", default="./documentos_sead", help="Output directory (default: ./documentos_sead)")
+    parser.add_argument("--orgao", default="SEAD-PI", help="Orgão sigla to filter (default: SEAD-PI)")
+    parser.add_argument("--processo", nargs="+", default=None, help="Specific protocolo(s) to download (overrides --orgao)")
+    parser.add_argument("--dry-run", action="store_true", help="Only list what would be downloaded")
+    parser.add_argument("--workers", type=int, default=3, help="Parallel processo workers (default: 3)")
+    parser.add_argument("--limit", type=int, default=0, help="Limit number of processos (0=all)")
+    add_standard_args(parser, skip={"--read-json", "--workers"})
+    args = parser.parse_args()
+
+    settings = resolve_settings(args)
+    configure_logging(__name__, settings.log_level)
+    _execute(args, settings)
+
+
+# ---------------------------------------------------------------------------
+# Stage entry point
+# ---------------------------------------------------------------------------
+from argparse import Namespace as _Namespace  # noqa: E402
+
+from ..registry import stage  # noqa: E402
+from .._stage_base import RunContext, StageMeta  # noqa: E402
+
+
+@stage(StageMeta(
+    name="download",
+    description="Baixa documentos do SEI listados no grafo (ou via --processo).",
+    type="enrich",
+    depends_on=(),
+    soft_depends_on=("atividades",),
+    modes=("fs",),
+    estimated_duration="depende do volume; ~1-3 docs/s",
+))
+def run(ctx: RunContext) -> None:
+    args = _Namespace(
+        token=ctx.flags.get("token"),
+        id_pessoa=ctx.flags.get("id_pessoa"),
+        usuario=ctx.flags.get("usuario"),
+        senha=ctx.flags.get("senha"),
+        output=ctx.flags.get("output", "./documentos_sead"),
+        orgao=ctx.flags.get("orgao", "SEAD-PI"),
+        processo=ctx.flags.get("processo"),
+        dry_run=bool(ctx.flags.get("dry_run", False)),
+        workers=int(ctx.flags.get("workers") or 3),
+        limit=int(ctx.flags.get("limit") or 0),
+    )
+    totals = _execute(args, ctx.settings) or {}
+    ctx.cache["download_summary"] = totals
 
 
 if __name__ == "__main__":

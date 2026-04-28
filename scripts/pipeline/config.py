@@ -90,11 +90,17 @@ class Settings:
             neo4j_user=_env("NEO4J_USER", cls.neo4j_user),
             neo4j_password=_env("NEO4J_PASSWORD"),
             neo4j_database=_env("NEO4J_DATABASE"),
-            pg_host=_env("PG_HOST") or _env("POSTGRES_HOST"),
-            pg_port=_env("PG_PORT", cls.pg_port, cast=int) or _env("POSTGRES_PORT", cls.pg_port, cast=int),
-            pg_db=_env("PG_DATABASE") or _env("POSTGRES_DB"),
-            pg_user=_env("PG_USER") or _env("POSTGRES_USER"),
-            pg_password=_env("PG_PASSWORD") or _env("POSTGRES_PASSWORD"),
+            # PG_* is the pipeline convention; POSTGRES_* and DATABASE_* are
+            # accepted as fallbacks so scripts can reuse the api/ env naming.
+            pg_host=_env("PG_HOST") or _env("POSTGRES_HOST") or _env("DATABASE_HOST"),
+            pg_port=(
+                _env("PG_PORT", cls.pg_port, cast=int)
+                or _env("POSTGRES_PORT", cls.pg_port, cast=int)
+                or _env("DATABASE_PORT", cls.pg_port, cast=int)
+            ),
+            pg_db=_env("PG_DATABASE") or _env("POSTGRES_DB") or _env("DATABASE_NAME"),
+            pg_user=_env("PG_USER") or _env("POSTGRES_USER") or _env("DATABASE_USER"),
+            pg_password=_env("PG_PASSWORD") or _env("POSTGRES_PASSWORD") or _env("DATABASE_PASSWORD"),
             fernet_key=_env("FERNET_KEY"),
             batch_size=_env("PIPELINE_BATCH_SIZE", cls.batch_size, cast=int),
             workers=_env("PIPELINE_WORKERS", cls.workers, cast=int),

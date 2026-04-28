@@ -32,12 +32,21 @@ Dependencies:
 """
 
 import argparse
+import sys as _sys
+from pathlib import Path as _Path
+
+_HERE = _Path(__file__).resolve()
+_SCRIPTS = next(p for p in _HERE.parents if p.name == "scripts")
+for _p in (_SCRIPTS, _SCRIPTS.parent):
+    if str(_p) not in _sys.path:
+        _sys.path.insert(0, str(_p))
 import json
 import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
+from pipeline.cli import add_standard_args, resolve_settings
 from pipeline.constants import LABEL_TO_KEY
 from pipeline.logging_setup import configure_logging
 from pipeline.text import normalize as _normalize
@@ -540,12 +549,32 @@ def main():
         "--ext", nargs="+", default=None,
         help="Only process these extensions (e.g. --ext .html .txt)",
     )
+    parser.add_argument(
+        "--mode", default="hybrid", choices=["gliner2", "llm", "hybrid"],
+        help="NER mode: gliner2 (fast, current), llm (Mandu only), hybrid (gliner2+llm cleanup, default)",
+    )
+    # Pipeline standard flags relevant here: --log-level. The remaining
+    # standard flags (Neo4j/Postgres/JSON I/O) don't apply to NER extraction.
+    add_standard_args(parser, skip={
+        "--neo4j-uri", "--neo4j-user", "--neo4j-password", "--neo4j-database",
+        "--batch-size", "--workers", "--emit-json", "--read-json",
+    })
     args = parser.parse_args()
+    settings = resolve_settings(args)
+    configure_logging(__name__, settings.log_level)
+    _execute(args, settings)
 
+
+def _execute(args, settings) -> dict:
     labels = args.labels or DEFAULT_LABELS
     input_dir = Path(args.input)
     output_dir = Path(args.output)
     output_dir.mkdir(parents=True, exist_ok=True)
+    mode = (getattr(args, "mode", None) or "hybrid").lower()
+    if mode not in ("gliner2", "llm", "hybrid"):
+        log.error("invalid mode=%s — expected gliner2|llm|hybrid", mode)
+        sys.exit(2)
+    log.info("ner-extract mode: %s", mode)
 
     # Parse --ext filter
     ext_filter = None
@@ -564,19 +593,27 @@ def main():
         log.info("Nothing to process.")
         return
 
-    # Load GLiNER2 model
-    log.info("Loading GLiNER2 model: %s", args.model)
-    try:
-        from gliner2 import GLiNER2
-    except ImportError:
-        log.error("gliner2 is required: pip install gliner2")
-        sys.exit(1)
+    # Load GLiNER2 model only if needed (mode `gliner2` or `hybrid`)
+    extractor = None
+    max_chunk_chars = 1800
+    chunk_overlap = 200
+    if mode in ("gliner2", "hybrid"):
+        log.info("Loading GLiNER2 model: %s", args.model)
+        try:
+            from gliner2 import GLiNER2
+        except ImportError:
+            log.error("gliner2 is required: pip install gliner2")
+            sys.exit(1)
+        extractor = GLiNER2.from_pretrained(args.model)
+        log.info("Model loaded successfully")
+        max_chunk_chars, chunk_overlap = _detect_chunk_size(extractor)
 
-    extractor = GLiNER2.from_pretrained(args.model)
-    log.info("Model loaded successfully")
-
-    # Auto-detect chunk size from model
-    max_chunk_chars, chunk_overlap = _detect_chunk_size(extractor)
+    # Build LLM client if needed (mode `llm` or `hybrid`)
+    ner_llm = None
+    if mode in ("llm", "hybrid"):
+        from ..ner_llm import NerLLM, config_from_settings
+        ner_llm = NerLLM(config_from_settings(settings))
+        log.info("LLM ready: model=%s base_url=%s", ner_llm.config.model, ner_llm.config.base_url)
 
     # Process documents
     processed = 0
@@ -601,106 +638,205 @@ def main():
             failed += 1
             continue
 
-        # Chunk and extract entities + classification + relations
-        chunks = chunk_text(text, max_chars=max_chunk_chars, overlap=chunk_overlap)
-        all_chunk_entities = []
-        all_chunk_relations = []
-        all_chunk_classifications = []
-
-        for i, chunk in enumerate(chunks):
-            # NER
-            try:
-                ner_result = extractor.extract_entities(chunk, labels)
-                all_chunk_entities.append(ner_result.get("entities", {}))
-            except Exception as e:
-                log.warning("NER failed on chunk %d of %s: %s", i, doc_id, e)
-
-            # Classification (only on first chunk to avoid redundancy)
-            if i == 0:
-                try:
-                    cls_result = extractor.classify_text(chunk, {
-                        "tipo_documento": [
-                            "licitacao", "contrato", "parecer_juridico", "oficio",
-                            "portaria", "despacho", "nota_tecnica", "ata",
-                            "termo_referencia", "certidao", "declaracao", "requerimento",
-                        ]
-                    })
-                    all_chunk_classifications.append(cls_result)
-                except Exception as e:
-                    log.debug("Classification failed on chunk %d of %s: %s", i, doc_id, e)
-
-            # Relation extraction
-            try:
-                rel_result = extractor.extract_relations(chunk, [
-                    "autorizou", "assinou", "encaminhou_para", "solicitou",
-                    "contratou", "nomeou", "exonerou", "designou",
-                ])
-                rel_data = rel_result.get("relation_extraction", {})
-                if any(v for v in rel_data.values()):
-                    all_chunk_relations.append(rel_data)
-            except Exception as e:
-                log.debug("Relation extraction failed on chunk %d of %s: %s", i, doc_id, e)
-
-        if not all_chunk_entities:
-            log.warning("No entities extracted from %s", doc_id)
-            failed += 1
-            continue
-
-        # Merge NER entities across chunks, deduplicate by text
+        # Run extraction per mode
         entities: dict[str, list[dict]] = {}
-        for chunk_ents in all_chunk_entities:
-            for label, values in chunk_ents.items():
-                if label not in entities:
-                    entities[label] = []
-                for val in values:
-                    text_val = val if isinstance(val, str) else str(val)
-                    existing = {e["text"].strip().lower() for e in entities[label]}
-                    if text_val.strip().lower() not in existing:
-                        entities[label].append({"text": text_val})
-
-        # Merge relations across chunks, deduplicate
+        classification: dict = {}
         relations: dict[str, list] = {}
-        for chunk_rels in all_chunk_relations:
-            for rel_type, pairs in chunk_rels.items():
-                if not pairs:
-                    continue
-                if rel_type not in relations:
-                    relations[rel_type] = []
-                for pair in pairs:
-                    if pair not in relations[rel_type]:
-                        relations[rel_type].append(pair)
+        consolidation_metrics: dict = {}
+        gliner_entities_before_llm: dict[str, list[dict]] = {}
+        used_model_label = args.model
 
-        # Classification (take first chunk result)
-        classification = all_chunk_classifications[0] if all_chunk_classifications else {}
+        if mode in ("gliner2", "hybrid"):
+            chunks = chunk_text(text, max_chars=max_chunk_chars, overlap=chunk_overlap)
+            all_chunk_entities = []
+            all_chunk_relations = []
+            all_chunk_classifications = []
 
-        # Post-process: clean noisy extractions
-        entities = _clean_entities(entities)
-        relations = _clean_relations(relations)
+            for i, chunk in enumerate(chunks):
+                try:
+                    ner_result = extractor.extract_entities(chunk, labels)
+                    all_chunk_entities.append(ner_result.get("entities", {}))
+                except Exception as e:
+                    log.warning("NER failed on chunk %d of %s: %s", i, doc_id, e)
+
+                if i == 0:
+                    try:
+                        cls_result = extractor.classify_text(chunk, {
+                            "tipo_documento": [
+                                "licitacao", "contrato", "parecer_juridico", "oficio",
+                                "portaria", "despacho", "nota_tecnica", "ata",
+                                "termo_referencia", "certidao", "declaracao", "requerimento",
+                            ]
+                        })
+                        all_chunk_classifications.append(cls_result)
+                    except Exception as e:
+                        log.debug("Classification failed on chunk %d of %s: %s", i, doc_id, e)
+
+                try:
+                    rel_result = extractor.extract_relations(chunk, [
+                        "autorizou", "assinou", "encaminhou_para", "solicitou",
+                        "contratou", "nomeou", "exonerou", "designou",
+                    ])
+                    rel_data = rel_result.get("relation_extraction", {})
+                    if any(v for v in rel_data.values()):
+                        all_chunk_relations.append(rel_data)
+                except Exception as e:
+                    log.debug("Relation extraction failed on chunk %d of %s: %s", i, doc_id, e)
+
+            if not all_chunk_entities:
+                log.warning("No entities extracted from %s", doc_id)
+                failed += 1
+                continue
+
+            # Merge entities across chunks, dedup by text
+            for chunk_ents in all_chunk_entities:
+                for label, values in chunk_ents.items():
+                    if label not in entities:
+                        entities[label] = []
+                    for val in values:
+                        text_val = val if isinstance(val, str) else str(val)
+                        existing = {e["text"].strip().lower() for e in entities[label]}
+                        if text_val.strip().lower() not in existing:
+                            entities[label].append({"text": text_val})
+
+            # Merge relations
+            for chunk_rels in all_chunk_relations:
+                for rel_type, pairs in chunk_rels.items():
+                    if not pairs:
+                        continue
+                    if rel_type not in relations:
+                        relations[rel_type] = []
+                    for pair in pairs:
+                        if pair not in relations[rel_type]:
+                            relations[rel_type].append(pair)
+
+            classification = all_chunk_classifications[0] if all_chunk_classifications else {}
+
+            # Post-process: clean noisy extractions (existing rules)
+            entities = _clean_entities(entities)
+            relations = _clean_relations(relations)
+
+            # Snapshot for hybrid metrics before LLM cleanup
+            if mode == "hybrid":
+                gliner_entities_before_llm = {k: list(v) for k, v in entities.items()}
+
+        # LLM-only or hybrid cleanup
+        if mode == "llm":
+            try:
+                llm_out = ner_llm.extract(text)
+                entities = llm_out.get("entities", {})
+                classification = llm_out.get("classification", {}) or classification
+                relations = llm_out.get("relations", {}) or relations
+                used_model_label = f"llm-only:{ner_llm.config.model}"
+            except Exception as e:
+                log.error("LLM extract failed for %s: %s", doc_id, e)
+                failed += 1
+                continue
+
+        elif mode == "hybrid":
+            try:
+                llm_clean = ner_llm.consolidate(text, {
+                    "entities": entities, "classification": classification,
+                })
+                entities_after = llm_clean.get("entities", {})
+                # Compute consolidation metrics before swapping in
+                from ..ner_llm import diff_metrics
+                consolidation_metrics = diff_metrics(gliner_entities_before_llm, entities_after)
+                entities = entities_after
+                # LLM may also refine the document type; keep its value if provided
+                if llm_clean.get("classification"):
+                    classification = llm_clean["classification"]
+                used_model_label = f"{args.model}+llm-cleanup:{ner_llm.config.model}"
+            except Exception as e:
+                log.warning("LLM consolidate failed for %s — keeping GLiNER output: %s", doc_id, e)
+                # Fall back to GLiNER-only output (already in `entities`)
+                used_model_label = f"{args.model}+llm-cleanup-failed"
+
+        # Normalize entity records to unified shape (text + canonical + provenance)
+        from ..ner_llm import normalize_entity_record
+        normalized: dict[str, list[dict]] = {}
+        for label, items in entities.items():
+            normalized[label] = [normalize_entity_record(it) for it in items]
+            # Default provenance per mode when missing
+            for rec in normalized[label]:
+                if rec["provenance"] not in ("gliner", "llm", "hybrid"):
+                    rec["provenance"] = (
+                        "gliner" if mode == "gliner2"
+                        else "llm" if mode == "llm"
+                        else "hybrid"
+                    )
+        entities = normalized
 
         # Build output
         output_data = {
             "documento_numero": doc_id,
             "protocolo": doc["protocolo"],
             "source_file": filepath.name,
-            "model": args.model,
+            "model": used_model_label,
+            "mode": mode,
             "labels": [LABEL_TO_KEY.get(l, l) for l in labels],
             "entities": entities,
             "classification": classification,
             "relations": relations,
             "extracted_at": datetime.now(timezone.utc).isoformat(),
         }
+        if consolidation_metrics:
+            output_data["consolidation_metrics"] = consolidation_metrics
 
         output_file.write_text(json.dumps(output_data, ensure_ascii=False, indent=2), encoding="utf-8")
         processed += 1
         entity_count = sum(len(v) for v in entities.values())
         relation_count = sum(len(v) for v in relations.values())
         cls_label = classification.get("tipo_documento", "?")
-        log.info("  → %d entities, %d relations, tipo=%s → %s", entity_count, relation_count, cls_label, output_file.name)
+        log.info("  → %d entities, %d relations, tipo=%s, mode=%s → %s",
+                 entity_count, relation_count, cls_label, mode, output_file.name)
 
     log.info(
         "DONE. Processed: %d | Skipped: %d | Failed: %d | Total: %d",
         processed, skipped, failed, len(documents),
     )
+    return {
+        "total": len(documents),
+        "processed": processed,
+        "skipped": skipped,
+        "failed": failed,
+    }
+
+
+# ---------------------------------------------------------------------------
+# Stage entry point
+# ---------------------------------------------------------------------------
+from argparse import Namespace as _Namespace  # noqa: E402
+
+from ..registry import stage  # noqa: E402
+from .._stage_base import RunContext, StageMeta  # noqa: E402
+
+
+@stage(StageMeta(
+    name="ner-extract",
+    description="Extrai entidades nomeadas dos documentos via GLiNER2.",
+    type="enrich",
+    depends_on=("download",),
+    soft_depends_on=("parse",),
+    modes=("fs",),
+    estimated_duration="3-10s/doc dependendo do tamanho + modelo",
+))
+def run(ctx: RunContext) -> None:
+    args = _Namespace(
+        input=ctx.flags.get("input", "./documentos_sead"),
+        output=ctx.flags.get("output", "./ner_results"),
+        model=ctx.flags.get("model", "fastino/gliner2-base-v1"),
+        labels=ctx.flags.get("labels"),
+        threshold=float(ctx.flags.get("threshold") or 0.3),
+        flat_ner=bool(ctx.flags.get("flat_ner", True)),
+        limit=int(ctx.flags.get("limit") or 0),
+        skip_existing=bool(ctx.flags.get("skip_existing", True)),
+        processo=ctx.flags.get("processo"),
+        ext=ctx.flags.get("ext"),
+        mode=ctx.flags.get("mode", "hybrid"),
+    )
+    summary = _execute(args, ctx.settings) or {}
+    ctx.cache["ner_extract_summary"] = summary
 
 
 if __name__ == "__main__":

@@ -20,12 +20,12 @@ Output structure:
   <output_dir>/<documento_numero>.json   (metadata: source, method, stats)
 
 Usage:
-    python scripts/parse_documents.py --input ./documentos_sead
-    python scripts/parse_documents.py --input ./documentos_sead --output ./parsed_documents
-    python scripts/parse_documents.py --input ./documentos_sead --processo "00002.000175_2025-63"
-    python scripts/parse_documents.py --input ./documentos_sead --limit 10 --workers 3
-    python scripts/parse_documents.py --input ./documentos_sead --skip-existing
-    python scripts/parse_documents.py --input ./documentos_sead --max-pdf-pages 10
+    python scripts/pipeline/stages/parse_documents.py --input ./documentos_sead
+    python scripts/pipeline/stages/parse_documents.py --input ./documentos_sead --output ./parsed_documents
+    python scripts/pipeline/stages/parse_documents.py --input ./documentos_sead --processo "00002.000175_2025-63"
+    python scripts/pipeline/stages/parse_documents.py --input ./documentos_sead --limit 10 --workers 3
+    python scripts/pipeline/stages/parse_documents.py --input ./documentos_sead --skip-existing
+    python scripts/pipeline/stages/parse_documents.py --input ./documentos_sead --max-pdf-pages 10
 
 Dependencies:
     pip install openai httpx pdf2image Pillow openpyxl pandas python-docx python-dotenv
@@ -34,7 +34,6 @@ Dependencies:
 import argparse
 import base64
 import json
-import logging
 import os
 import re
 import sys
@@ -44,17 +43,21 @@ from datetime import datetime, timezone
 from io import BytesIO
 from pathlib import Path
 
-from dotenv import load_dotenv
+_HERE = Path(__file__).resolve()
+_SCRIPTS = next(p for p in _HERE.parents if p.name == "scripts")
+for _p in (_SCRIPTS, _SCRIPTS.parent):
+    if str(_p) not in sys.path:
+        sys.path.insert(0, str(_p))
 
-# Load .env from api-processo-sei root
-_env_path = Path(__file__).resolve().parent.parent / ".env"
-load_dotenv(_env_path)
+from pipeline.cli import add_standard_args, resolve_settings
+from pipeline.config import Settings
+from pipeline.logging_setup import configure_logging
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(message)s",
-)
-log = logging.getLogger(__name__)
+# Loads .env from project root (Settings.from_env handles dotenv discovery).
+# OPENAI_* vars below are read via os.getenv since they are not yet modeled
+# in `Settings`; this keeps the ad-hoc config without re-running load_dotenv.
+Settings.from_env()
+log = configure_logging(__name__)
 
 # ── Config from .env ───────────────────────────────────────────────────────
 
@@ -541,28 +544,7 @@ def process_document(
     return "ok"
 
 
-def main():
-    parser = argparse.ArgumentParser(
-        description="Parse downloaded SEI documents into plain text using LLM/vision models"
-    )
-    parser.add_argument("--input", default="./documentos_sead",
-                        help="Download directory (default: ./documentos_sead)")
-    parser.add_argument("--output", default="./parsed_documents",
-                        help="Output directory for parsed text (default: ./parsed_documents)")
-    parser.add_argument("--processo", nargs="+", default=None,
-                        help="Filter by specific protocolo(s)")
-    parser.add_argument("--limit", type=int, default=0,
-                        help="Limit number of documents (0=all)")
-    parser.add_argument("--skip-existing", action="store_true",
-                        help="Skip documents already parsed")
-    parser.add_argument("--max-pdf-pages", type=int, default=10,
-                        help="Max PDF pages to process per document (default: 10)")
-    parser.add_argument("--ext", nargs="+", default=None,
-                        help="Only process these extensions (e.g. --ext .html .pdf)")
-    parser.add_argument("--workers", type=int, default=1,
-                        help="Parallel workers for LLM calls (default: 1, be careful with rate limits)")
-    args = parser.parse_args()
-
+def _execute(args, settings) -> dict:
     input_dir = Path(args.input)
     output_dir = Path(args.output)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -599,7 +581,7 @@ def main():
 
     if not documents:
         log.info("Nothing to parse.")
-        return
+        return {"total": 0, "ok": 0, "skipped": 0, "failed": 0, "empty": 0}
 
     # Show extension breakdown
     from collections import Counter
@@ -646,6 +628,75 @@ def main():
         "DONE. Total: %d | Parsed: %d | Skipped: %d | Failed: %d | Empty: %d",
         len(documents), stats["ok"], stats["skipped"], stats["failed"], stats["empty"],
     )
+    return {
+        "total": len(documents),
+        "ok": stats["ok"],
+        "skipped": stats["skipped"],
+        "failed": stats["failed"],
+        "empty": stats["empty"],
+    }
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Parse downloaded SEI documents into plain text using LLM/vision models"
+    )
+    parser.add_argument("--input", default="./documentos_sead",
+                        help="Download directory (default: ./documentos_sead)")
+    parser.add_argument("--output", default="./parsed_documents",
+                        help="Output directory for parsed text (default: ./parsed_documents)")
+    parser.add_argument("--processo", nargs="+", default=None,
+                        help="Filter by specific protocolo(s)")
+    parser.add_argument("--limit", type=int, default=0,
+                        help="Limit number of documents (0=all)")
+    parser.add_argument("--skip-existing", action="store_true",
+                        help="Skip documents already parsed")
+    parser.add_argument("--max-pdf-pages", type=int, default=10,
+                        help="Max PDF pages to process per document (default: 10)")
+    parser.add_argument("--ext", nargs="+", default=None,
+                        help="Only process these extensions (e.g. --ext .html .pdf)")
+    parser.add_argument("--workers", type=int, default=1,
+                        help="Parallel workers for LLM calls (default: 1, be careful with rate limits)")
+    add_standard_args(parser, skip={
+        "--neo4j-uri", "--neo4j-user", "--neo4j-password", "--neo4j-database",
+        "--batch-size", "--workers", "--emit-json", "--read-json",
+    })
+    args = parser.parse_args()
+    settings = resolve_settings(args)
+    configure_logging(__name__, settings.log_level)
+    _execute(args, settings)
+
+
+# ---------------------------------------------------------------------------
+# Stage entry point
+# ---------------------------------------------------------------------------
+from argparse import Namespace as _Namespace  # noqa: E402
+
+from ..registry import stage  # noqa: E402
+from .._stage_base import RunContext, StageMeta  # noqa: E402
+
+
+@stage(StageMeta(
+    name="parse",
+    description="Converte arquivos baixados em texto plano (HTML strip / PDF vision / OCR LLM).",
+    type="enrich",
+    depends_on=("download",),
+    modes=("fs",),
+    estimated_duration="1-2 docs/s (depende do LLM)",
+))
+def run(ctx: RunContext) -> None:
+    args = _Namespace(
+        input=ctx.flags.get("input", "./documentos_sead"),
+        output=ctx.flags.get("output", "./parsed_documents"),
+        processo=ctx.flags.get("processo"),
+        limit=int(ctx.flags.get("limit") or 0),
+        skip_existing=bool(ctx.flags.get("skip_existing", True)),
+        max_pdf_pages=int(ctx.flags.get("max_pdf_pages") or 10),
+        ext=ctx.flags.get("ext"),
+        workers=int(ctx.flags.get("workers") or 1),
+    )
+    summary = _execute(args, ctx.settings) or {}
+    ctx.cache["parse_summary"] = summary
 
 
 if __name__ == "__main__":

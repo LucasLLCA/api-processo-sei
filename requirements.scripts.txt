@@ -21,3 +21,18 @@ Pillow>=10.0.0
 openpyxl>=3.1.0
 pandas>=2.0.0
 python-docx>=1.0.0
+
+# CLI (used by `pipeline` unified entry point)
+typer>=0.12.0
+rich>=13.0.0
+questionary>=2.0.0
+
+# Embedding fallback (when Mandu /v1/embeddings unavailable)
+# Optional: pipeline.embedding lazy-imports this only if MandoEmbedder fails.
+sentence-transformers>=2.7.0
+pydantic>=2.0.0
+
+# Process clustering (stages processo-embed + processo-cluster)
+scikit-learn>=1.3.0     # TF-IDF, normalize, KMeans-as-fallback
+umap-learn>=0.5.5       # dimensionality reduction (deterministic with random_state)
+hdbscan>=0.8.33         # density-based clustering, no K needed

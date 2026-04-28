@@ -1,29 +1,41 @@
 """
-Script para popular a tabela tipos_documento a partir do endpoint documentos/tipos do SEI.
+Popula a tabela `tipos_documento` a partir do endpoint /documentos/tipos do SEI.
 
-O script faz o login no SEI automaticamente usando as credenciais informadas e
-em seguida busca todos os tipos de documento disponíveis, salvando no banco local.
+Faz login no SEI com as credenciais informadas e busca todos os tipos de
+documento disponíveis, salvando no banco local. Bootstrap step — roda uma
+vez por ambiente / quando o catálogo de tipos do SEI muda.
 
 Uso:
-    python -m scripts.populate_tipos_documento
-    python -m scripts.populate_tipos_documento --usuario SEU_EMAIL --senha SUA_SENHA --orgao SEAD-PI
-    python -m scripts.populate_tipos_documento --dry-run   (só lista, não salva)
+    python scripts/bootstrap/populate_tipos_documento.py
+    python scripts/bootstrap/populate_tipos_documento.py --usuario EMAIL --senha PASS --orgao SEAD-PI
+    python scripts/bootstrap/populate_tipos_documento.py --dry-run
+
+Credenciais: --usuario/--senha/--orgao têm fallback para SEI_USUARIO / SEI_SENHA / SEI_ORGAO env vars.
 """
-import asyncio
 import argparse
-import sys
+import asyncio
 import os
+import sys
+from pathlib import Path
 
 import httpx
 
-# Adiciona a raiz do projeto ao path (for api.*)
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+_HERE = Path(__file__).resolve()
+_SCRIPTS = next(p for p in _HERE.parents if p.name == "scripts")
+_PROJECT = _SCRIPTS.parent
+for _p in (_SCRIPTS, _PROJECT):
+    if str(_p) not in sys.path:
+        sys.path.insert(0, str(_p))
 
-from api.database import engine, Base, AsyncSessionLocal
-from api.models.tipo_documento import TipoDocumento
-from api.config import settings
-from pipeline.logging_setup import configure_logging
-from sqlalchemy import text
+from api.database import engine, Base, AsyncSessionLocal  # noqa: E402
+from api.models.tipo_documento import TipoDocumento  # noqa: E402
+from api.config import settings  # noqa: E402
+from pipeline.logging_setup import configure_logging  # noqa: E402
+from sqlalchemy import text  # noqa: E402
+
+# NOTE: httpx clients use `verify=False` because the SEI-PI environment
+# historically presents a non-public CA. Revisit when migrating to a fully
+# trusted cert; track via `Settings.http_verify` in pipeline.config.
 
 log = configure_logging(__name__)
 

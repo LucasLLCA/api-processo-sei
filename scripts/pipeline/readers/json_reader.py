@@ -81,7 +81,7 @@ class JsonFileReader(GraphReader):
         if not template_path.is_file():
             raise ReaderError(
                 f"{template_path} not found. Phase B template output is required "
-                f"for JsonFileReader. Run `etl_neo4j.py --emit-json {self._input_dir}` first."
+                f"for JsonFileReader. Run `python -m pipeline.etl --emit-json {self._input_dir}` first."
             )
 
         log.info("JsonFileReader: loading activities from %s", template_path)

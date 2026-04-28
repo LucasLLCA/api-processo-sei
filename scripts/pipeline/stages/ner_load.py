@@ -49,17 +49,23 @@ Extended graph model (new nodes and relationships):
     - (entity)-[:CONTRATOU {objeto}]->(Documento)
 
 Usage:
-    python scripts/load_gliner_to_neo4j.py
-    python scripts/load_gliner_to_neo4j.py --input ./ner_results
-    python scripts/load_gliner_to_neo4j.py --input ./ner_results --dry-run
-    python scripts/load_gliner_to_neo4j.py --input ./ner_results --limit 10
-    python scripts/load_gliner_to_neo4j.py --input ./ner_results --clear-first
+    python scripts/pipeline/stages/load_gliner_to_neo4j.py
+    python scripts/pipeline/stages/load_gliner_to_neo4j.py --input ./ner_results
+    python scripts/pipeline/stages/load_gliner_to_neo4j.py --input ./ner_results --dry-run
+    python scripts/pipeline/stages/load_gliner_to_neo4j.py --input ./ner_results --limit 10
+    python scripts/pipeline/stages/load_gliner_to_neo4j.py --input ./ner_results --clear-first
 """
 
 import argparse
 import json
 import sys
 from pathlib import Path
+
+_HERE = Path(__file__).resolve()
+_SCRIPTS = next(p for p in _HERE.parents if p.name == "scripts")
+for _p in (_SCRIPTS, _SCRIPTS.parent):
+    if str(_p) not in sys.path:
+        sys.path.insert(0, str(_p))
 
 from pipeline.cli import add_standard_args, resolve_settings
 from pipeline.config import ConfigError
@@ -110,7 +116,8 @@ UNWIND $items AS item
 MERGE (p:PessoaFisica {nome_normalizado: item.norm})
 ON CREATE SET p.nome = item.nome
 ON MATCH SET p.nome = CASE WHEN size(item.nome) > size(p.nome) THEN item.nome ELSE p.nome END
-MERGE (d)-[:MENCIONA_PESSOA]->(p)
+MERGE (d)-[r:MENCIONA_PESSOA]->(p)
+SET r.fonte = coalesce(item.provenance, 'gliner')
 """
 
 # Link Documento → PessoaJuridica
@@ -120,15 +127,17 @@ UNWIND $items AS item
 MERGE (e:PessoaJuridica {nome_normalizado: item.norm})
 ON CREATE SET e.nome = item.nome
 ON MATCH SET e.nome = CASE WHEN size(item.nome) > size(e.nome) THEN item.nome ELSE e.nome END
-MERGE (d)-[:MENCIONA_EMPRESA]->(e)
+MERGE (d)-[r:MENCIONA_EMPRESA]->(e)
+SET r.fonte = coalesce(item.provenance, 'gliner')
 """
 
 # Link Documento → existing Orgao (try to match by sigla)
 LINK_ORGAO = """
 MATCH (d:Documento {numero: $doc_numero})
-UNWIND $nomes AS nome
-MERGE (o:Orgao {sigla: nome})
-MERGE (d)-[:MENCIONA_ORGAO]->(o)
+UNWIND $items AS item
+MERGE (o:Orgao {sigla: item.nome})
+MERGE (d)-[r:MENCIONA_ORGAO]->(o)
+SET r.fonte = coalesce(item.provenance, 'gliner')
 """
 
 # Link Documento → CargoFuncao
@@ -138,7 +147,8 @@ UNWIND $items AS item
 MERGE (c:CargoFuncao {nome_normalizado: item.norm})
 ON CREATE SET c.nome = item.nome
 ON MATCH SET c.nome = CASE WHEN size(item.nome) > size(c.nome) THEN item.nome ELSE c.nome END
-MERGE (d)-[:MENCIONA_CARGO]->(c)
+MERGE (d)-[r:MENCIONA_CARGO]->(c)
+SET r.fonte = coalesce(item.provenance, 'gliner')
 """
 
 # Link Documento → Legislacao (lei, decreto, portaria)
@@ -147,23 +157,26 @@ MATCH (d:Documento {numero: $doc_numero})
 UNWIND $items AS item
 MERGE (l:Legislacao {referencia: item.ref})
 ON CREATE SET l.tipo = item.tipo
-MERGE (d)-[:MENCIONA_LEGISLACAO]->(l)
+MERGE (d)-[r:MENCIONA_LEGISLACAO]->(l)
+SET r.fonte = coalesce(item.provenance, 'gliner')
 """
 
 # Link Documento → ContratoEdital
 LINK_CONTRATO = """
 MATCH (d:Documento {numero: $doc_numero})
-UNWIND $refs AS ref
-MERGE (c:ContratoEdital {referencia: ref})
-MERGE (d)-[:MENCIONA_CONTRATO]->(c)
+UNWIND $items AS item
+MERGE (c:ContratoEdital {referencia: item.ref})
+MERGE (d)-[r:MENCIONA_CONTRATO]->(c)
+SET r.fonte = coalesce(item.provenance, 'gliner')
 """
 
 # Link Documento → ClasseNivel
 LINK_CLASSE = """
 MATCH (d:Documento {numero: $doc_numero})
-UNWIND $refs AS ref
-MERGE (c:ClasseNivel {referencia: ref})
-MERGE (d)-[:MENCIONA_CLASSE]->(c)
+UNWIND $items AS item
+MERGE (c:ClasseNivel {referencia: item.ref})
+MERGE (d)-[r:MENCIONA_CLASSE]->(c)
+SET r.fonte = coalesce(item.provenance, 'gliner')
 """
 
 # ── Relation loaders ──────────────────────────────────────────────────────
@@ -222,19 +235,59 @@ CLEAR_GLINER = [
 
 # ── Helpers ────────────────────────────────────────────────────────────────
 
+def _entity_text(item: object) -> str:
+    """Return the preferred display text for an entity record.
+
+    Supports both the legacy GLiNER schema (``{"text": "..."}``) and the
+    new unified schema (``{"text", "canonical", "provenance"}``). When
+    ``canonical`` is present and non-empty, it wins — that's the LLM's
+    consolidated/expanded form and is what we want as the node label.
+    """
+    if isinstance(item, str):
+        return item
+    if isinstance(item, dict):
+        canonical = item.get("canonical")
+        if canonical:
+            return canonical
+        return item.get("text") or ""
+    return ""
+
+
+def _entity_provenance(item: object) -> str:
+    """Return provenance ('gliner', 'llm', 'hybrid'); default 'gliner' for legacy."""
+    if isinstance(item, dict):
+        prov = item.get("provenance")
+        if prov in ("gliner", "llm", "hybrid"):
+            return prov
+    return "gliner"
+
+
 def _texts(entities: dict, key: str) -> list[str]:
-    """Extract text values from entities dict."""
-    return [e["text"] for e in entities.get(key, []) if isinstance(e, dict) and e.get("text")]
+    """Extract text values from entities dict (canonical preferred)."""
+    return [t for t in (_entity_text(e) for e in entities.get(key, [])) if t]
 
 
 def _items_with_norm(entities: dict, key: str) -> list[dict]:
-    """Extract text values with normalized key for MERGE."""
-    return [{"nome": e["text"], "norm": _normalize(e["text"])}
-            for e in entities.get(key, []) if isinstance(e, dict) and e.get("text")]
+    """Extract entity records with normalized key for MERGE.
+
+    Returns list of {nome, norm, provenance} suitable for the LLM-aware
+    LINK_* templates below.
+    """
+    out = []
+    for e in entities.get(key, []):
+        nome = _entity_text(e)
+        if not nome:
+            continue
+        out.append({
+            "nome": nome,
+            "norm": _normalize(nome),
+            "provenance": _entity_provenance(e),
+        })
+    return out
 
 
 def _first_text(entities: dict, key: str) -> str | None:
-    """Get first text value or None."""
+    """Get first preferred (canonical-or-text) value or None."""
     texts = _texts(entities, key)
     return texts[0] if texts else None
 
@@ -372,10 +425,14 @@ def load_document(
                                 {"doc_numero": doc_numero, "items": empresas},
                                 phase="gliner")
 
-    orgaos = _texts(entities, "orgao")
-    if orgaos:
+    # Build orgao items with provenance — links to existing :Orgao by sigla.
+    orgao_items = [
+        {"nome": _entity_text(e), "provenance": _entity_provenance(e)}
+        for e in entities.get("orgao", []) if _entity_text(e)
+    ]
+    if orgao_items:
         writer.execute_template("link_orgao", LINK_ORGAO,
-                                {"doc_numero": doc_numero, "nomes": orgaos},
+                                {"doc_numero": doc_numero, "items": orgao_items},
                                 phase="gliner")
 
     cargos = _items_with_norm(entities, "cargo")
@@ -386,21 +443,28 @@ def load_document(
 
     # Legislação: merge lei + decreto + portaria into typed Legislacao nodes
     leg_items = []
-    for ref in _texts(entities, "lei"):
-        leg_items.append({"ref": ref, "tipo": "lei"})
-    for ref in _texts(entities, "decreto"):
-        leg_items.append({"ref": ref, "tipo": "decreto"})
-    for ref in _texts(entities, "portaria"):
-        leg_items.append({"ref": ref, "tipo": "portaria"})
+    for tipo_leg in ("lei", "decreto", "portaria"):
+        for e in entities.get(tipo_leg, []):
+            ref = _entity_text(e)
+            if not ref:
+                continue
+            leg_items.append({
+                "ref": ref,
+                "tipo": tipo_leg,
+                "provenance": _entity_provenance(e),
+            })
     if leg_items:
         writer.execute_template("link_legislacao", LINK_LEGISLACAO,
                                 {"doc_numero": doc_numero, "items": leg_items},
                                 phase="gliner")
 
-    contratos = _texts(entities, "contrato_edital")
-    if contratos:
+    contrato_items = [
+        {"ref": _entity_text(e), "provenance": _entity_provenance(e)}
+        for e in entities.get("contrato_edital", []) if _entity_text(e)
+    ]
+    if contrato_items:
         writer.execute_template("link_contrato", LINK_CONTRATO,
-                                {"doc_numero": doc_numero, "refs": contratos},
+                                {"doc_numero": doc_numero, "items": contrato_items},
                                 phase="gliner")
 
     # 4. Load extracted relations
@@ -418,26 +482,19 @@ def load_document(
     return True
 
 
-def main():
-    parser = argparse.ArgumentParser(
-        description="Load GLiNER2 extraction results into Neo4j"
-    )
-    parser.add_argument("--input", default="./ner_results",
-                        help="Directory with GLiNER JSON outputs (default: ./ner_results)")
-    parser.add_argument("--dry-run", action="store_true",
-                        help="Only show what would be loaded")
-    parser.add_argument("--clear-first", action="store_true",
-                        help="Remove all previous GLiNER data before loading")
-    parser.add_argument("--limit", type=int, default=0,
-                        help="Limit number of files to process (0=all)")
-    # --read-json is meaningless here (this script reads its own --input
-    # NER JSON files), so it's omitted from the standard flag group.
-    add_standard_args(parser, skip={"--read-json"})
-    args = parser.parse_args()
+def _execute(
+    args,
+    settings,
+    *,
+    writer: GraphWriter | None = None,
+    driver=None,
+) -> dict:
+    """Run the NER load with already-parsed args + resolved settings.
 
-    settings = resolve_settings(args)
-    configure_logging(__name__, settings.log_level)
-
+    If ``writer`` and ``driver`` are passed in (e.g. by the stage runner)
+    they are reused as-is; otherwise the function builds them based on
+    ``args.dry_run`` and ``settings.emit_json_dir``. Returns a summary dict.
+    """
     input_dir = Path(args.input)
     if not input_dir.exists():
         log.error("Input directory not found: %s", input_dir)
@@ -448,44 +505,33 @@ def main():
         files = files[:args.limit]
 
     log.info("Found %d GLiNER result files in %s", len(files), input_dir)
-
     if not files:
         log.info("Nothing to load.")
-        return
+        return {"total": 0, "loaded": 0, "not_found": 0, "errors": 0}
 
-    # -- Resolve writer / driver --------------------------------------------
-    #
-    # Three modes:
-    #   1. --dry-run             : no writer, no driver; load_document logs only.
-    #   2. --emit-json DIR       : writer = JsonFileWriter(DIR). No Neo4j
-    #                              connection, no Documento existence check.
-    #   3. default               : writer = DirectNeo4jWriter, driver connected,
-    #                              per-doc existence check enabled.
-    driver = None
-    writer: GraphWriter | None = None
+    own_writer = False
+    own_driver = False
+    if writer is None and not args.dry_run:
+        if settings.emit_json_dir is not None:
+            log.info("Emitting GLiNER writes to %s", settings.emit_json_dir)
+            writer = JsonFileWriter(settings.emit_json_dir)
+            own_writer = True
+        else:
+            try:
+                driver = build_driver(settings)
+                log.info("Connected to Neo4j: %s", settings.neo4j_uri)
+            except ConfigError as e:
+                log.error("%s", e)
+                sys.exit(2)
+            except Exception as e:
+                log.error("Failed to connect to Neo4j at %s: %s", settings.neo4j_uri, e)
+                sys.exit(1)
+            writer = DirectNeo4jWriter(driver, batch_size=settings.batch_size or 1000)
+            own_writer = own_driver = True
 
-    if args.dry_run:
-        log.info("Dry run: no writes, no emit")
-    elif settings.emit_json_dir is not None:
-        log.info("Emitting GLiNER writes to %s", settings.emit_json_dir)
-        writer = JsonFileWriter(settings.emit_json_dir)
-    else:
-        try:
-            driver = build_driver(settings)
-            log.info("Connected to Neo4j: %s", settings.neo4j_uri)
-        except ConfigError as e:
-            log.error("%s", e)
-            sys.exit(2)
-        except Exception as e:
-            log.error("Failed to connect to Neo4j at %s: %s", settings.neo4j_uri, e)
-            sys.exit(1)
-        writer = DirectNeo4jWriter(driver, batch_size=settings.batch_size or 1000)
-
-    # -- Run -----------------------------------------------------------------
     try:
         if writer is not None:
             writer.open_phase("gliner")
-
             log.info("Creating constraints...")
             for cypher in SETUP_CONSTRAINTS:
                 try:
@@ -502,7 +548,6 @@ def main():
         loaded = 0
         skipped = 0
         not_found = 0
-
         for i, filepath in enumerate(files):
             log.info("[%d/%d] Loading %s", i + 1, len(files), filepath.name)
             try:
@@ -523,11 +568,69 @@ def main():
             "DONE. Loaded: %d | Not found in Neo4j: %d | Errors: %d | Total: %d",
             loaded, not_found, skipped, len(files),
         )
+        return {
+            "total": len(files),
+            "loaded": loaded,
+            "not_found": not_found,
+            "errors": skipped,
+        }
     finally:
-        if writer is not None:
+        if own_writer and writer is not None:
             writer.close()
-        if driver is not None:
+        if own_driver and driver is not None:
             driver.close()
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Load GLiNER2 extraction results into Neo4j (or NDJSON via --emit-json)"
+    )
+    parser.add_argument("--input", default="./ner_results",
+                        help="Directory with GLiNER JSON outputs (default: ./ner_results)")
+    parser.add_argument("--dry-run", action="store_true",
+                        help="Only show what would be loaded")
+    parser.add_argument("--clear-first", action="store_true",
+                        help="Remove all previous GLiNER data before loading")
+    parser.add_argument("--limit", type=int, default=0,
+                        help="Limit number of files to process (0=all)")
+    add_standard_args(parser, skip={"--read-json"})
+    args = parser.parse_args()
+    settings = resolve_settings(args)
+    configure_logging(__name__, settings.log_level)
+    _execute(args, settings)
+
+
+# ---------------------------------------------------------------------------
+# Stage entry point
+# ---------------------------------------------------------------------------
+from argparse import Namespace as _Namespace  # noqa: E402
+
+from ..registry import stage  # noqa: E402
+from .._stage_base import RunContext, StageMeta  # noqa: E402
+
+
+@stage(StageMeta(
+    name="ner-load",
+    description="Carrega entidades GLiNER no grafo (PessoaFisica, Legislacao, Contrato, …).",
+    type="enrich",
+    depends_on=("ner-extract",),
+    soft_depends_on=("atividades",),
+    modes=("neo4j", "json-emit"),
+    estimated_duration="~5-10min para 10k docs",
+))
+def run(ctx: RunContext) -> None:
+    args = _Namespace(
+        input=ctx.flags.get("input", "./ner_results"),
+        dry_run=bool(ctx.flags.get("dry_run", False)),
+        clear_first=bool(ctx.flags.get("clear_first", False)),
+        limit=int(ctx.flags.get("limit") or 0),
+    )
+    summary = _execute(
+        args, ctx.settings,
+        writer=ctx.writer,
+        driver=ctx.driver,
+    ) or {}
+    ctx.cache["ner_load_summary"] = summary
 
 
 if __name__ == "__main__":

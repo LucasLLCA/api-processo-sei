@@ -2,8 +2,8 @@
 
 Walks the NDJSON shards + templates produced by `JsonFileWriter`, re-hydrates
 each row, and routes everything through a `DirectNeo4jWriter` so the target
-database ends up bit-identical to what the original `etl_neo4j.py --emit-json`
-run would have produced against Neo4j directly.
+database ends up bit-identical to what `python -m pipeline.etl --emit-json`
+would have produced against Neo4j directly.
 
 Usage::
 
@@ -216,7 +216,7 @@ def main() -> None:
         description="Replay a graphify emit directory into a live Neo4j instance.",
     )
     parser.add_argument("--input", type=Path, required=True,
-                        help="Emit directory produced by etl_neo4j.py --emit-json")
+                        help="Emit directory produced by `python -m pipeline.etl --emit-json`")
     parser.add_argument("--phase", action="append", default=None,
                         help="Replay only the named phase (repeatable). "
                              "Default: all phases in canonical order.")
