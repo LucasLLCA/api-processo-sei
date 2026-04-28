@@ -1,0 +1,20 @@
+{
+  "stage": "precreate",
+  "completed_at": null,
+  "failed_at": "2026-04-28T11:49:12Z",
+  "started_at": "2026-04-28T11:49:12Z",
+  "mode": "neo4j",
+  "args": {
+    "from_date": null,
+    "to_date": null,
+    "workers": 8,
+    "batch_size": 500,
+    "chunk_size": 200,
+    "dry_run": false
+  },
+  "summary": {
+    "traceback": "Traceback (most recent call last):\n  File \"/home/gabrielfmcoelho/Projetos/SEAD/visualizador-de-processos/api-processo-sei/scripts/pipeline/runner.py\", line 88, in _io_for\n    driver = build_driver(settings)\n             ^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/gabrielfmcoelho/Projetos/SEAD/visualizador-de-processos/api-processo-sei/scripts/pipeline/neo4j_driver.py\", line 28, in build_driver\n    settings.require_neo4j()\n  File \"/home/gabrielfmcoelho/Projetos/SEAD/visualizador-de-processos/api-processo-sei/scripts/pipeline/config.py\", line 129, in require_neo4j\n    raise ConfigError(\nscripts.pipeline.config.ConfigError: NEO4J_PASSWORD is not set. Provide it via env var, .env, or --neo4j-password.\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"/home/gabrielfmcoelho/Projetos/SEAD/visualizador-de-processos/api-processo-sei/scripts/pipeline/runner.py\", line 282, in run_stages\n    with _io_for(stage_mode, settings, flags) as (writer, reader, driver):\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/gabrielfmcoelho/miniconda3/envs/tcc-neo4j/lib/python3.12/contextlib.py\", line 137, in __enter__\n    return next(self.gen)\n           ^^^^^^^^^^^^^^\n  File \"/home/gabrielfmcoelho/Projetos/SEAD/visualizador-de-processos/api-processo-sei/scripts/pipeline/runner.py\", line 91, in _io_for\n    raise IncompatibleModeError(\nscripts.pipeline.registry.IncompatibleModeError: mode=neo4j needs Neo4j credentials: NEO4J_PASSWORD is not set. Provide it via env var, .env, or --neo4j-password.\n",
+    "duration_seconds": 0.0
+  },
+  "error": "IncompatibleModeError: mode=neo4j needs Neo4j credentials: NEO4J_PASSWORD is not set. Provide it via env var, .env, or --neo4j-password."
+}

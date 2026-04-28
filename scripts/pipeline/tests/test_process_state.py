@@ -94,11 +94,12 @@ def test_single_unit_opened_then_closed_is_concluida():
 # ---------------------------------------------------------------------------
 # Multi-unit flow
 # ---------------------------------------------------------------------------
-def test_remetido_does_not_close_source_cycle():
-    """User-confirmed: PROCESSO-REMETIDO-UNIDADE on the source does not auto-close.
+def test_remetido_opens_new_cycle_on_destination():
+    """Inbox-SEI semantics: PROCESSO-REMETIDO-UNIDADE opens a cycle on the
+    destination unit (since it lands the processo in that unit's inbox).
 
-    Only CONCLUSAO-* types close cycles. So if a unit only emits a REMETIDO
-    (no follow-up CONCLUSAO-AUTOMATICA), its cycle stays open.
+    If the destination only got a REMETIDO (no follow-up CONCLUSAO), its
+    cycle stays open. Two ACTIVATIONs in a row implicitly close the first.
     """
     activities = [
         _atv(1, "2025-01-01T10:00:00", "A", "GERACAO-PROCEDIMENTO"),
@@ -106,9 +107,14 @@ def test_remetido_does_not_close_source_cycle():
     ]
     state = compute_processo_state(activities, protocolo_formatado=PF, now_iso=NOW)
     a = state["unidades"][0]
+    # Two ACTIVATIONs (GERACAO then REMETIDO) → first cycle implicitly closed
+    # (implicit_close=True; status remains em_aberto since there's no CONCLUSAO),
+    # second cycle remains open.
+    assert len(a["ciclos"]) == 2
+    assert a["ciclos"][0].get("implicit_close") is True
+    assert a["ciclos"][1]["status"] == "em_aberto"
+    assert a["ciclos"][1]["abertura_tipo_acao"] == "PROCESSO-REMETIDO-UNIDADE"
     assert a["situacao"] == "em_aberto"
-    assert a["ciclos"][0]["status"] == "em_aberto"
-    assert a["ciclos"][0]["conclusao_atividade_id"] is None
     assert state["processo"]["situacao"] == "em_andamento"
 
 
@@ -191,11 +197,16 @@ def test_reabertura_then_conclusion_closes_second_cycle():
 # Parallelism
 # ---------------------------------------------------------------------------
 def test_parallel_units_independent_state():
-    """A and B both active at the same time; A concludes; B stays open."""
+    """A and B both active at the same time; A concludes; B stays open.
+
+    Inbox-SEI: B opens via REMETIDO; subsequent RECEBIDO is tie-break, not
+    a separate ACTIVATION.
+    """
     activities = [
         _atv(1, "2025-01-01T10:00:00", "A", "GERACAO-PROCEDIMENTO"),
-        _atv(2, "2025-01-02T10:00:00", "B", "PROCESSO-RECEBIDO-UNIDADE"),
-        _atv(3, "2025-01-03T10:00:00", "A", "CONCLUSAO-PROCESSO-UNIDADE"),
+        _atv(2, "2025-01-02T10:00:00", "B", "PROCESSO-REMETIDO-UNIDADE", source_unidade="A"),
+        _atv(3, "2025-01-02T10:00:30", "B", "PROCESSO-RECEBIDO-UNIDADE"),
+        _atv(4, "2025-01-03T10:00:00", "A", "CONCLUSAO-PROCESSO-UNIDADE"),
         # B is still open
     ]
     state = compute_processo_state(activities, protocolo_formatado=PF, now_iso=NOW)
@@ -246,7 +257,8 @@ def test_orgao_aggregates_multiple_subunits():
     activities = [
         _atv(1, "2025-01-01T10:00:00", "SEAD-PI/GAB", "GERACAO-PROCEDIMENTO"),
         _atv(2, "2025-01-02T10:00:00", "SEAD-PI/GAB", "CONCLUSAO-PROCESSO-UNIDADE"),
-        _atv(3, "2025-01-03T10:00:00", "SEAD-PI/SGACG", "PROCESSO-RECEBIDO-UNIDADE"),
+        _atv(3, "2025-01-03T10:00:00", "SEAD-PI/SGACG", "PROCESSO-REMETIDO-UNIDADE",
+             source_unidade="SEAD-PI/GAB"),
     ]
     state = compute_processo_state(activities, protocolo_formatado=PF, now_iso=NOW)
     assert len(state["orgaos"]) == 1
@@ -285,6 +297,13 @@ def test_activation_and_conclusion_sets_are_disjoint():
     assert ACTIVATION_TYPES & CONCLUSION_TYPES == set()
 
 
-def test_remetido_not_in_either_set():
-    assert "PROCESSO-REMETIDO-UNIDADE" not in ACTIVATION_TYPES
+def test_remetido_in_activation_set():
+    """Inbox-SEI: REMETIDO opens the destination unit (lands in inbox)."""
+    assert "PROCESSO-REMETIDO-UNIDADE" in ACTIVATION_TYPES
     assert "PROCESSO-REMETIDO-UNIDADE" not in CONCLUSION_TYPES
+
+
+def test_recebido_not_in_either_set():
+    """RECEBIDO is tie-break only — does not open or close."""
+    assert "PROCESSO-RECEBIDO-UNIDADE" not in ACTIVATION_TYPES
+    assert "PROCESSO-RECEBIDO-UNIDADE" not in CONCLUSION_TYPES

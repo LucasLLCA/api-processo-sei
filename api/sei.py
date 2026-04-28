@@ -983,43 +983,10 @@ async def login(usuario: str, senha: str, orgao: str, max_tentativas: int = 3):
     )
 
 
-async def consultar_procedimento(token: str, protocolo: str, id_unidade: str):
-    """
-    Consulta informações de um procedimento (processo) no SEI.
-    Retorna dados incluindo UnidadesProcedimentoAberto e LinkAcesso.
-    """
-    try:
-        url = f"{settings.SEI_BASE_URL}/unidades/{id_unidade}/procedimentos/consulta"
-        params = {
-            "protocolo_procedimento": protocolo,
-            "sinal_unidades_procedimento_aberto": "S",
-            "sinal_completo": "N",
-            "sinal_assuntos": "N",
-            "sinal_interessados": "N",
-            "sinal_observacoes": "N",
-            "sinal_andamento_geracao": "N",
-            "sinal_andamento_conclusao": "N",
-            "sinal_ultimo_andamento": "N",
-            "sinal_procedimentos_relacionados": "N",
-            "sinal_procedimentos_anexados": "N",
-        }
-        headers = {"accept": "application/json", "token": token}
-
-        response = await _fazer_requisicao_com_retry(url, headers, params, max_tentativas=3)
-
-        if response.status_code != 200:
-            _raise_sei_error(response, "Falha ao consultar procedimento no SEI")
-
-        return response.json()
-    except httpx.RequestError as e:
-        raise HTTPException(
-            status_code=500,
-            detail=ErrorDetail(
-                type=ErrorType.EXTERNAL_SERVICE_ERROR,
-                message="Erro ao conectar com o serviço SEI para consultar procedimento",
-                details={"error": str(e)}
-            ).dict()
-        )
+# Removed `consultar_procedimento` (live SEI lookup of UnidadesProcedimentoAberto).
+# Unidades em aberto são derivadas client-side dos andamentos via algoritmo
+# canônico — ver `studio/src/lib/process-flow-utils.ts:deriveOpenUnitsFromAndamentos`
+# e `api-sei-atividaes/app/models/estoque_rules.py`.
 
 
 

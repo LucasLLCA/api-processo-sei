@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from ..sei import (
     login, contar_andamentos, buscar_pagina_andamentos,
     listar_documentos, listar_documentos_parcial,
-    consultar_procedimento, assinar_documento,
+    assinar_documento,
     consultar_documento,
 )
 from ..cache import cache
@@ -279,47 +279,13 @@ async def sei_andamentos_count(
     return {"total_itens": total}
 
 
-@router.get("/unidades-abertas/{numero_processo}")
-async def sei_unidades_abertas(
-    numero_processo: str,
-    id_unidade: str = Query(...),
-    x_sei_token: str = Header(..., alias="X-SEI-Token"),
-):
-    """
-    Proxy para consultar unidades com processo aberto.
-    Cache validated by TotalItens from andamentos metadata —
-    if TotalItens hasn't changed, open units haven't changed either.
-    """
-    numero_processo = normalizar_numero_processo(numero_processo)
-    cache_key = f"proxy:unidades:{numero_processo}:{id_unidade}"
-
-    # Get current TotalItens to validate cache
-    current_total = await contar_andamentos(x_sei_token, numero_processo, id_unidade)
-
-    cached = await cache.get(cache_key)
-    if cached and cached.get("_total_andamentos") == current_total:
-        logger.info(f"GET /sei/unidades-abertas/{numero_processo} — cache HIT")
-        return {
-            "UnidadesProcedimentoAberto": cached["UnidadesProcedimentoAberto"],
-            "LinkAcesso": cached.get("LinkAcesso"),
-        }
-
-    logger.info(
-        f"GET /sei/unidades-abertas/{numero_processo} — cache MISS"
-        f"{' (stale)' if cached else ''}"
-    )
-    data = await consultar_procedimento(x_sei_token, numero_processo, id_unidade)
-
-    await cache.set(cache_key, {
-        "UnidadesProcedimentoAberto": data.get("UnidadesProcedimentoAberto", []),
-        "LinkAcesso": data.get("LinkAcesso"),
-        "_total_andamentos": current_total,
-    }, ttl=CACHE_TTL_ANDAMENTOS)
-
-    return {
-        "UnidadesProcedimentoAberto": data.get("UnidadesProcedimentoAberto", []),
-        "LinkAcesso": data.get("LinkAcesso"),
-    }
+# Removed GET /sei/unidades-abertas/{numero_processo} (live SEI proxy).
+# Unidades em aberto são derivadas client-side a partir dos andamentos via
+# `studio/src/lib/process-flow-utils.ts:deriveOpenUnitsFromAndamentos`,
+# alinhado com a regra canônica em
+# `api-sei-atividaes/app/models/estoque_rules.py` e
+# `api-processo-sei/scripts/pipeline/process_state.py` (semântica inbox-SEI).
+# A função consultar_procedimento em api/sei.py também foi removida.
 
 
 @router.get("/documentos/{numero_processo}")

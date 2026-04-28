@@ -4,22 +4,34 @@ Single source of truth for "is unit X open?", "is the processo concluded?",
 "how long did each cycle take?". Used by the ``permanencia`` and ``situacao``
 stages — they share the same compute via ``ctx.cached``.
 
+**Semântica inbox-SEI** (espelha o que o usuário vê em "Processos recebidos"
+da UI). Mesma regra usada em ``api-sei-atividaes/app/models/estoque_rules.py``,
+``api-sei-atividaes/app/tasks/estoque_processos.py`` e
+``studio/src/lib/process-flow-utils.ts``.
+
 The algorithm walks each unit's activities chronologically and detects
 **cycles** (entrada → conclusão pairs):
 
 - ACTIVATION events open a new cycle on the unit:
-    GERACAO-PROCEDIMENTO, PROCESSO-RECEBIDO-UNIDADE, REABERTURA-PROCESSO-UNIDADE.
+    GERACAO-PROCEDIMENTO        (unidade criou o processo)
+    PROCESSO-REMETIDO-UNIDADE   (chegou na inbox da unidade — destino)
+    REABERTURA-PROCESSO-UNIDADE (ciclo reaberto pela própria unidade)
+
 - CONCLUSION events close the open cycle on the unit:
     CONCLUSAO-PROCESSO-UNIDADE, CONCLUSAO-AUTOMATICA-UNIDADE.
-- PROCESSO-REMETIDO-UNIDADE marks transit but **does NOT close** the source unit's
-  cycle (the SEI dispatches a CONCLUSAO-AUTOMATICA-UNIDADE separately when
-  applicable; we trust the data, not assumptions).
+
+- PROCESSO-RECEBIDO-UNIDADE é tratado como **TIE-BREAK ONLY**, não abre nem
+  fecha. O SEI ocasionalmente registra RECEBIDO antes do REMETIDO
+  correspondente (clock skew em segundos/ms). O sort em
+  ``timeline.sort_and_fix_activities`` aplica priority(REMETIDO=0,
+  RECEBIDO=1, CONCLUSAO=2) pra resolver isso.
+
 - All other activity types update the unit's "last significant" pointer
   but do not open/close cycles.
 
-A processo is ``concluido`` iff **every** unit it touched has its last cycle
-closed. A unit is ``em_aberto`` iff its last cycle is open (no CONCLUSAO
-after the most recent ACTIVATION).
+A processo é ``concluido`` iff **toda** unidade que tocou tem seu último
+ciclo fechado. Uma unidade é ``em_aberto`` iff seu último ciclo está aberto
+(sem CONCLUSAO após a última ACTIVATION).
 """
 
 from __future__ import annotations
@@ -33,11 +45,12 @@ from .timeline import sort_and_fix_activities
 
 
 # ---------------------------------------------------------------------------
-# Activity classification (single source of truth for the cycle algorithm)
+# Activity classification — semântica inbox-SEI (canônica, alinhada com
+# api-sei-atividaes/app/models/estoque_rules.py)
 # ---------------------------------------------------------------------------
 ACTIVATION_TYPES: frozenset[str] = frozenset({
     "GERACAO-PROCEDIMENTO",
-    "PROCESSO-RECEBIDO-UNIDADE",
+    "PROCESSO-REMETIDO-UNIDADE",
     "REABERTURA-PROCESSO-UNIDADE",
 })
 
@@ -46,9 +59,11 @@ CONCLUSION_TYPES: frozenset[str] = frozenset({
     "CONCLUSAO-AUTOMATICA-UNIDADE",
 })
 
-# Significant for the "last significant action" pointer (mirrors d-1 regexes).
+# Significant for the "last significant action" pointer.
+# RECEBIDO entra aqui só pra que o sort/walk preserve a sequência natural;
+# ele NÃO está em ACTIVATION_TYPES (não abre ciclo).
 SIGNIFICANT_TYPES: frozenset[str] = frozenset(
-    ACTIVATION_TYPES | CONCLUSION_TYPES | {"PROCESSO-REMETIDO-UNIDADE"}
+    ACTIVATION_TYPES | CONCLUSION_TYPES | {"PROCESSO-RECEBIDO-UNIDADE"}
 )
 
 
@@ -285,9 +300,11 @@ def _walk_units(
                 })
             st["last_significant"] = atv
 
-        elif tipo == "PROCESSO-REMETIDO-UNIDADE":
-            # Marks transit on the destination unit; do NOT open or close.
-            # User confirmed: REMETIDO does not auto-close source's cycle.
+        elif tipo == "PROCESSO-RECEBIDO-UNIDADE":
+            # RECEBIDO é tie-break only — não abre nem fecha. O REMETIDO
+            # correspondente já abriu o ciclo (vem antes via priority sort
+            # em sort_and_fix_activities). Atualiza last_significant pra
+            # que o ponteiro reflita a última ação relevante na unidade.
             st["last_significant"] = atv
 
         # Other activity types: ignored for cycle bookkeeping.
